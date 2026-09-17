@@ -8,6 +8,7 @@ Personal Claude Code skills library. Reusable instructions that shape how Claude
 - **recruiter-demo-writer** — Consistent structure and voice for portfolio recruiter-demo pages. Enforces a fixed section skeleton, anti-fabrication rules, and voice discipline. Used when building or auditing demo pages for the portfolio at armaankazi.com.
 - **impeccable** — Frontend design skill (v3.5.0, Apache 2.0). Handles design, redesign, critique, audit, and polish work across websites, landing pages, dashboards, and UI components. Includes scripts for palette generation, browser inspection, and antipattern detection. Written by a third party, credit in the skill's own SKILL.md.
 - **relevance-profile**, **honest-refusal**, **query-to-corpus** — Discipline skills for a cross-domain research discovery engine project: the multi-axis relevance profile that is never collapsed into one score, the no-fabrication and adversarial-honesty rules that are the engine's identity, and how a research question becomes a contamination-guarded corpus.
+- **ponytail** — Enforces a lazy-senior-dev discipline: climb a laziness ladder (YAGNI, reuse, stdlib, native, existing dependency, one-liner, minimum code) before writing anything new. The full six-skill suite (`ponytail`, `ponytail-review`, `ponytail-audit`, `ponytail-debt`, `ponytail-gain`, `ponytail-help`) is vendored in this repo, but only the core `ponytail` skill is installed below; the other five are available under `ponytail/skills/` if you want to symlink them yourself. Vendored from [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail), MIT, credit in `ponytail/LICENSE`.
 
 ## How to install
 
@@ -27,6 +28,7 @@ ln -s ~/dev/ark-skills/impeccable ~/.claude/skills/impeccable
 ln -s ~/dev/ark-skills/relevance-profile ~/.claude/skills/relevance-profile
 ln -s ~/dev/ark-skills/honest-refusal ~/.claude/skills/honest-refusal
 ln -s ~/dev/ark-skills/query-to-corpus ~/.claude/skills/query-to-corpus
+ln -s ~/dev/ark-skills/ponytail/skills/ponytail ~/.claude/skills/ponytail
 ```
 
 Symlinks (not copies) let updates in this repo propagate everywhere without duplicating files.
@@ -55,6 +57,15 @@ ark-skills/
 │   └── SKILL.md
 ├── query-to-corpus/
 │   └── SKILL.md
+├── ponytail/
+│   ├── LICENSE, README.md, AGENTS.md
+│   └── skills/
+│       ├── ponytail/SKILL.md
+│       ├── ponytail-review/SKILL.md
+│       ├── ponytail-audit/SKILL.md
+│       ├── ponytail-debt/SKILL.md
+│       ├── ponytail-gain/SKILL.md
+│       └── ponytail-help/SKILL.md
 └── README.md
 ```
 
@@ -68,4 +79,4 @@ Use skill-creator inside a Claude Code session:
 
 ## License
 
-Individual skills carry their own licenses (Apache 2.0 for skill-creator and impeccable). New skills authored in this repo default to MIT unless specified otherwise.
+Individual skills carry their own licenses (Apache 2.0 for skill-creator and impeccable, MIT for ponytail). New skills authored in this repo default to MIT unless specified otherwise.
