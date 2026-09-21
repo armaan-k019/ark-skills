@@ -12,7 +12,7 @@
 const fs = require('fs');
 const { readInput, block } = require('./_input');
 
-const EM = '—';
+const EM = '\u2014';
 const count = (s) => (typeof s === 'string' ? s.split(EM).length - 1 : 0);
 
 const MESSAGE =

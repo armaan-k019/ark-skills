@@ -9,7 +9,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-const EM = '—';
+const EM = '\u2014';
 const dir = __dirname;
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'ark-hooks-'));
 const existingTsconfig = path.join(tmp, 'tsconfig.json');
