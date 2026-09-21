@@ -22,7 +22,7 @@ TEXT_EXT = {".md", ".txt", ".json", ".yaml", ".yml", ".toml", ".js", ".mjs", ".c
 SKIP_DIRS = {".git", "node_modules", "__pycache__", ".venv", "venv", "dist", "build"}
 MAX_BYTES = 2_000_000
 
-HIDDEN = re.compile("[​‌‍⁠﻿‪-‮⁦-⁩\U000e0000-\U000e007f]")
+HIDDEN = re.compile("[" + "".join(chr(c) for c in (0x200B, 0x200C, 0x200D, 0x2060, 0xFEFF)) + chr(0x202A) + "-" + chr(0x202E) + chr(0x2066) + "-" + chr(0x2069) + chr(0xE0000) + "-" + chr(0xE007F) + "]")
 
 RULES = [
     # (severity, category, regex, applies_to)  applies_to: "md", "code", or "all"
