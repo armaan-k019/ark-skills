@@ -12,6 +12,18 @@ Personal Claude Code skills library. Reusable instructions that shape how Claude
 - **verify-before-done**: Runs the project's own build, typecheck, lint, and tests, reviews the diff against the task, and reports each check as PASS, FAIL, or NOT RUN. Never reports a check it did not run. Adapted from ECC's `verification-loop`.
 - **strategic-compact**: When to `/compact`, `/clear`, or start a fresh session, plus a `progress.md` handoff format so state lives on disk, not in the conversation. Adapted from ECC's `strategic-compact`.
 
+### Workflow and research skills (adapted from ECC)
+
+- **phased-build**: Runs a coding task as gated phases (intake, research, plan, implement, review, verify, commit). Each phase writes one file the next phase reads; the user approves the plan and the commit. Covers add, change, fix, and refactor operations, subagent delegation, and parallel worktrees.
+- **adversarial-review**: Independent reviewers for high-stakes output. Dual review (two fresh reviewers must both pass, max 3 rounds) or a generator-evaluator loop with a scored rubric and plateau stop. Includes pass@k vs pass^k.
+- **literature-review**: Logged, reproducible literature search with verified citations, including architecture and computational design sources (CumInCAD, EDRA). Unverifiable citations are dropped, not softened.
+- **scholar-evaluation**: Rubric review of papers, abstracts, and proposals, with claim-by-claim citation checks and a pre-submission mode.
+- **experiment-discipline**: Experiment cards, reproducibility (SHA, config, seeds, hardware), benchmarking method (correctness first, warm-up, repeats, median and spread, input scaling), and an experiment ledger.
+- **capture-lessons**: Extracts transferable lessons after failures into `LESSONS.md`, merges duplicates by root cause, and proposes promoting repeated lessons into CLAUDE.md rules, hooks, or skills.
+- **decision-records**: Short decision records in `docs/decisions/` (context, decision, alternatives, consequences), written only with approval.
+- **skill-audit**: Measures installed skills, agents, and CLAUDE.md with `scripts/inventory.py` and recommends keep, improve, merge, or retire.
+- **vet-third-party**: Static scan (`scripts/scan.py`) plus a reading checklist for any skill, hook, plugin, or MCP config before installing it.
+
 ## Subagents (`agents/`)
 
 - **silent-failure-hunter**: Reviews changed code for swallowed errors, fallbacks that hide failure, lost error propagation, and unchecked network or API calls. Every finding cites a line; "no findings" is a valid result.
@@ -30,6 +42,16 @@ Hooks run on every matching tool call, so rules that must always hold do not dep
 Test them with `node hooks/test-hooks.js`. Requires Node on your `PATH`.
 
 ECC-derived files are credited in `licenses/ECC-LICENSE` (MIT, [affaan-m/ECC](https://github.com/affaan-m/ECC)).
+
+## Mode contexts (`contexts/`)
+
+`dev.md`, `review.md`, and `research.md` are short behavior profiles you load per session instead of putting everything in one CLAUDE.md. Use `--append-system-prompt-file`, which adds to Claude Code's default system prompt; `--system-prompt` would replace it entirely.
+
+```sh
+alias claude-dev='claude --append-system-prompt-file ~/dev/ark-skills/contexts/dev.md'
+alias claude-review='claude --append-system-prompt-file ~/dev/ark-skills/contexts/review.md'
+alias claude-research='claude --append-system-prompt-file ~/dev/ark-skills/contexts/research.md'
+```
 
 ## How to install
 
@@ -52,6 +74,15 @@ ln -s ~/dev/ark-skills/query-to-corpus ~/.claude/skills/query-to-corpus
 ln -s ~/dev/ark-skills/ponytail/skills/ponytail ~/.claude/skills/ponytail
 ln -s ~/dev/ark-skills/verify-before-done ~/.claude/skills/verify-before-done
 ln -s ~/dev/ark-skills/strategic-compact ~/.claude/skills/strategic-compact
+ln -s ~/dev/ark-skills/phased-build ~/.claude/skills/phased-build
+ln -s ~/dev/ark-skills/adversarial-review ~/.claude/skills/adversarial-review
+ln -s ~/dev/ark-skills/literature-review ~/.claude/skills/literature-review
+ln -s ~/dev/ark-skills/scholar-evaluation ~/.claude/skills/scholar-evaluation
+ln -s ~/dev/ark-skills/experiment-discipline ~/.claude/skills/experiment-discipline
+ln -s ~/dev/ark-skills/capture-lessons ~/.claude/skills/capture-lessons
+ln -s ~/dev/ark-skills/decision-records ~/.claude/skills/decision-records
+ln -s ~/dev/ark-skills/skill-audit ~/.claude/skills/skill-audit
+ln -s ~/dev/ark-skills/vet-third-party ~/.claude/skills/vet-third-party
 ```
 
 Symlink the subagents:
@@ -103,6 +134,16 @@ ark-skills/
 │   └── SKILL.md
 ├── strategic-compact/
 │   └── SKILL.md
+├── phased-build/, adversarial-review/, literature-review/,
+│   scholar-evaluation/, experiment-discipline/, capture-lessons/,
+│   decision-records/
+│   └── SKILL.md
+├── skill-audit/
+│   └── SKILL.md, scripts/inventory.py
+├── vet-third-party/
+│   └── SKILL.md, scripts/scan.py
+├── contexts/
+│   └── dev.md, review.md, research.md
 ├── agents/
 │   ├── silent-failure-hunter.md
 │   └── ts-reviewer.md

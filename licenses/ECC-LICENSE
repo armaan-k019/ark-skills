@@ -1,8 +1,25 @@
-Portions of this repository (verify-before-done, strategic-compact,
-agents/silent-failure-hunter.md, agents/ts-reviewer.md, and
-hooks/config-protection.js, hooks/block-no-verify.js) are adapted from
-ECC (https://github.com/affaan-m/ECC), commit 2b6e839, under the
-following license:
+Portions of this repository are adapted from ECC
+(https://github.com/affaan-m/ECC), commit 2b6e839:
+
+- verify-before-done (from skills/verification-loop)
+- strategic-compact (from skills/strategic-compact)
+- phased-build (from skills/orch-pipeline, skills/orch-*, skills/iterative-retrieval,
+  and the-longform-guide.md)
+- adversarial-review (from skills/santa-method, originally by Ronald Skelton,
+  and skills/gan-style-harness)
+- literature-review, scholar-evaluation (from the community skills of the same
+  purpose distributed in ECC)
+- experiment-discipline (from skills/mle-workflow, skills/pytorch-patterns,
+  skills/benchmark)
+- capture-lessons (from skills/growth-log, skills/continuous-learning-v2)
+- decision-records (from skills/architecture-decision-records)
+- skill-audit (from skills/skill-stocktake, skills/context-budget)
+- vet-third-party (from the-security-guide.md, skills/security-scan)
+- contexts/ (from contexts/)
+- agents/silent-failure-hunter.md, agents/ts-reviewer.md
+- hooks/config-protection.js, hooks/block-no-verify.js
+
+ECC is distributed under the following license:
 
 MIT License
 
