@@ -9,6 +9,7 @@ Personal Claude Code skills library. Reusable instructions that shape how Claude
 - **impeccable**: Frontend design skill (v3.5.0, Apache 2.0). Handles design, redesign, critique, audit, and polish work across websites, landing pages, dashboards, and UI components. Includes scripts for palette generation, browser inspection, and antipattern detection. Written by a third party, credit in the skill's own SKILL.md.
 - **relevance-profile**, **honest-refusal**, **query-to-corpus**: Discipline skills for a cross-domain research discovery engine project: the multi-axis relevance profile that is never collapsed into one score, the no-fabrication and adversarial-honesty rules that are the engine's identity, and how a research question becomes a contamination-guarded corpus.
 - **ponytail**: Enforces a lazy-senior-dev discipline: climb a laziness ladder (YAGNI, reuse, stdlib, native, existing dependency, one-liner, minimum code) before writing anything new. The full six-skill suite (`ponytail`, `ponytail-review`, `ponytail-audit`, `ponytail-debt`, `ponytail-gain`, `ponytail-help`) is vendored in this repo, but only the core `ponytail` skill is installed below; the other five are available under `ponytail/skills/` if you want to symlink them yourself. Vendored from [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail), MIT, credit in `ponytail/LICENSE`.
+- **scroll-world**: Builds an immersive scroll-scrubbed landing page where a pre-rendered camera flies through a sequence of AI-generated scenes with no cuts, using Higgsfield for stills and Monid or Higgsfield for the video chain. Interviews the user for topic, story beats, and brand kit, then wires a portable, framework-agnostic scroll-scrub engine. Vendored from [oso95/scroll-world](https://github.com/oso95/scroll-world) at commit `71cc36d3`, MIT, credit in `scroll-world/LICENSE`. Vetted with `vet-third-party` on 2026-09-24: 0 HIGH findings, 9 MEDIUM (all expected network calls to its own documented services), verdict install.
 - **verify-before-done**: Runs the project's own build, typecheck, lint, and tests, reviews the diff against the task, and reports each check as PASS, FAIL, or NOT RUN. Never reports a check it did not run. Adapted from ECC's `verification-loop`.
 - **strategic-compact**: When to `/compact`, `/clear`, or start a fresh session, plus a `progress.md` handoff format so state lives on disk, not in the conversation. Adapted from ECC's `strategic-compact`.
 
@@ -72,6 +73,7 @@ ln -s ~/dev/ark-skills/relevance-profile ~/.claude/skills/relevance-profile
 ln -s ~/dev/ark-skills/honest-refusal ~/.claude/skills/honest-refusal
 ln -s ~/dev/ark-skills/query-to-corpus ~/.claude/skills/query-to-corpus
 ln -s ~/dev/ark-skills/ponytail/skills/ponytail ~/.claude/skills/ponytail
+ln -s ~/dev/ark-skills/scroll-world ~/.claude/skills/scroll-world
 ln -s ~/dev/ark-skills/verify-before-done ~/.claude/skills/verify-before-done
 ln -s ~/dev/ark-skills/strategic-compact ~/.claude/skills/strategic-compact
 ln -s ~/dev/ark-skills/phased-build ~/.claude/skills/phased-build
@@ -130,6 +132,8 @@ ark-skills/
 │       ├── ponytail-debt/SKILL.md
 │       ├── ponytail-gain/SKILL.md
 │       └── ponytail-help/SKILL.md
+├── scroll-world/
+│   └── LICENSE, SKILL.md, references/
 ├── verify-before-done/
 │   └── SKILL.md
 ├── strategic-compact/
@@ -166,4 +170,4 @@ Use skill-creator inside a Claude Code session:
 
 ## License
 
-Individual skills carry their own licenses (Apache 2.0 for skill-creator and impeccable, MIT for ponytail, MIT for the ECC-derived skills, agents, and hooks, see `licenses/ECC-LICENSE`). New skills authored in this repo default to MIT unless specified otherwise.
+Individual skills carry their own licenses (Apache 2.0 for skill-creator and impeccable, MIT for ponytail, MIT for scroll-world, MIT for the ECC-derived skills, agents, and hooks, see `licenses/ECC-LICENSE`). New skills authored in this repo default to MIT unless specified otherwise.
