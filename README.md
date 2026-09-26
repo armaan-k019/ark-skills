@@ -12,6 +12,7 @@ Personal Claude Code skills library. Reusable instructions that shape how Claude
 - **scroll-world**: Builds an immersive scroll-scrubbed landing page where a pre-rendered camera flies through a sequence of AI-generated scenes with no cuts, using Higgsfield for stills and Monid or Higgsfield for the video chain. Interviews the user for topic, story beats, and brand kit, then wires a portable, framework-agnostic scroll-scrub engine. Vendored from [oso95/scroll-world](https://github.com/oso95/scroll-world) at commit `71cc36d3`, MIT, credit in `scroll-world/LICENSE`. Vetted with `vet-third-party` on 2026-09-24: 0 HIGH findings, 9 MEDIUM (all expected network calls to its own documented services), verdict install.
 - **verify-before-done**: Runs the project's own build, typecheck, lint, and tests, reviews the diff against the task, and reports each check as PASS, FAIL, or NOT RUN. Never reports a check it did not run. Adapted from ECC's `verification-loop`.
 - **strategic-compact**: When to `/compact`, `/clear`, or start a fresh session, plus a `progress.md` handoff format so state lives on disk, not in the conversation. Adapted from ECC's `strategic-compact`.
+- **unattended-build**: The autonomy contract for one coding session running many phases with no human check-in. Only work whose acceptance criteria are runnable commands runs unattended; taste-based work (visual design, copy, layout) gets short human-in-the-loop rounds instead. It writes decide-yourself and stop-and-ask lists to `STANDING-DECISIONS.md`, keeps a resumable `PROGRESS.md`, reports only observed values, and has each PR's diff independently reviewed. Written from one real build and one failed attempt, not adapted from a third party.
 
 ### Workflow and research skills (adapted from ECC)
 
@@ -76,6 +77,7 @@ ln -s ~/dev/ark-skills/ponytail/skills/ponytail ~/.claude/skills/ponytail
 ln -s ~/dev/ark-skills/scroll-world ~/.claude/skills/scroll-world
 ln -s ~/dev/ark-skills/verify-before-done ~/.claude/skills/verify-before-done
 ln -s ~/dev/ark-skills/strategic-compact ~/.claude/skills/strategic-compact
+ln -s ~/dev/ark-skills/unattended-build ~/.claude/skills/unattended-build
 ln -s ~/dev/ark-skills/phased-build ~/.claude/skills/phased-build
 ln -s ~/dev/ark-skills/adversarial-review ~/.claude/skills/adversarial-review
 ln -s ~/dev/ark-skills/literature-review ~/.claude/skills/literature-review
@@ -137,6 +139,8 @@ ark-skills/
 ├── verify-before-done/
 │   └── SKILL.md
 ├── strategic-compact/
+│   └── SKILL.md
+├── unattended-build/
 │   └── SKILL.md
 ├── phased-build/, adversarial-review/, literature-review/,
 │   scholar-evaluation/, experiment-discipline/, capture-lessons/,
