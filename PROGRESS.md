@@ -1,5 +1,5 @@
 # Progress: skills-graph
-Updated: 2026-09-28 04:34 EDT (from `date`)   Branch: feat/skills-graph (from origin/main cd423eb, upstream unset so nothing pushes to main)   Last commit: 5b6105f (phase 0)
+Updated: 2026-09-28 04:35 EDT (from `date`)   Branch: feat/skills-graph (from origin/main cd423eb, upstream unset so nothing pushes to main)   Last commit: f8964e8 (phase 1)
 
 Every time in this file comes from `date`. An earlier version said "03:52" and "03:50"; those were not clock readings (the clock read 03:22 shortly after) and were removed after review gate 1 flagged them.
 
@@ -7,11 +7,12 @@ Every time in this file comes from `date`. An earlier version said "03:52" and "
 Static page in viz/ that visualizes this repo: every skill, agent, and hook as a node, clustered by family, with defer/reference edges, hook coverage, license origin, and eval status, all generated from files. Plus viz/MONITOR-EVAL.md, a vetted recommendation (no install) for a live Claude Code session monitor. Phases: 0 setup, 1 extractor, 2 tests, 3 page (function only), 4 STOP for visual design, 5 monitor evaluation. Review gates after phases 1 and 3.
 
 ## Now
-Phase 1 (extractor), step: gate 1 fix round 1 done; committing phase 1
+Phase 2 (tests), step: acceptance passed; committing phase 2
 
 ## Done and verified
 - Phase 0 reading: 25 SKILL.md files, 2 files in agents/, 5 .js files in hooks/ of which 3 are registered in hooks/settings.example.json (config-protection, no-em-dash, block-no-verify); _input.js is a shared helper and test-hooks.js is the test runner. licenses/ECC-LICENSE lists the ECC-derived files.
 - Phase 0: STANDING-DECISIONS.md and PROGRESS.md, commit 5b6105f.
+- Phase 1: extractor and graph.json, commit f8964e8.
 - Phase 1 acceptance, re-run after gate 1 fixes, 2026-09-28 04:33:06 EDT:
   - `python3 viz/scripts/build_graph.py` printed "wrote .../viz/data/graph.json: 30 nodes {'agent': 2, 'hook': 3, 'skill': 25}, 33 edges {'defer': 31, 'names-hook': 2}, 5 families", exit 0.
   - Node count: graph nodes=30; `find . -name SKILL.md -not -path "./.git/*" | wc -l` = 25; `find agents -type f | wc -l` = 2; distinct `hooks/<file>` references in hooks/settings.example.json = 3; sum 30.
@@ -25,8 +26,10 @@ Phase 1 (extractor), step: gate 1 fix round 1 done; committing phase 1
 - Phase 5 (monitor evaluation), done, not yet committed: three repos cloned into /tmp/monitor-eval/ at ccboard c1a36a0, claude-agents-dashboard 320f553, agent-mission-control 50a805a; scan.py run on each (exit 1, HIGH findings present: 96, 440, 8); one read-only vetting pass per repo; load-bearing claims re-read in source; viz/MONITOR-EVAL.md written. Nothing installed, built, or run.
 - Phase 3 groundwork, not yet committed: Cytoscape.js 3.34.3 vendored in viz/vendor/ after the tarball's sha512 matched the registry integrity; docs/decisions/0001-graph-library-cytoscape.md and its index.
 
+- Phase 2 acceptance, 2026-09-28 04:34:50 EDT: `python3 -m unittest discover viz/scripts` printed "Ran 41 tests in 0.108s" and "OK", exit 0. Pass count: 41 of 41. Required coverage: frontmatter parsing (folded, quoted, literal, none, unterminated, BOM), a skill with no description (test_skill_without_description_omits_field), a defer edge (test_defer_edge_carries_file_and_line), excluded false positives (test_hyphenated_longer_token_is_not_a_reference, test_capitalized_word_is_not_a_reference), eval status present and absent (test_eval_status_present, test_eval_status_absent, test_eval_ignores_fenced_templates_and_scoring_instructions). Fixture skills are named SKILL.fixture.md (see Decisions).
+
 ## In flight
-- Phase 2 tests exist (41 passing) and will be committed as phase 2 after phase 1.
+- none
 
 ## Open questions
 - Q1: Playwright is not available to this repo. Triggered by: stop-and-ask "a dev-only Playwright ... ask first if it is not already available", plus "touching the portfolio repo". Observed: no global npm package, no python package, no `playwright` on PATH; Chromium 1243 browsers are cached in ~/Library/Caches/ms-playwright; the only npm copy is ~/dev/my-portfolio/node_modules/playwright. Options: (a) approve `npm install -D playwright` under viz/ (network, adds viz/package.json and a lockfile); (b) approve importing the portfolio's copy (touches the portfolio repo); (c) something else. Blocks: phase 3 acceptance (smoke.mjs run and viz/screenshot.png), so phase 4 materials will lack the screenshot. Raised: not yet.
@@ -63,4 +66,4 @@ Phase 1 (extractor), step: gate 1 fix round 1 done; committing phase 1
 - A regression test must fail on the old code. Next time I add one for a review finding, I will run it against the reviewed version first. Evidence: the first BOM test passed on the old code because its fallback id equalled the directory name.
 
 ## Next action
-Commit phase 1 (viz/scripts/build_graph.py, viz/data/graph.json, viz/README.md, viz/.gitignore, PROGRESS.md), then commit phase 2 (viz/scripts/test_build_graph.py, viz/scripts/fixtures/), then build the phase 3 page.
+Commit phase 2 (viz/scripts/test_build_graph.py, viz/scripts/fixtures/, PROGRESS.md), then build the phase 3 page (viz/index.html, viz/app.js, viz/style.css, viz/scripts/smoke.mjs) and commit it with viz/vendor/ and docs/decisions/.
