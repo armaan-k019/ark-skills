@@ -105,11 +105,16 @@ These three rules are what make the reports usable afterwards.
 
 ## Step 4: Review before each gate
 
-In an unattended build the gate is the PR: the session opens it, and merging stays on the stop-and-ask list. The review below runs once per PR, not before every commit. Before opening each PR:
+A gate is a phase boundary. When the build has PRs, each PR is a phase boundary; the session opens it, and merging stays on the stop-and-ask list. Review once per gate:
+
+- Not per commit. With no PRs present, reviewing every commit produced about 14 reviewer passes over 8 rounds in testing.
+- Not only at the final report. That lets a bad decision compound through the whole build with nothing to catch it.
+
+At each gate:
 
 1. Run `verify-before-done` on the branch.
-2. Run an independent reviewer pass over the session's own diff in fresh context; `adversarial-review` covers how to set one up. The reviewer reads the diff, not the session's summary of it.
-3. Fix for at most two rounds, not the three that `adversarial-review`'s dual review allows. Then report what remains, in the PR and in PROGRESS.md, rather than grinding.
+2. Run an independent reviewer pass over the session's own diff since the last gate, in fresh context; `adversarial-review` covers how to set one up. The reviewer reads the diff, not the session's summary of it.
+3. Fix for at most two rounds, not the three that `adversarial-review`'s dual review allows. Then report what remains, in PROGRESS.md and in the PR if there is one, rather than grinding.
 
 Where an external PR reviewer exists, wait for it, address or reply to every comment, and record the outcome in PROGRESS.md. Escalate only the findings that fall under the stop-and-ask list; the rest are decided under the contract.
 
@@ -131,5 +136,5 @@ In the source project the director wrote four rounds of prompts about a website 
 - PROGRESS.md was updated after every phase, fix round, and blocked question, and its next action is exact.
 - Every value in the report was observed in this session. Everything else says partial, NOT RUN, or NOT MEASURED.
 - Every tripwire hit is an open question, not a decision the session made on the human's behalf.
-- Each PR had a fresh-context review of the diff, with at most two fix rounds, and what remains is listed.
+- Each gate (phase boundary) had a fresh-context review of the diff since the last gate, with at most two fix rounds, and what remains is listed.
 - Every refusal names the missing definition.
