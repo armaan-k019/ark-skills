@@ -1,5 +1,5 @@
 # Progress: skills-graph
-Updated: 2026-09-28 04:35 EDT (from `date`)   Branch: feat/skills-graph (from origin/main cd423eb, upstream unset so nothing pushes to main)   Last commit: f8964e8 (phase 1)
+Updated: 2026-09-28 04:39 EDT (from `date`)   Branch: feat/skills-graph (from origin/main cd423eb, upstream unset so nothing pushes to main)   Last commit: 66af38b (phase 2)
 
 Every time in this file comes from `date`. An earlier version said "03:52" and "03:50"; those were not clock readings (the clock read 03:22 shortly after) and were removed after review gate 1 flagged them.
 
@@ -7,12 +7,13 @@ Every time in this file comes from `date`. An earlier version said "03:52" and "
 Static page in viz/ that visualizes this repo: every skill, agent, and hook as a node, clustered by family, with defer/reference edges, hook coverage, license origin, and eval status, all generated from files. Plus viz/MONITOR-EVAL.md, a vetted recommendation (no install) for a live Claude Code session monitor. Phases: 0 setup, 1 extractor, 2 tests, 3 page (function only), 4 STOP for visual design, 5 monitor evaluation. Review gates after phases 1 and 3.
 
 ## Now
-Phase 2 (tests), step: acceptance passed; committing phase 2
+Phase 5 (monitor evaluation), step: committing; then phase 3 review gate 2
 
 ## Done and verified
 - Phase 0 reading: 25 SKILL.md files, 2 files in agents/, 5 .js files in hooks/ of which 3 are registered in hooks/settings.example.json (config-protection, no-em-dash, block-no-verify); _input.js is a shared helper and test-hooks.js is the test runner. licenses/ECC-LICENSE lists the ECC-derived files.
 - Phase 0: STANDING-DECISIONS.md and PROGRESS.md, commit 5b6105f.
 - Phase 1: extractor and graph.json, commit f8964e8.
+- Phase 2: tests and fixtures, commit 66af38b.
 - Phase 1 acceptance, re-run after gate 1 fixes, 2026-09-28 04:33:06 EDT:
   - `python3 viz/scripts/build_graph.py` printed "wrote .../viz/data/graph.json: 30 nodes {'agent': 2, 'hook': 3, 'skill': 25}, 33 edges {'defer': 31, 'names-hook': 2}, 5 families", exit 0.
   - Node count: graph nodes=30; `find . -name SKILL.md -not -path "./.git/*" | wc -l` = 25; `find agents -type f | wc -l` = 2; distinct `hooks/<file>` references in hooks/settings.example.json = 3; sum 30.
@@ -66,4 +67,4 @@ Phase 2 (tests), step: acceptance passed; committing phase 2
 - A regression test must fail on the old code. Next time I add one for a review finding, I will run it against the reviewed version first. Evidence: the first BOM test passed on the old code because its fallback id equalled the directory name.
 
 ## Next action
-Commit phase 2 (viz/scripts/test_build_graph.py, viz/scripts/fixtures/, PROGRESS.md), then build the phase 3 page (viz/index.html, viz/app.js, viz/style.css, viz/scripts/smoke.mjs) and commit it with viz/vendor/ and docs/decisions/.
+Commit phase 5 (viz/MONITOR-EVAL.md), then stage phase 3 (page, smoke.mjs, test_app.cjs, vendor, docs/decisions) and run review gate 2.
