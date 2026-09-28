@@ -114,7 +114,9 @@ At each gate:
 
 1. Run `verify-before-done` on the branch.
 2. Run an independent reviewer pass over the session's own diff since the last gate, in fresh context; `adversarial-review` covers how to set one up. The reviewer reads the diff, not the session's summary of it.
-3. Fix for at most two rounds, not the three that `adversarial-review`'s dual review allows. Then report what remains, in PROGRESS.md and in the PR if there is one, rather than grinding.
+3. Fix for at most two rounds, not the three that `adversarial-review`'s dual review allows, rather than grinding.
+
+On reaching the cap, classify each unresolved finding against the stop-and-ask list. If any touches correctness, security, data, or a weakened test, it is a tripwire: handle it as in Step 1. Otherwise commit, and record the unresolved list in PROGRESS.md and in the PR if there is one. This is the existing contract applied to review findings, not a new rule.
 
 Where an external PR reviewer exists, wait for it, address or reply to every comment, and record the outcome in PROGRESS.md. Escalate only the findings that fall under the stop-and-ask list; the rest are decided under the contract.
 
@@ -136,5 +138,5 @@ In the source project the director wrote four rounds of prompts about a website 
 - PROGRESS.md was updated after every phase, fix round, and blocked question, and its next action is exact.
 - Every value in the report was observed in this session. Everything else says partial, NOT RUN, or NOT MEASURED.
 - Every tripwire hit is an open question, not a decision the session made on the human's behalf.
-- Each gate (phase boundary) had a fresh-context review of the diff since the last gate, with at most two fix rounds, and what remains is listed.
+- Each gate (phase boundary) had a fresh-context review of the diff since the last gate, with at most two fix rounds. Findings left at the cap were classified against the stop-and-ask list, and the rest are listed in PROGRESS.md.
 - Every refusal names the missing definition.
