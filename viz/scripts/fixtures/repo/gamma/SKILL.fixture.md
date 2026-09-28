@@ -12,3 +12,5 @@ Result template: pass rate 5/5
 ```
 
 Each criterion is scored 1 to 10.
+
+For a second opinion, run the helper agent.

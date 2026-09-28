@@ -550,10 +550,10 @@
   ],
   "edges": [
     {
-      "id": "skill:adversarial-review->skill:capture-lessons:defer",
+      "id": "skill:adversarial-review->skill:capture-lessons:skill-skill",
       "source": "skill:adversarial-review",
       "target": "skill:capture-lessons",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "adversarial-review/SKILL.md",
       "line": 79,
       "lines": [
@@ -561,10 +561,10 @@
       ]
     },
     {
-      "id": "skill:adversarial-review->skill:honest-refusal:defer",
+      "id": "skill:adversarial-review->skill:honest-refusal:skill-skill",
       "source": "skill:adversarial-review",
       "target": "skill:honest-refusal",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "adversarial-review/SKILL.md",
       "line": 35,
       "lines": [
@@ -572,10 +572,10 @@
       ]
     },
     {
-      "id": "skill:adversarial-review->skill:scholar-evaluation:defer",
+      "id": "skill:adversarial-review->skill:scholar-evaluation:skill-skill",
       "source": "skill:adversarial-review",
       "target": "skill:scholar-evaluation",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "adversarial-review/SKILL.md",
       "line": 35,
       "lines": [
@@ -583,10 +583,10 @@
       ]
     },
     {
-      "id": "skill:adversarial-review->skill:verify-before-done:defer",
+      "id": "skill:adversarial-review->skill:verify-before-done:skill-skill",
       "source": "skill:adversarial-review",
       "target": "skill:verify-before-done",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "adversarial-review/SKILL.md",
       "line": 14,
       "lines": [
@@ -594,10 +594,10 @@
       ]
     },
     {
-      "id": "skill:capture-lessons->skill:skill-creator:defer",
+      "id": "skill:capture-lessons->skill:skill-creator:skill-skill",
       "source": "skill:capture-lessons",
       "target": "skill:skill-creator",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "capture-lessons/SKILL.md",
       "line": 60,
       "lines": [
@@ -605,10 +605,10 @@
       ]
     },
     {
-      "id": "skill:capture-lessons->hook:config-protection:names-hook",
+      "id": "skill:capture-lessons->hook:config-protection:skill-hook",
       "source": "skill:capture-lessons",
       "target": "hook:config-protection",
-      "kind": "names-hook",
+      "kind": "skill-hook",
       "file": "capture-lessons/SKILL.md",
       "line": 59,
       "lines": [
@@ -616,10 +616,10 @@
       ]
     },
     {
-      "id": "skill:capture-lessons->hook:no-em-dash:names-hook",
+      "id": "skill:capture-lessons->hook:no-em-dash:skill-hook",
       "source": "skill:capture-lessons",
       "target": "hook:no-em-dash",
-      "kind": "names-hook",
+      "kind": "skill-hook",
       "file": "capture-lessons/SKILL.md",
       "line": 59,
       "lines": [
@@ -627,10 +627,10 @@
       ]
     },
     {
-      "id": "skill:honest-refusal->skill:relevance-profile:defer",
+      "id": "skill:honest-refusal->skill:relevance-profile:skill-skill",
       "source": "skill:honest-refusal",
       "target": "skill:relevance-profile",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "honest-refusal/SKILL.md",
       "line": 34,
       "lines": [
@@ -638,10 +638,10 @@
       ]
     },
     {
-      "id": "skill:phased-build->skill:adversarial-review:defer",
+      "id": "skill:phased-build->skill:adversarial-review:skill-skill",
       "source": "skill:phased-build",
       "target": "skill:adversarial-review",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "phased-build/SKILL.md",
       "line": 61,
       "lines": [
@@ -649,10 +649,10 @@
       ]
     },
     {
-      "id": "skill:phased-build->skill:decision-records:defer",
+      "id": "skill:phased-build->skill:decision-records:skill-skill",
       "source": "skill:phased-build",
       "target": "skill:decision-records",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "phased-build/SKILL.md",
       "line": 51,
       "lines": [
@@ -660,10 +660,10 @@
       ]
     },
     {
-      "id": "skill:phased-build->skill:strategic-compact:defer",
+      "id": "skill:phased-build->skill:strategic-compact:skill-skill",
       "source": "skill:phased-build",
       "target": "skill:strategic-compact",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "phased-build/SKILL.md",
       "line": 40,
       "lines": [
@@ -671,10 +671,10 @@
       ]
     },
     {
-      "id": "skill:phased-build->skill:verify-before-done:defer",
+      "id": "skill:phased-build->skill:verify-before-done:skill-skill",
       "source": "skill:phased-build",
       "target": "skill:verify-before-done",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "phased-build/SKILL.md",
       "line": 55,
       "lines": [
@@ -685,10 +685,32 @@
       ]
     },
     {
-      "id": "skill:ponytail-audit->skill:ponytail-review:defer",
+      "id": "skill:phased-build->agent:silent-failure-hunter:skill-agent",
+      "source": "skill:phased-build",
+      "target": "agent:silent-failure-hunter",
+      "kind": "skill-agent",
+      "file": "phased-build/SKILL.md",
+      "line": 60,
+      "lines": [
+        60
+      ]
+    },
+    {
+      "id": "skill:phased-build->agent:ts-reviewer:skill-agent",
+      "source": "skill:phased-build",
+      "target": "agent:ts-reviewer",
+      "kind": "skill-agent",
+      "file": "phased-build/SKILL.md",
+      "line": 59,
+      "lines": [
+        59
+      ]
+    },
+    {
+      "id": "skill:ponytail-audit->skill:ponytail-review:skill-skill",
       "source": "skill:ponytail-audit",
       "target": "skill:ponytail-review",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "ponytail/skills/ponytail-audit/SKILL.md",
       "line": 12,
       "lines": [
@@ -697,10 +719,10 @@
       ]
     },
     {
-      "id": "skill:ponytail-debt->skill:ponytail:defer",
+      "id": "skill:ponytail-debt->skill:ponytail:skill-skill",
       "source": "skill:ponytail-debt",
       "target": "skill:ponytail",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "ponytail/skills/ponytail-debt/SKILL.md",
       "line": 11,
       "lines": [
@@ -712,10 +734,10 @@
       ]
     },
     {
-      "id": "skill:ponytail-gain->skill:ponytail:defer",
+      "id": "skill:ponytail-gain->skill:ponytail:skill-skill",
       "source": "skill:ponytail-gain",
       "target": "skill:ponytail",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "ponytail/skills/ponytail-gain/SKILL.md",
       "line": 27,
       "lines": [
@@ -727,10 +749,10 @@
       ]
     },
     {
-      "id": "skill:ponytail-gain->skill:ponytail-audit:defer",
+      "id": "skill:ponytail-gain->skill:ponytail-audit:skill-skill",
       "source": "skill:ponytail-gain",
       "target": "skill:ponytail-audit",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "ponytail/skills/ponytail-gain/SKILL.md",
       "line": 36,
       "lines": [
@@ -738,10 +760,10 @@
       ]
     },
     {
-      "id": "skill:ponytail-gain->skill:ponytail-debt:defer",
+      "id": "skill:ponytail-gain->skill:ponytail-debt:skill-skill",
       "source": "skill:ponytail-gain",
       "target": "skill:ponytail-debt",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "ponytail/skills/ponytail-gain/SKILL.md",
       "line": 35,
       "lines": [
@@ -750,10 +772,10 @@
       ]
     },
     {
-      "id": "skill:ponytail-help->skill:ponytail:defer",
+      "id": "skill:ponytail-help->skill:ponytail:skill-skill",
       "source": "skill:ponytail-help",
       "target": "skill:ponytail",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "ponytail/skills/ponytail-help/SKILL.md",
       "line": 18,
       "lines": [
@@ -772,10 +794,10 @@
       ]
     },
     {
-      "id": "skill:ponytail-help->skill:ponytail-audit:defer",
+      "id": "skill:ponytail-help->skill:ponytail-audit:skill-skill",
       "source": "skill:ponytail-help",
       "target": "skill:ponytail-audit",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "ponytail/skills/ponytail-help/SKILL.md",
       "line": 30,
       "lines": [
@@ -783,10 +805,10 @@
       ]
     },
     {
-      "id": "skill:ponytail-help->skill:ponytail-debt:defer",
+      "id": "skill:ponytail-help->skill:ponytail-debt:skill-skill",
       "source": "skill:ponytail-help",
       "target": "skill:ponytail-debt",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "ponytail/skills/ponytail-help/SKILL.md",
       "line": 31,
       "lines": [
@@ -794,10 +816,10 @@
       ]
     },
     {
-      "id": "skill:ponytail-help->skill:ponytail-gain:defer",
+      "id": "skill:ponytail-help->skill:ponytail-gain:skill-skill",
       "source": "skill:ponytail-help",
       "target": "skill:ponytail-gain",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "ponytail/skills/ponytail-help/SKILL.md",
       "line": 32,
       "lines": [
@@ -805,10 +827,10 @@
       ]
     },
     {
-      "id": "skill:ponytail-help->skill:ponytail-review:defer",
+      "id": "skill:ponytail-help->skill:ponytail-review:skill-skill",
       "source": "skill:ponytail-help",
       "target": "skill:ponytail-review",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "ponytail/skills/ponytail-help/SKILL.md",
       "line": 29,
       "lines": [
@@ -817,10 +839,10 @@
       ]
     },
     {
-      "id": "skill:ponytail-review->skill:ponytail:defer",
+      "id": "skill:ponytail-review->skill:ponytail:skill-skill",
       "source": "skill:ponytail-review",
       "target": "skill:ponytail",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "ponytail/skills/ponytail-review/SKILL.md",
       "line": 55,
       "lines": [
@@ -828,10 +850,10 @@
       ]
     },
     {
-      "id": "skill:query-to-corpus->skill:honest-refusal:defer",
+      "id": "skill:query-to-corpus->skill:honest-refusal:skill-skill",
       "source": "skill:query-to-corpus",
       "target": "skill:honest-refusal",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "query-to-corpus/SKILL.md",
       "line": 36,
       "lines": [
@@ -839,10 +861,10 @@
       ]
     },
     {
-      "id": "skill:relevance-profile->skill:honest-refusal:defer",
+      "id": "skill:relevance-profile->skill:honest-refusal:skill-skill",
       "source": "skill:relevance-profile",
       "target": "skill:honest-refusal",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "relevance-profile/SKILL.md",
       "line": 26,
       "lines": [
@@ -850,10 +872,10 @@
       ]
     },
     {
-      "id": "skill:scholar-evaluation->skill:adversarial-review:defer",
+      "id": "skill:scholar-evaluation->skill:adversarial-review:skill-skill",
       "source": "skill:scholar-evaluation",
       "target": "skill:adversarial-review",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "scholar-evaluation/SKILL.md",
       "line": 85,
       "lines": [
@@ -861,10 +883,10 @@
       ]
     },
     {
-      "id": "skill:skill-audit->skill:phased-build:defer",
+      "id": "skill:skill-audit->skill:phased-build:skill-skill",
       "source": "skill:skill-audit",
       "target": "skill:phased-build",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "skill-audit/SKILL.md",
       "line": 46,
       "lines": [
@@ -872,10 +894,10 @@
       ]
     },
     {
-      "id": "skill:unattended-build->skill:adversarial-review:defer",
+      "id": "skill:unattended-build->skill:adversarial-review:skill-skill",
       "source": "skill:unattended-build",
       "target": "skill:adversarial-review",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "unattended-build/SKILL.md",
       "line": 117,
       "lines": [
@@ -884,10 +906,10 @@
       ]
     },
     {
-      "id": "skill:unattended-build->skill:decision-records:defer",
+      "id": "skill:unattended-build->skill:decision-records:skill-skill",
       "source": "skill:unattended-build",
       "target": "skill:decision-records",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "unattended-build/SKILL.md",
       "line": 97,
       "lines": [
@@ -895,10 +917,10 @@
       ]
     },
     {
-      "id": "skill:unattended-build->skill:honest-refusal:defer",
+      "id": "skill:unattended-build->skill:honest-refusal:skill-skill",
       "source": "skill:unattended-build",
       "target": "skill:honest-refusal",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "unattended-build/SKILL.md",
       "line": 105,
       "lines": [
@@ -906,10 +928,10 @@
       ]
     },
     {
-      "id": "skill:unattended-build->skill:phased-build:defer",
+      "id": "skill:unattended-build->skill:phased-build:skill-skill",
       "source": "skill:unattended-build",
       "target": "skill:phased-build",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "unattended-build/SKILL.md",
       "line": 8,
       "lines": [
@@ -919,10 +941,10 @@
       ]
     },
     {
-      "id": "skill:unattended-build->skill:strategic-compact:defer",
+      "id": "skill:unattended-build->skill:strategic-compact:skill-skill",
       "source": "skill:unattended-build",
       "target": "skill:strategic-compact",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "unattended-build/SKILL.md",
       "line": 97,
       "lines": [
@@ -930,15 +952,26 @@
       ]
     },
     {
-      "id": "skill:unattended-build->skill:verify-before-done:defer",
+      "id": "skill:unattended-build->skill:verify-before-done:skill-skill",
       "source": "skill:unattended-build",
       "target": "skill:verify-before-done",
-      "kind": "defer",
+      "kind": "skill-skill",
       "file": "unattended-build/SKILL.md",
       "line": 104,
       "lines": [
         104,
         116
+      ]
+    },
+    {
+      "id": "agent:ts-reviewer->agent:silent-failure-hunter:agent-agent",
+      "source": "agent:ts-reviewer",
+      "target": "agent:silent-failure-hunter",
+      "kind": "agent-agent",
+      "file": "agents/ts-reviewer.md",
+      "line": 33,
+      "lines": [
+        33
       ]
     }
   ]

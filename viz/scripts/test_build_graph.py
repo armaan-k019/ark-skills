@@ -29,7 +29,7 @@ class FixtureGraph(unittest.TestCase):
         cls.nodes = {n["id"]: n for n in cls.graph["nodes"]}
         cls.edges = {(e["source"], e["target"], e["kind"]): e for e in cls.graph["edges"]}
 
-    def edge(self, source, target, kind="defer"):
+    def edge(self, source, target, kind="skill-skill"):
         return self.edges.get((source, target, kind))
 
     # Frontmatter parsing
@@ -101,7 +101,7 @@ class FixtureGraph(unittest.TestCase):
 
     def test_frontmatter_mentions_do_not_create_edges(self):
         # helper's description names alpha; its body also does, on a body line.
-        edge = self.edge("agent:helper", "skill:alpha", "agent-names-skill")
+        edge = self.edge("agent:helper", "skill:alpha", "agent-skill")
         self.assertIsNotNone(edge)
         fields, body_start = bg.parse_frontmatter(
             (FIXTURE / "agents" / "helper.md").read_text(encoding="utf-8")
@@ -114,8 +114,23 @@ class FixtureGraph(unittest.TestCase):
     # Hook and agent edges
 
     def test_skill_names_hook_file(self):
-        edge = self.edge("skill:alpha", "hook:guard", "names-hook")
+        edge = self.edge("skill:alpha", "hook:guard", "skill-hook")
         self.assertIsNotNone(edge)
+
+    def test_skill_names_agent(self):
+        edge = self.edge("skill:gamma", "agent:helper", "skill-agent")
+        self.assertIsNotNone(edge)
+        self.assertEqual(edge["file"], "gamma/SKILL.fixture.md")
+
+    def test_agent_names_agent(self):
+        edge = self.edge("agent:reviewer", "agent:helper", "agent-agent")
+        self.assertIsNotNone(edge)
+        self.assertEqual(edge["file"], "agents/reviewer.md")
+
+    def test_edge_kind_is_source_kind_and_target_kind(self):
+        kinds = {n["id"]: n["kind"] for n in self.graph["nodes"]}
+        for e in self.graph["edges"]:
+            self.assertEqual(e["kind"], f"{kinds[e['source']]}-{kinds[e['target']]}", e["id"])
 
     def test_unregistered_script_is_not_a_hook(self):
         self.assertIn("hook:guard", self.nodes)
@@ -187,7 +202,7 @@ class FixtureGraph(unittest.TestCase):
     def test_counts(self):
         kinds = [n["kind"] for n in self.graph["nodes"]]
         self.assertEqual(kinds.count("skill"), 6)
-        self.assertEqual(kinds.count("agent"), 1)
+        self.assertEqual(kinds.count("agent"), 2)
         self.assertEqual(kinds.count("hook"), 1)
 
     def test_validate_rejects_missing_endpoint(self):
@@ -262,6 +277,10 @@ class FailsLoudly(unittest.TestCase):
         )
         self.assertBuildFails(root, "names no script under hooks/")
 
+    def test_name_shared_by_a_skill_and_an_agent_is_ambiguous(self):
+        root = self.mutated("agents/reviewer.md", lambda t: t.replace("name: reviewer", "name: alpha"))
+        self.assertBuildFails(root, "ambiguous")
+
     def test_registered_script_that_does_not_exist(self):
         root = self.mutated("hooks/settings.example.json", lambda t: t.replace("hooks/guard.js", "hooks/extra.sh"))
         self.assertBuildFails(root, "not found: hooks/extra.sh")
@@ -292,6 +311,14 @@ class DiscoveryMatchesFind(unittest.TestCase):
         (root / "lower" / FIXTURE_NAME.lower()).write_text("---\nname: lower\n---\n", encoding="utf-8")
         graph = bg.build_graph(root, skill_filename=FIXTURE_NAME)
         self.assertNotIn("skill:lower", {n["id"] for n in graph["nodes"]})
+
+    def test_skill_files_inside_node_modules_are_not_skills(self):
+        root = self.tree()
+        dep = root / "viz" / "node_modules" / "somedep" / "skills" / "bundled"
+        dep.mkdir(parents=True)
+        (dep / FIXTURE_NAME).write_text("---\nname: bundled\n---\n", encoding="utf-8")
+        graph = bg.build_graph(root, skill_filename=FIXTURE_NAME)
+        self.assertNotIn("skill:bundled", {n["id"] for n in graph["nodes"]})
 
     def test_nested_agent_file_is_an_agent(self):
         root = self.tree()

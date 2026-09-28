@@ -8,6 +8,7 @@
 ## Subagents (`agents/`)
 
 - **helper**: fixture agent.
+- **reviewer**: fixture agent that names another agent.
 
 ## Hooks (`hooks/`)
 

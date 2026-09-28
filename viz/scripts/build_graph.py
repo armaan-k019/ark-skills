@@ -205,7 +205,9 @@ def slug(text):
 def walk_files(top, root, name=None):
     """Files under `top` from directory listings (real on-disk names, exact case).
 
-    Skips only the repo's top-level .git, like `find . -not -path "./.git/*"`.
+    Skips the repo's top-level .git, like `find . -not -path "./.git/*"`, and
+    every node_modules directory: installed dependencies can ship their own
+    SKILL.md files (playwright-core does), and those are not this repo's skills.
     Path.rglob is not used: on a case-insensitive filesystem a literal pattern
     such as "SKILL.md" also matches "skill.md".
     """
@@ -213,6 +215,8 @@ def walk_files(top, root, name=None):
     for dirpath, dirnames, filenames in os.walk(top):
         if Path(dirpath) == root and ".git" in dirnames:
             dirnames.remove(".git")
+        if "node_modules" in dirnames:
+            dirnames.remove("node_modules")
         found.extend(Path(dirpath) / f for f in filenames if name is None or f == name)
     return sorted(found)
 
@@ -230,8 +234,9 @@ def independent_node_count(root, skill_filename):
     """Recount the node sources a second way, mirroring the acceptance commands.
 
     Uses pathlib iteration where discovery uses os.walk. Skills: files whose real
-    name is exactly `skill_filename`, outside the top-level .git (like
-    `find . -name SKILL.md -not -path "./.git/*"`). Agents: every file under
+    name is exactly `skill_filename`, outside the top-level .git and any
+    node_modules (like `find . -name SKILL.md -not -path "./.git/*"
+    -not -path "*/node_modules/*"`). Agents: every file under
     agents/, recursively (like `find agents -type f`). Hooks: distinct
     hooks/<file> references in the raw settings text, not the parsed JSON, so a
     registration the JSON walk skips makes the counts differ.
@@ -241,7 +246,8 @@ def independent_node_count(root, skill_filename):
         while stack:
             for entry in stack.pop().iterdir():
                 if entry.is_dir() and not entry.is_symlink():
-                    if not (entry.parent == root and entry.name == ".git"):
+                    top_git = entry.parent == root and entry.name == ".git"
+                    if not top_git and entry.name != "node_modules":
                         stack.append(entry)
                 elif not entry.is_dir():
                     out.append(entry)
@@ -456,13 +462,26 @@ def build_graph(root, skill_filename=SKILL_FILENAME):
     if dupes:
         raise GraphError(f"duplicate node ids: {', '.join(dupes)}")
     skill_names = {n["name"]: n["id"] for n in nodes if n["kind"] == "skill"}
-
-    # Edges: a body naming another node, one edge per (source, target, kind)
-    targets = {
-        "skill": [("defer", skill_names), ("names-hook", hook_names)],
-        "agent": [("agent-names-skill", skill_names)],
+    agent_names = {
+        n.get("name") or Path(n["path"]).stem: n["id"] for n in nodes if n["kind"] == "agent"
     }
-    patterns = {name: token_pattern(name) for name in list(skill_names) + list(hook_names)}
+    shared = sorted(
+        (set(skill_names) & set(agent_names))
+        | (set(skill_names) & set(hook_names))
+        | (set(agent_names) & set(hook_names))
+    )
+    if shared:
+        raise GraphError(f"names used by more than one node kind, so mentions are ambiguous: {', '.join(shared)}")
+
+    # Edges: a body naming another node, one edge per (source, target, kind).
+    # The kind is "<source kind>-<target kind>".
+    targets = {
+        "skill": [("skill-skill", skill_names), ("skill-hook", hook_names), ("skill-agent", agent_names)],
+        "agent": [("agent-skill", skill_names), ("agent-agent", agent_names)],
+    }
+    patterns = {
+        name: token_pattern(name) for name in list(skill_names) + list(hook_names) + list(agent_names)
+    }
     edges = []
     for node in nodes:
         if node["id"] not in sources:
