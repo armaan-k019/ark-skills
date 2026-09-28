@@ -3,7 +3,13 @@
 A static page that shows every skill, agent, and hook in this repo as a node, clustered by family, with the references between them. The data in `data/graph.json` is generated from the files by `scripts/build_graph.py` and is never edited by hand.
 
 - Regenerate the data: `python3 viz/scripts/build_graph.py` (from the repo root; standard library only).
+- View the page: `python3 -m http.server 8123 --bind 127.0.0.1 --directory viz`, then open http://127.0.0.1:8123/. It needs a server because the page fetches `data/graph.json`, which browsers block from `file://`. `--bind 127.0.0.1` keeps the server off the network.
 - Run the extractor tests: `python3 -m unittest discover viz/scripts`.
+- Run the page tests (no browser): `node --test viz/scripts/test_app.cjs viz/scripts/test_panel.cjs`. `test_panel.cjs` runs the real `app.js` against a small fake DOM, taps every node, and checks each detail panel against `graph.json`; it checks the page's logic, not its drawing.
+- Run the layout test (headless Cytoscape, no browser): `node --test viz/scripts/test_layout.cjs`. `npm test` in `viz/` runs all three Node test files.
+- Smoke-test the rendered page: install the dev-only Playwright once with `cd viz && PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm ci --ignore-scripts` (pinned to 1.63.0 in `viz/package.json`; it drives Chromium build 1243, which must already be in the Playwright browser cache, or run `npx playwright install chromium` to fetch it). Then, with the server above running, `node viz/scripts/smoke.mjs http://127.0.0.1:8123/`. It checks the rendered node, edge, and family counts against `graph.json`, checks that no two family boxes overlap, checks both filters, clicks the most-connected node, checks every field and edge in the detail panel with the same contract as `test_panel.cjs` (`scripts/panel-check.cjs`), and writes `viz/screenshot.png`.
+
+The page (`index.html`, `app.js`, `style.css`) uses Cytoscape.js 3.34.3, vendored in `vendor/` with its MIT license; provenance and the reason for the choice are in `docs/decisions/0001-graph-library-cytoscape.md`. Families are compound nodes; each family gets its own cell, sized by member count, and its members are placed in the cell with Cytoscape's built-in `grid` layout, animation off, so family boxes never overlap. Node size grows with the square root of the file's line count. The side panel filters by family and by edge kind. Styling is plain on purpose: system font, white background, Cytoscape's default colors.
 
 ## graph.json
 
@@ -13,7 +19,7 @@ generated_by    "viz/scripts/build_graph.py"
 families[]      id, label, rule, file, line (line only for README sections)
 nodes[]         id, kind (skill | agent | hook), name, description, path, lines, family,
                 origin, license_notice, eval_status, eval_line (skills), coverage (hooks)
-edges[]         id, source, target, kind (defer | names-hook | agent-names-skill),
+edges[]         id, source, target, kind (skill-skill | skill-hook | skill-agent | agent-skill | agent-agent),
                 file, line, lines
 ```
 
@@ -23,7 +29,7 @@ A field that cannot be derived from a file is omitted, never filled with a guess
 
 ### Which files are nodes
 
-- **Skill:** every file named exactly `SKILL.md` (case-sensitive, read from directory listings) under the repo root, outside the top-level `.git/`. This is the same set as `find . -name SKILL.md -not -path "./.git/*"`. A skill must have frontmatter with a `name`; a SKILL.md without one fails the build, because its incoming edges would otherwise vanish without notice.
+- **Skill:** every file named exactly `SKILL.md` (case-sensitive, read from directory listings) under the repo root, outside the top-level `.git/` and outside any `node_modules/`. This is the same set as `find . -name SKILL.md -not -path "./.git/*" -not -path "*/node_modules/*"`. `node_modules/` is skipped because installed dependencies can ship their own SKILL.md files: `playwright-core` 1.63.0, installed under `viz/node_modules/` for the smoke test, ships three. A skill must have frontmatter with a `name`; a SKILL.md without one fails the build, because its incoming edges would otherwise vanish without notice.
 - **Agent:** every file under `agents/`, recursively (the same set as `find agents -type f`). An agent without a frontmatter `name` uses its file name.
 - **Hook:** every script registered in `hooks/settings.example.json`, whatever its extension. `hooks/_input.js` (a shared helper) and `hooks/test-hooks.js` (the test runner) are not registered, so they are not nodes. Any other script in `hooks/` that is not registered is named in a warning on stderr and not graphed. A settings file that is not `{"hooks": {event: [{"matcher", "hooks": [{"command"}]}]}}`, or a command that names no script under `hooks/`, fails the build.
 - The script recounts skills, agents, and hooks a second way (a different directory traversal, and hook references counted in the raw settings text rather than the parsed JSON) and fails if the node count differs.
@@ -40,16 +46,22 @@ Files are read as UTF-8; a leading byte-order mark is ignored.
   3. `top-level-directory`: the node's top-level directory. No node uses this today.
 - **origin:** the first body line that starts with "Adapted from", "Vendored from", or "Written for this repo" (hooks: a `// Adapted from` or `// Idea from` comment). `license` is the first license name in that line, matched as `MIT`, `Apache 2.0` (or `Apache License 2.0`), `BSD-<n>-Clause`, or `GPL-<n>`. If there is no such line but the frontmatter has a `license` field, origin is `{"from": "frontmatter", "license": ...}`. Otherwise it is omitted.
 - **license_notice:** the line in `licenses/ECC-LICENSE` that lists the node by skill name or by path, with the license named in that file.
-- **eval_status** (skills only): `measured: <score>` when a body line outside fenced code states a pass rate or score written as `N/M` or `N%`, for example "pass rate 8/8" or "scored 92%". Otherwise `unmeasured`. "Each criterion is scored 1 to 10" does not match, because "1 to 10" is not written as `N/M` or `N%`; a scoring instruction that is written that way ("scored 7/10 when it meets the bar") would match, so the rule is a heuristic. Today every skill is `unmeasured`. `ponytail-gain` quotes published benchmark medians for `ponytail`, but those are figures about another skill and are not written as a pass rate or score, so neither node is marked measured.
+- **eval_status** (skills only): `measured: <score>` when a body line outside fenced code states a pass rate or score written as `N/M` or `N%`, for example "pass rate 8/8" or "scored 92%". Otherwise `unmeasured`. "Each criterion is scored 1 to 10" does not match, because "1 to 10" is not written as `N/M` or `N%`; a scoring instruction that is written that way ("scored 7/10 when it meets the bar") would match, so the rule is a heuristic. Today every skill is `unmeasured`. `ponytail-gain` quotes published benchmark medians for `ponytail`, but those are figures about another skill and are not written as a pass rate or score, so neither node is marked measured. Vendored skills may carry upstream claims, such as those benchmark medians, that this graph does not verify.
 - **coverage** (hooks): the event and tool matcher each hook is registered for in `hooks/settings.example.json`.
 
 ### Edges
 
-- **defer** (skill to skill): the body of one SKILL.md names another skill.
-- **names-hook** (skill to hook): a skill body names a hook file, by its stem (`no-em-dash`) or file name (`no-em-dash.js`).
-- **agent-names-skill** (agent to skill): an agent body names a skill. None exist today.
+Every edge has a `kind`, `<source kind>-<target kind>`:
 
-"Names" means, for all three kinds:
+- **skill-skill** (a defer edge): the body of one SKILL.md names another skill.
+- **skill-hook**: a skill body names a hook file, by its stem (`no-em-dash`) or file name (`no-em-dash.js`).
+- **skill-agent**: a skill body names an agent.
+- **agent-skill**: an agent body names a skill. None exist today.
+- **agent-agent**: an agent body names another agent.
+
+A name used by more than one node kind (for example a skill and an agent both called `reviewer`) makes mentions ambiguous, so the build fails.
+
+"Names" means, for every kind:
 
 - Body only. Frontmatter is excluded, so a name in a description does not count.
 - An exact, case-sensitive whole-token match. The name must not be preceded by a letter, digit, `_`, or `-`, and must not be followed by a letter, digit, `_`, or a `-` that continues the token.
@@ -64,7 +76,6 @@ False positives excluded by this rule:
 Known limits:
 
 - `lines` lists every token match, so it can include a line where the name is followed by a space and another word. For example, the "ponytail gain" scoreboard header on `ponytail-gain` line 27 is listed as evidence for the edge to `ponytail`. That edge also has prose evidence on lines 30, 32, 33, and 50.
-- Skill-to-agent references (`phased-build` names `ts-reviewer` and `silent-failure-hunter`) and agent-to-agent references (`ts-reviewer` names `silent-failure-hunter`) are not emitted, because the specification lists only the three kinds above.
 
 ### Em dashes
 

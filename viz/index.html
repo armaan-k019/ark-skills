@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Skills graph</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="graph" aria-label="Graph of the skills, agents, and hooks in this repo"></main>
+  <aside id="side">
+    <h1>Skills graph</h1>
+    <p id="status">Loading data/graph.json</p>
+    <fieldset id="filters">
+      <legend>Families</legend>
+    </fieldset>
+    <fieldset id="edge-filters">
+      <legend>Edge kinds</legend>
+    </fieldset>
+    <section id="details" aria-live="polite">
+      <p>Click a node to see its details.</p>
+    </section>
+  </aside>
+  <script src="vendor/cytoscape.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

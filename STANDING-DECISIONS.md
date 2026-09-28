@@ -38,3 +38,10 @@ Task class (Step 0): machine-checkable for phases 1, 2 and 3 (each has runnable 
 - docs/decisions/ may be created for the graph-library record. decision-records normally asks before creating the directory; the run prompt names that directory in scope and says to record the choice with decision-records.
 - Phase 5 may clone three named repos into /tmp and read them. Nothing from them is installed or executed.
 - Review gates after phases 1 and 3: adversarial-review dual mode with ts-reviewer and silent-failure-hunter as the two reviewers, CRITICAL and HIGH findings only, at most two fix rounds per gate.
+
+## Changes approved by the author on 2026-09-28 (answers to Q1 to Q5)
+- Q1: Playwright approved as a dev-only dependency under viz/ with its own package.json, pinned exactly, viz/node_modules gitignored, using the cached browsers (PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1). The portfolio repo's copy is not to be used.
+- Q2: SCOPE extended for one file: LESSONS.md at the repo root.
+- Q3: skill-to-agent and agent-to-agent edges approved; every edge carries a kind so the page can filter by it.
+- Q4: eval status comes only from a score stated in that skill's own SKILL.md; ponytail stays unmeasured; viz/README.md notes that vendored skills may carry upstream claims the graph does not verify.
+- Q5: the scanner's missing Rust coverage is not fixed in this run; it is recorded in LESSONS.md and PROGRESS.md for its own branch.
