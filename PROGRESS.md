@@ -1,5 +1,5 @@
 # Progress: skills-graph
-Updated: 2026-09-28 05:16 EDT (from `date`)   Branch: feat/skills-graph (from origin/main cd423eb, upstream unset so nothing pushes to main)   Last commit: 3e4bddf (Q3 edge kinds)
+Updated: 2026-09-28 05:18 EDT (from `date`)   Branch: feat/skills-graph (from origin/main cd423eb, upstream unset so nothing pushes to main)   Last commit: 0765695 (phase 3)
 
 Every time in this file comes from `date`. An earlier version said "03:52" and "03:50"; those were not clock readings (the clock read 03:22 shortly after) and were removed after review gate 1 flagged them.
 
@@ -7,7 +7,7 @@ Every time in this file comes from `date`. An earlier version said "03:52" and "
 Static page in viz/ that visualizes this repo: every skill, agent, and hook as a node, clustered by family, with defer/reference edges, hook coverage, license origin, and eval status, all generated from files. Plus viz/MONITOR-EVAL.md, a vetted recommendation (no install) for a live Claude Code session monitor. Phases: 0 setup, 1 extractor, 2 tests, 3 page (function only), 4 STOP for visual design, 5 monitor evaluation. Review gates after phases 1 and 3.
 
 ## Now
-Phase 3 (page), step: acceptance passed; committing phase 3. Then verify-before-done, capture-lessons, and the phase 4 stop.
+Phase 4: STOPPED for the author, as the SPEC requires. Visual design is taste work and is not done unattended.
 
 ## Done and verified
 - Phase 0: STANDING-DECISIONS.md and PROGRESS.md, commit 5b6105f.
@@ -27,6 +27,30 @@ Phase 3 (page), step: acceptance passed; committing phase 3. Then verify-before-
   - ts-reviewer HIGH: the built-in cose layout let family boxes overlap (8 or 9 of 10 pairs in its headless simulation), so the page was not visibly clustered by family.
   - Fix round 1: panel-check.cjs (one panel contract, used by smoke.mjs and test_panel.cjs; the four mutants fail it); per-family grid layout (headless check: 0 overlapping family pairs, 0 nodes outside their own box); smoke checks for family-box overlap and both filters; blank favicon link (a favicon 404 could fail the smoke test on a console error); decision record no longer calls window.cy an exact rendered count. No second reviewer pass was run.
   - A bug found by the browser run, not the reviewers: the first smoke run failed on the edge-kind filter. Cause: the smoke test read Cytoscape's visibility before the next frame applied the class. The page itself was correct (checked in the browser: 31 edges hidden). The smoke test now waits up to 5 s for the expected counts.
+- Phase 3: page, scripts, vendor, decision record, commit 0765695.
+- verify-before-done on the final state, 2026-09-28 05:16:36 to 05:16:39 EDT:
+
+```
+VERIFICATION
+Build:     PASS   python3 viz/scripts/build_graph.py (exit 0; graph.json unchanged by the rebuild)
+Typecheck: NOT RUN (no tsconfig or type checker is configured; the code is plain JS and Python)
+Lint:      NOT RUN (no lint config in the repo)
+Tests:     PASS (46/46)   python3 -m unittest discover viz/scripts
+           PASS (15/15)   npm test (in viz/: test_app.cjs, test_panel.cjs, test_layout.cjs)
+           PASS (26/26)   node hooks/test-hooks.js (the repo's own hook tests)
+           PASS           node viz/scripts/smoke.mjs http://127.0.0.1:8123/ (exit 0)
+Diff:      38 files changed vs origin/main (37 committed, plus README.md); all inside SCOPE
+           (viz/, docs/decisions/, PROGRESS.md, STANDING-DECISIONS.md, one README.md section,
+           LESSONS.md); unrequested changes: none
+
+Verdict:   NOT DONE
+Open issues:
+1. Phase 1 acceptance as written counts playwright-core's three SKILL.md files in
+   viz/node_modules (33 vs the graph's 30). Decision needed on Q6.
+2. Phase 4 (visual design) waits for the author by design.
+```
+
+- capture-lessons: 9 entries written to LESSONS.md (one seen twice, eight new); one promotion proposed, not applied (a line in unattended-build Step 2 about clock-stamped times).
 - Playwright (Q1): `npm install --save-dev --save-exact --ignore-scripts --cache ./.npm-cache playwright@1.63.0` in viz/ with PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1. 1.63.0 was chosen because its browsers.json names Chromium revision 1243, the one already cached. The lockfile resolves two packages (playwright, playwright-core), both 1.63.0, Apache-2.0, from registry.npmjs.org, no install scripts.
 
 ## In flight
@@ -54,4 +78,4 @@ Phase 3 (page), step: acceptance passed; committing phase 3. Then verify-before-
 Written to LESSONS.md at the repo root (Q2 approved).
 
 ## Next action
-Commit phase 3 (page, scripts, vendor, docs/decisions, viz/README.md, viz/package.json and lockfile, viz/.gitignore, screenshot, STANDING-DECISIONS.md, PROGRESS.md). Then run verify-before-done on the final state, run capture-lessons into LESSONS.md, commit README.md and LESSONS.md, and stop at phase 4.
+Wait for the author: Q6 (amend the phase 1 acceptance command to exclude node_modules?), and phase 4 (visual design of the page, from viz/screenshot.png). The branch stays unpushed.

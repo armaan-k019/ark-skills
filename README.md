@@ -55,6 +55,16 @@ alias claude-review='claude --append-system-prompt-file ~/dev/ark-skills/context
 alias claude-research='claude --append-system-prompt-file ~/dev/ark-skills/contexts/research.md'
 ```
 
+## Skills graph (`viz/`)
+
+A static page that draws every skill, agent, and hook in this repo as a node, clustered by family, with the references between them, hook coverage, license origin, and eval status. The data in `viz/data/graph.json` is generated from the files, never written by hand; the rules are in `viz/README.md`. `viz/MONITOR-EVAL.md` compares three live Claude Code session monitors (nothing installed).
+
+```sh
+python3 viz/scripts/build_graph.py                                   # regenerate viz/data/graph.json
+python3 -m unittest discover viz/scripts                             # extractor tests
+python3 -m http.server 8123 --bind 127.0.0.1 --directory viz         # then open http://127.0.0.1:8123/
+```
+
 ## How to install
 
 Clone the repo:
