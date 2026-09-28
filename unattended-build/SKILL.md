@@ -113,7 +113,7 @@ A gate is a phase boundary. When the build has PRs, each PR is a phase boundary;
 At each gate:
 
 1. Run `verify-before-done` on the branch.
-2. Run an independent reviewer pass over the session's own diff since the last gate, in fresh context; `adversarial-review` covers how to set one up. The reviewer reads the diff, not the session's summary of it.
+2. Run an independent reviewer pass over the session's own diff since the last gate, in fresh context; `adversarial-review` covers how to set one up. The reviewer reads the diff, not the session's summary of it, and reports only findings that would change behaviour, break a test, or violate the contract. Style, naming, and comment nits go into a list in the report, never into a fix round. In testing, a whole fix round went to findings that were all about test comments, and that phase landed with a failing review as a result.
 3. Fix for at most two rounds, not the three that `adversarial-review`'s dual review allows, rather than grinding.
 
 On reaching the cap, classify each unresolved finding against the stop-and-ask list. If any touches correctness, security, data, or a weakened test, it is a tripwire: handle it as in Step 1. Otherwise commit, and record the unresolved list in PROGRESS.md and in the PR if there is one. This is the existing contract applied to review findings, not a new rule.
@@ -139,4 +139,5 @@ In the source project the director wrote four rounds of prompts about a website 
 - Every value in the report was observed in this session. Everything else says partial, NOT RUN, or NOT MEASURED.
 - Every tripwire hit is an open question, not a decision the session made on the human's behalf.
 - Each gate (phase boundary) had a fresh-context review of the diff since the last gate, with at most two fix rounds. Findings left at the cap were classified against the stop-and-ask list, and the rest are listed in PROGRESS.md.
+- Fix rounds went only to findings that change behaviour, break a test, or violate the contract; nits are listed in the report.
 - Every refusal names the missing definition.
