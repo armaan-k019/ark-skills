@@ -42,12 +42,13 @@ SPEC: <path>   Branch: <branch>   Written: <date>
 - Adding tests and fixtures
 - Fixing bugs in code the build owns
 - Up to two fix rounds per phase
+- Creating a new branch from HEAD, including stacked branches
 
 ## Stop and ask
 - Merging to main
 - Deploying to production
 - Weakening, skipping, or deleting any test or acceptance criterion, for any reason
-- Anything irreversible in git: stash, reset, checkout of another branch, force push, history rewriting, deleting tracked files
+- Anything irreversible in git: stash, reset, checkout of an existing branch, force push, history rewriting, deleting tracked files
 - A migration that drops or rewrites data
 - Adding, removing, or upgrading a dependency
 - Spending money
