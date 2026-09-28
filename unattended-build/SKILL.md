@@ -120,6 +120,8 @@ On reaching the cap, classify each unresolved finding against the stop-and-ask l
 
 Where an external PR reviewer exists, wait for it, address or reply to every comment, and record the outcome in PROGRESS.md. Escalate only the findings that fall under the stop-and-ask list; the rest are decided under the contract.
 
+**Known cost.** Review at every gate makes this pattern slow and token-heavy, and tuning the gate did not remove that. In testing, a four-section build with one tripwire took about 190k to 210k tokens and 34 to 42 minutes with this skill, against about 85k tokens and 8 minutes for a session without it, which worked around the tripwire instead of stopping. Moving the gate to phase boundaries and adding the severity floor cut reviewer passes from about 14 to 12 and tokens by about a tenth, but wall clock rose. Treat the cost as a property of the pattern, not a defect to tune away.
+
 ## The director's failure mode
 
 Whoever directs the session, a human or an orchestrating session, falls under the same rule as the session itself: reports are evidence, not verification. The director verifies against the artifact. Open the page, run the command, read the diff, measure the thing.
