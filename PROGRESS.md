@@ -1,12 +1,12 @@
 # Progress: wiring and gap skills
-Updated: 2026-09-29 08:36 EDT (from `date`)   Branch: feat/gap-skills (from origin/main d6f266a, upstream unset)   Last commit: d211d16
+Updated: 2026-09-29 08:46 EDT (from `date`)   Branch: feat/gap-skills (from origin/main d6f266a, upstream unset)   Last commit: d211d16
 The previous run's log (skills-graph) is in the git history of this file. Track A's log is on chore/wire-skill-references (PR #6).
 
 ## SPEC summary
 Track A (chore/wire-skill-references): done, PR #6 open, not merged. Track B (feat/gap-skills, from main after Track A's PR is open): evidence-first skills, one at a time, stopping after each: B1 spec-writing, B2 visual-loop, B3 debugging (needs the author's Stage A session), B4 and B5 stop and ask. Per skill: list the evidence with paths, draft with skill-creator, eval against a no-skill baseline on a real task (both scores, tokens, time; tune once), add to families.json and rerun the extractor, commit, stop and show.
 
 ## Now
-Track B, B1 spec-writing: committed; STOPPED for the author (SKILL.md and eval numbers), per the run prompt
+Track B, B2 visual-loop, step: gathering evidence (B1 reviewed by the author)
 
 ## Done and verified
 - Track A: PR #6 (https://github.com/armaan-k019/ark-skills/pull/6), acceptance and gate in that branch's PROGRESS.md.
@@ -32,14 +32,17 @@ Track B, B1 spec-writing: committed; STOPPED for the author (SKILL.md and eval n
   - `node viz/scripts/smoke.mjs`: exit 1, "family boxes out of order" (Q3); the outline check would also fail (Q4). Screenshots not regenerated.
 - LESSONS.md: two entries (exit status after a subshell; tests that assume no case exists).
 
+- Author's answers after B1 (STANDING-DECISIONS.md, last section). Done, 2026-09-29 08:44 to 08:50 EDT:
+  - fix/viz-measured-and-packing: 89c9828 (packer next-fit, measured-node counting in test_app.cjs and smoke.mjs, new reading-order test in test_layout.cjs, viz/README.md lines), 89bf8c5 (README: scroll-world's local line). PR #7 https://github.com/armaan-k019/ark-skills/pull/7, not merged. The new test fails on the old packer ("counts 4,4,5,3,2,7,2,3 at aspect 1 read 7,4,5,4,3,3,2,2"). Checks: build_graph --out equal to the committed graph; unittest 54 OK; node --test 27/27; hooks 26/26; smoke exit 0, screenshots unchanged. Built in a scratchpad worktree so this checkout never left feat/gap-skills; the worktree is removed.
+  - PR #3: the author asked to merge it; it was already merged (2026-09-29 01:07 EDT, 2ec0e5a), so nothing was done.
+  - PR #6: merged by the author (origin/main be693b6).
+
 ## In flight
 - none
 
 ## Open questions
-- Q2: `npm test` writes a debug log under ~/.npm/_logs on every run (a grader found this; two logs appeared at 07:10 and 07:12 EDT). That is outside the repo; Track A's acceptance required `cd viz && npm test`. Track B ran the same three files with `node --test` instead. Blocks: nothing. Raised: B1 stop.
-- Q3: adding spec-writing to build-discipline (4 to 5 members) makes `node viz/scripts/smoke.mjs` fail: "family boxes out of order: family:vendored(7), family:review-and-honesty(4), family:build-discipline(5), ..." (dry run in a scratch clone, exit 1). Cause: `packRows` in viz/app.js is first-fit, so a smaller family can fill a gap in an earlier row, which breaks F8's reading order by count. The extractor (exit 0), unittest (54 OK), node tests (26/26), and hooks (26/26) pass. Tested option, not applied: fill only the current row (next-fit, a 2-line change in packRows). Scratch clone results: with spec-writing, smoke exit 0, largest empty rectangle 8.6%, smallest label 13.2 px; on today's 30 nodes, smoke exit 0 and 7.0% (unchanged). Fixing viz/app.js is outside Track B's scope, and placing spec-writing in a different family to pass the check would be choosing a family for a test. Triggered by: "Anything not in the SPEC". Blocks: a passing smoke test on feat/gap-skills and regenerated screenshots. Raised: B1 stop.
-- Q4: spec-writing is the first node whose SKILL.md states a score, and two checks assume there are none: `viz/scripts/test_app.cjs:62` (marks nodes[0] measured and expects exactly 1) and the smoke test's scored-copy outline check (expects only its chosen node outlined and "(1 node)" in the legend). viz/README.md also says "(none does today)". Tested option, not applied: count the existing measured nodes and add one (2 lines in test_app.cjs, 7 in smoke.mjs). With it and the Q3 packing change, a scratch clone of this branch's files passes: node tests 26/26, unittest 54 OK, smoke exit 0 (31 nodes, largest empty rectangle 8.6%, smallest label 13.2 px). Patch: scratchpad proposed-viz-fixes.patch (viz/app.js, viz/scripts/test_app.cjs, viz/scripts/smoke.mjs). Triggered by: changes to viz/ code and tests are outside Track B's scope. Blocks: passing viz tests on feat/gap-skills. Raised: B1 stop.
-- Q1 (carried from Track A): whichever of PR #6 and this branch merges second must regenerate viz/data/graph.json after the first. Blocks: nothing. Raised: PR #6.
+- Q5: the final graph.json and screenshot regeneration on this branch waits until PR #7 is in main (the author's merge order). Blocks: the last commit of feat/gap-skills. Raised: B1 stop.
+- Resolved by the author on 2026-09-29: Q1 (merge order), Q2 (npm logs: use node --test), Q3 and Q4 (PR #7).
 
 ## Decisions
 - spec-writing goes in build-discipline: it writes the SPEC that phased-build and unattended-build run against. The run prompt said to add the name without naming a family.
@@ -48,4 +51,4 @@ Track B, B1 spec-writing: committed; STOPPED for the author (SKILL.md and eval n
 - Evals run against a clean clone of origin/main in the scratchpad, so neither configuration can see the draft skill or Track A's changes.
 
 ## Next action
-Wait for the author: B1 review, and answers to Q3 and Q4. B2 (visual-loop) starts only after that.
+B2 visual-loop: list the evidence for the viz run's human gates from the author's prompts and PROGRESS.md history, then draft with skill-creator.
