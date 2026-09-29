@@ -1,12 +1,12 @@
 # Progress: wiring and gap skills
-Updated: 2026-09-29 08:46 EDT (from `date`)   Branch: feat/gap-skills (from origin/main d6f266a, upstream unset)   Last commit: d211d16
+Updated: 2026-09-29 08:50 EDT (from `date`)   Branch: feat/gap-skills (from origin/main d6f266a, upstream unset)   Last commit: d211d16
 The previous run's log (skills-graph) is in the git history of this file. Track A's log is on chore/wire-skill-references (PR #6).
 
 ## SPEC summary
 Track A (chore/wire-skill-references): done, PR #6 open, not merged. Track B (feat/gap-skills, from main after Track A's PR is open): evidence-first skills, one at a time, stopping after each: B1 spec-writing, B2 visual-loop, B3 debugging (needs the author's Stage A session), B4 and B5 stop and ask. Per skill: list the evidence with paths, draft with skill-creator, eval against a no-skill baseline on a real task (both scores, tokens, time; tune once), add to families.json and rerun the extractor, commit, stop and show.
 
 ## Now
-Track B, B2 visual-loop, step: gathering evidence (B1 reviewed by the author)
+Track B, B2 visual-loop, step: eval iteration 1 running (6 runs)
 
 ## Done and verified
 - Track A: PR #6 (https://github.com/armaan-k019/ark-skills/pull/6), acceptance and gate in that branch's PROGRESS.md.
@@ -37,6 +37,10 @@ Track B, B2 visual-loop, step: gathering evidence (B1 reviewed by the author)
   - PR #3: the author asked to merge it; it was already merged (2026-09-29 01:07 EDT, 2ec0e5a), so nothing was done.
   - PR #6: merged by the author (origin/main be693b6).
 
+- B2 evidence (cited in the draft's source paragraph): the author's prompts of 2026-09-28 07:11 UTC (Phase 3 function only, Phase 4 STOP) and 2026-09-29 00:35, 02:40, 03:21 UTC (rounds F1 to F3, F4 to F6, F7 and F8); PROGRESS.md history 1114514 to 7812a2e ("Phase 4: STOPPED ..."); viz/scripts/smoke.mjs and viz/app.js (each decided value is a constant and an assertion: 13 px labels, family labels 11 px gray uppercase letterspaced, kind colors, dashed vendored border; the session chose 0.18, 0.25 and 10% where the author gave adjectives); the smoke test took its screenshot after clicking a node until F7 (0765695 to aa5b925); unattended-build Step 0 and the director's failure mode; LESSONS.md (browser checks that read the old frame).
+- The run prompt names "six human gates"; the evidence shows five author decision points in the skills-graph run: Q1 to Q5 (2026-09-28 05:07 EDT), Q6 and F1 to F3 (20:35 EDT), F4 to F6 (22:40 EDT), the vendored question (22:55 EDT), F7 and F8 (23:21 EDT); three are visual rounds. The draft cites these.
+- B2 draft in the scratchpad (draft-b2/visual-loop/SKILL.md, 76 lines) until the eval finishes. Eval iteration 1 launched at 2026-09-29 08:50 EDT: three tasks (vague-restyle, feedback-round with a false premise, reverse-earlier-decision), each run in its own clone of main be693b6 with its own port.
+
 ## In flight
 - none
 
@@ -51,4 +55,4 @@ Track B, B2 visual-loop, step: gathering evidence (B1 reviewed by the author)
 - Evals run against a clean clone of origin/main in the scratchpad, so neither configuration can see the draft skill or Track A's changes.
 
 ## Next action
-B2 visual-loop: list the evidence for the viz run's human gates from the author's prompts and PROGRESS.md history, then draft with skill-creator.
+When the six B2 runs finish: grade each (blind, on its own clone), aggregate, tune once, iteration 2 with the skill only, then add visual-loop to families.json, rerun the extractor, commit, and stop.
