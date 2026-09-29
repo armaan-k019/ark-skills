@@ -27,4 +27,5 @@ Task class (Step 0): Track A is machine-checkable (extractor exit code, isolated
 
 ## Scope
 - Track A: one cross-reference sentence per listed SKILL.md (literature-review, scholar-evaluation, query-to-corpus, experiment-discipline, skill-audit, phased-build, verify-before-done, recruiter-demo-writer, scroll-world), one commit per file, plus the regenerated viz/data/graph.json and these two run files. families.json untouched.
+- Both tracks: LESSONS.md at the repo root, because the run prompt says to run capture-lessons at the end of each track.
 - Track B: new skill directories, their evals (run in the session scratchpad), viz/scripts/families.json entries, and the regenerated graph.
