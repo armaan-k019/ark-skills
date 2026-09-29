@@ -33,7 +33,7 @@ If the project has no checks at all for a category, record that. Do not invent o
 
 Capture the exact command and the last lines of output for each. Pipe long output through `tail -n 40` so the report quotes real text.
 
-Fixing a failure never means weakening the check: no editing `tsconfig`, eslint, prettier, or ruff config to make errors disappear, no `// @ts-ignore`, `eslint-disable`, `# type: ignore`, or `any` casts added to silence a check, and no skipping or deleting tests. If the check itself is wrong, stop and ask.
+Fixing a failure never means weakening the check: no editing `tsconfig`, eslint, prettier, or ruff config to make errors disappear, no `// @ts-ignore`, `eslint-disable`, `# type: ignore`, or `any` casts added to silence a check, and no skipping or deleting tests. If the check itself is wrong, stop and ask. The `config-protection` and `block-no-verify` hooks enforce part of this when installed: the first blocks edits to existing lint, formatter, and tsconfig files, the second blocks skipping git hooks.
 
 ## Step 3: Review the diff against the task
 

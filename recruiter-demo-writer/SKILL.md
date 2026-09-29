@@ -49,3 +49,5 @@ When asked to "deepen" or "finish" a demo that's already partly built (Whop and 
 ## New demos (e.g. a future Warp page)
 
 Start from the skeleton above, pick an accent color (most demos use the same green `#2d5a27` "company-theme" accent; a new demo can reuse it or choose a different one if the product's own brand color fits better), and write "What [Company] does today" only once you actually know the product. If the premise of the demo isn't fully decided yet, say so and ask rather than guessing at what the company does or what problem the tool solves.
+
+Hand the visual pass (layout, type, color, polish) to `impeccable`, and run the portfolio's checks with `verify-before-done` before calling any demo page done.

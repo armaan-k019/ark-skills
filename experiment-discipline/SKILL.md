@@ -90,4 +90,4 @@ Next:           <next hypothesis>
 
 ## Reporting
 
-Any number that leaves the ledger (paper, report, README, slides) carries: the baseline, n runs, the spread, input sizes, hardware, and the commit. If any of those is missing, fix the run, not the sentence.
+Any number that leaves the ledger (paper, report, README, slides) carries: the baseline, n runs, the spread, input sizes, hardware, and the commit. If any of those is missing, fix the run, not the sentence. Report the build, test, and lint checks around a run with `verify-before-done`, and record a choice of method, baseline, or dataset that someone will later ask about with `decision-records`.

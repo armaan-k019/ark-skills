@@ -59,13 +59,13 @@ Root cause: the headless instance keeps a timer loop alive after the script's la
 Next time I use a headless Cytoscape instance in a script or test, I will call `cy.destroy()` in a finally block and run the first attempt under a watchdog.
 Evidence: the check printed its result and then hung past the 120 s tool timeout; with `cy.destroy()` the test exits in about 1 s.
 
-## Killing processes by matching command lines hits more than intended
-Seen: 2026-09-28 (ark-skills)   Count: 1
+## Stopping a process by anything but its own PID hits the wrong process
+Seen: 2026-09-28 (ark-skills, skills-graph run), 2026-09-29 (ark-skills, wiring run)   Count: 2
 
-Context: stopping a hung background Node process.
-Root cause: `ps | grep` on a string from the script matched the wrapper shells that carried the same text, including the current command.
-Next time I start a process I may need to stop, I will keep its PID from `$!` and kill only that PID.
-Evidence: the kill loop stopped the background task's shell and ended the current command with exit 144.
+Context: stopping a hung background Node process, and later a local `python3 -m http.server` started for the smoke test.
+Root cause: the handle did not name the process. `ps | grep` on a script's text matched the wrapper shells too; `cmd && python3 -m http.server ... &` backgrounds the whole list, so `$!` is the subshell's PID and killing it left the server listening.
+Next time I start a process I may need to stop, I will start it as its own statement so `$!` is its PID, kill only that PID, and confirm the port or process is gone afterwards.
+Evidence: the kill loop ended the current command with exit 144; a server stayed listening on port 8123 until it was found with `lsof` and stopped.
 
 ## A static scanner's file-type list decides what it can find
 Seen: 2026-09-28 (ark-skills)   Count: 1
@@ -82,3 +82,11 @@ Context: replacing an em dash in recruiter-demo-writer's frontmatter description
 Root cause: the description is an unquoted YAML scalar, and a colon followed by a space inside it starts a mapping, so the file no longer parsed ("mapping values are not allowed here").
 Next time I edit a SKILL.md description, I will parse the frontmatter with a YAML parser before committing, and prefer commas or parentheses over colons in unquoted values.
 Evidence: commit ecee511 on fix/em-dash-in-descriptions (never pushed) failed yaml.safe_load; replaced by d686c46, which uses a comma and parses.
+
+## A generated file goes stale when another branch changes its inputs
+Seen: 2026-09-29 (ark-skills)   Count: 1
+
+Context: two PRs open at once, one carrying the committed `viz/data/graph.json`, the other changing a skill description that the graph copies.
+Root cause: the graph was generated on its own branch before the other PR merged, and nothing regenerated it after both landed.
+Next time two branches touch a generated file or its inputs, I will say in the second PR that it regenerates the file after the first merges, and run the freshness test on main after each merge.
+Evidence: PR #5 merged before PR #4; `test_build_graph.RealRepo` then failed on main (d6f266a) until chore/wire-skill-references regenerated the graph.
