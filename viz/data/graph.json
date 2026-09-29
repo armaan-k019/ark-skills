@@ -299,7 +299,7 @@
       "kind": "skill",
       "name": "query-to-corpus",
       "path": "query-to-corpus/SKILL.md",
-      "lines": 46,
+      "lines": 48,
       "description": "Encodes how a user's research question becomes a seeded, relevance-filtered, contamination-guarded corpus, the front of this cross-domain research discovery engine's pipeline. Use this skill whenever building, reviewing, or modifying anything that turns a user question into a paper corpus, expands a corpus via citation graphs or search, filters candidate papers before ingestion, or checks a corpus for coherence or contamination. Make sure to consult this skill before implementing any paper ingestion step, before adding any keyword-based search or scrape, before relaxing a relevance filter to hit a size target, and whenever a request implies expanding a corpus quickly without specifying how candidates are verified.",
       "eval_status": "unmeasured",
       "family": "research",
@@ -310,7 +310,7 @@
       "kind": "skill",
       "name": "recruiter-demo-writer",
       "path": "recruiter-demo-writer/SKILL.md",
-      "lines": 51,
+      "lines": 53,
       "description": "Use when building, deepening, or reviewing a recruiter-facing demo page under src/app/demos/ in this portfolio (the pattern behind illoca, world-labs, rho, midjourney, whop). Triggers on requests like \"build the Warp demo,\" \"deepen the Whop page,\" \"add a demo for [company],\" \"write the case study copy for [demo],\" or any request to add sections, rewrite copy, or extend an existing page in src/app/demos/. Also use when asked to review a demo page for consistency, tone, voice, or fabricated claims. Not for the older terracotta-palette project pages under src/app/projects/ (urban-gpt, yield, fine-print), which follow a different template this skill does not cover.",
       "eval_status": "unmeasured",
       "family": "domain",
@@ -332,7 +332,7 @@
       "kind": "skill",
       "name": "scholar-evaluation",
       "path": "scholar-evaluation/SKILL.md",
-      "lines": 85,
+      "lines": 87,
       "description": "Evaluate a paper, abstract, proposal, thesis chapter, or literature review against a repeatable rubric, including checking whether each claim is supported by what its citation actually says. Use for pre-submission review of your own drafts (conference papers, abstracts, fellowship statements), reviewing others' papers, comparing papers, or requests like \"review my paper\", \"is this ready to submit\", or \"how strong is this study\".",
       "origin": {
         "from": "body",
@@ -355,7 +355,7 @@
       "kind": "skill",
       "name": "scroll-world",
       "path": "scroll-world/SKILL.md",
-      "lines": 762,
+      "lines": 763,
       "description": "Build an immersive scroll-scrubbed \"fly through the world\" landing page for any industry or brand using Higgsfield. As the visitor scrolls, a pre-rendered camera flies from outside each scene into its interior, then flows on to the next scene with NO cuts \u2014 one continuous connected flight (Emons-style isometric diorama world, or any art direction you pick). The skill interviews the user for the topic, the story beats/sections, and brand kit, then generates cohesive scenes + seamless camera clips with Higgsfield and wires a portable, framework-agnostic scroll-scrub engine. The video chain renders through Monid by default (Seedance 2.0, pay-per-clip USD \u2014 capability re-checked each build, see Step 4) with Higgsfield credits as the fallback biller. Use when the user wants a \"3D world\" / \"browse-through-the-industry\" hero, a scroll cinematic, a diorama landing, or to turn a business into a scrollable world.",
       "eval_status": "unmeasured",
       "family": "domain",
@@ -713,6 +713,28 @@
       ]
     },
     {
+      "id": "skill:experiment-discipline->skill:decision-records:skill-skill",
+      "source": "skill:experiment-discipline",
+      "target": "skill:decision-records",
+      "kind": "skill-skill",
+      "file": "experiment-discipline/SKILL.md",
+      "line": 93,
+      "lines": [
+        93
+      ]
+    },
+    {
+      "id": "skill:experiment-discipline->skill:verify-before-done:skill-skill",
+      "source": "skill:experiment-discipline",
+      "target": "skill:verify-before-done",
+      "kind": "skill-skill",
+      "file": "experiment-discipline/SKILL.md",
+      "line": 93,
+      "lines": [
+        93
+      ]
+    },
+    {
       "id": "skill:honest-refusal->skill:relevance-profile:skill-skill",
       "source": "skill:honest-refusal",
       "target": "skill:relevance-profile",
@@ -721,6 +743,17 @@
       "line": 34,
       "lines": [
         34
+      ]
+    },
+    {
+      "id": "skill:literature-review->skill:honest-refusal:skill-skill",
+      "source": "skill:literature-review",
+      "target": "skill:honest-refusal",
+      "kind": "skill-skill",
+      "file": "literature-review/SKILL.md",
+      "line": 88,
+      "lines": [
+        88
       ]
     },
     {
@@ -768,6 +801,17 @@
         65,
         85,
         93
+      ]
+    },
+    {
+      "id": "skill:phased-build->skill:vet-third-party:skill-skill",
+      "source": "skill:phased-build",
+      "target": "skill:vet-third-party",
+      "kind": "skill-skill",
+      "file": "phased-build/SKILL.md",
+      "line": 48,
+      "lines": [
+        48
       ]
     },
     {
@@ -941,9 +985,53 @@
       "target": "skill:honest-refusal",
       "kind": "skill-skill",
       "file": "query-to-corpus/SKILL.md",
-      "line": 36,
+      "line": 38,
       "lines": [
-        36
+        38
+      ]
+    },
+    {
+      "id": "skill:query-to-corpus->skill:literature-review:skill-skill",
+      "source": "skill:query-to-corpus",
+      "target": "skill:literature-review",
+      "kind": "skill-skill",
+      "file": "query-to-corpus/SKILL.md",
+      "line": 19,
+      "lines": [
+        19
+      ]
+    },
+    {
+      "id": "skill:query-to-corpus->skill:relevance-profile:skill-skill",
+      "source": "skill:query-to-corpus",
+      "target": "skill:relevance-profile",
+      "kind": "skill-skill",
+      "file": "query-to-corpus/SKILL.md",
+      "line": 19,
+      "lines": [
+        19
+      ]
+    },
+    {
+      "id": "skill:recruiter-demo-writer->skill:impeccable:skill-skill",
+      "source": "skill:recruiter-demo-writer",
+      "target": "skill:impeccable",
+      "kind": "skill-skill",
+      "file": "recruiter-demo-writer/SKILL.md",
+      "line": 53,
+      "lines": [
+        53
+      ]
+    },
+    {
+      "id": "skill:recruiter-demo-writer->skill:verify-before-done:skill-skill",
+      "source": "skill:recruiter-demo-writer",
+      "target": "skill:verify-before-done",
+      "kind": "skill-skill",
+      "file": "recruiter-demo-writer/SKILL.md",
+      "line": 53,
+      "lines": [
+        53
       ]
     },
     {
@@ -963,9 +1051,42 @@
       "target": "skill:adversarial-review",
       "kind": "skill-skill",
       "file": "scholar-evaluation/SKILL.md",
-      "line": 85,
+      "line": 87,
       "lines": [
-        85
+        87
+      ]
+    },
+    {
+      "id": "skill:scholar-evaluation->skill:literature-review:skill-skill",
+      "source": "skill:scholar-evaluation",
+      "target": "skill:literature-review",
+      "kind": "skill-skill",
+      "file": "scholar-evaluation/SKILL.md",
+      "line": 38,
+      "lines": [
+        38
+      ]
+    },
+    {
+      "id": "skill:scroll-world->skill:impeccable:skill-skill",
+      "source": "skill:scroll-world",
+      "target": "skill:impeccable",
+      "kind": "skill-skill",
+      "file": "scroll-world/SKILL.md",
+      "line": 647,
+      "lines": [
+        647
+      ]
+    },
+    {
+      "id": "skill:scroll-world->skill:verify-before-done:skill-skill",
+      "source": "skill:scroll-world",
+      "target": "skill:verify-before-done",
+      "kind": "skill-skill",
+      "file": "scroll-world/SKILL.md",
+      "line": 647,
+      "lines": [
+        647
       ]
     },
     {
@@ -977,6 +1098,17 @@
       "line": 46,
       "lines": [
         46
+      ]
+    },
+    {
+      "id": "skill:skill-audit->skill:vet-third-party:skill-skill",
+      "source": "skill:skill-audit",
+      "target": "skill:vet-third-party",
+      "kind": "skill-skill",
+      "file": "skill-audit/SKILL.md",
+      "line": 63,
+      "lines": [
+        63
       ]
     },
     {
@@ -1165,6 +1297,28 @@
       "line": 28,
       "lines": [
         28
+      ]
+    },
+    {
+      "id": "skill:verify-before-done->hook:block-no-verify:skill-hook",
+      "source": "skill:verify-before-done",
+      "target": "hook:block-no-verify",
+      "kind": "skill-hook",
+      "file": "verify-before-done/SKILL.md",
+      "line": 36,
+      "lines": [
+        36
+      ]
+    },
+    {
+      "id": "skill:verify-before-done->hook:config-protection:skill-hook",
+      "source": "skill:verify-before-done",
+      "target": "hook:config-protection",
+      "kind": "skill-hook",
+      "file": "verify-before-done/SKILL.md",
+      "line": 36,
+      "lines": [
+        36
       ]
     },
     {
