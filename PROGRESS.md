@@ -1,5 +1,5 @@
 # Progress: skills-graph
-Updated: 2026-09-28 22:57 EDT (from `date`)   Branch: feat/skills-graph (from origin/main cd423eb, upstream unset, not pushed)   Last commit: 0d140c2 (F6), before the vendored-list commit
+Updated: 2026-09-28 23:26 EDT (from `date`)   Branch: feat/skills-graph (from origin/main cd423eb)   Last commit: 9e2cfd7 (F7, F8), before this update
 
 Every time in this file comes from `date`.
 
@@ -7,7 +7,7 @@ Every time in this file comes from `date`.
 Static page in viz/ that visualizes this repo: every skill, agent, and hook as a node, clustered by family, with reference edges, hook coverage, license origin, and eval status, all generated from files. Plus viz/MONITOR-EVAL.md, a vetted recommendation (no install) for a live Claude Code session monitor. Second round (author's message of 2026-09-28): Q6 recorded, F1 family taxonomy, F2 encoding, F3 legibility, one review pass over the whole branch with at most one fix round, then stop again for styling. Third round: F4 final family mapping and a vendored flag, F5 edge focus, F6 typography and palette, then stop again; the timestamp PR approved.
 
 ## Now
-Phase 4: STOPPED again for the author. Styling is taste work and is the author's.
+Done. The author approved pushing this branch and opening a PR against main (not merged). Work on this branch stops here; follow-ups go in their own branches.
 
 ## Done and verified
 - Phases 0 to 3 and 5: commits 5b6105f, f8964e8, 66af38b, e72dbb9, 3e4bddf, 0765695, 1114514 (see git log).
@@ -25,22 +25,25 @@ Phase 4: STOPPED again for the author. Styling is taste work and is the author's
 - F4: the author's final mapping in families.json (build-discipline 4, review-and-honesty 4, research 5, skill-management 3, domain 2, vendored 7, agents 2, hooks 3); a family marked "vendored": true gives each member a vendored boolean, drawn as a 2 px dashed border and counted in the legend; commit 07efb4c.
 - F5: edges at 0.18 opacity by default; hover or selection draws the node's edges and neighbors at full opacity and dims other nodes to 0.25; commit 41c3578. Two mutants (no edge highlight; pointer leaving forgets the selection) fail the smoke test.
 - F6: slate, amber, green (#64748b, #f59e0b, #16a34a); family labels uppercase, letterspaced with thin spaces, gray #6b7280, 11 px as drawn; node labels 13 px or more as drawn, sized from the zoom after the fit; commit follows this file.
-- Final runs, 2026-09-28 22:46:53 to 22:46:58 EDT:
+- Vendored list: commit aa5b925. Lesson on YAML frontmatter: commit d694bce.
+- F7 and F8: default screenshot with no focus (viz/screenshot.png) and a focus screenshot with phased-build selected (viz/screenshot-focus.png), both in viz/README.md; family cells ordered by member count and packed into rows; ceil(sqrt(n)) columns widened until the last row holds more than one member (the formula alone leaves a lone member for 3 and 7); commit 9e2cfd7. Largest empty rectangle 7.0% of the canvas (old layout 10.9%, measured the same way).
+- Final runs, 2026-09-28 23:25:13 to 23:25:17 EDT:
   - Build: "30 nodes {'agent': 2, 'hook': 3, 'skill': 25}, 36 edges {'agent-agent': 1, 'skill-agent': 2, 'skill-hook': 2, 'skill-skill': 31}, 8 families", exit 0; graph.json unchanged by the rebuild.
   - Phase 1 count (Q6 command): 25 + 2 + 3 = 30; graph 30: MATCH.
-  - `python3 -m unittest discover viz/scripts`: Ran 53 tests, OK.
-  - `npm test` in viz/: 24 of 24 pass.
+  - `python3 -m unittest discover viz/scripts`: Ran 54 tests, OK.
+  - `npm test` in viz/: 26 of 26 pass.
   - `node hooks/test-hooks.js`: all 26 passed.
-  - `node viz/scripts/smoke.mjs http://127.0.0.1:8123/`: "OK: rendered 30 nodes and 36 edges (JSON 30 and 36), 8 families; clicked skill:phased-build, panel shows Outgoing (6) and Incoming (2); smallest label 13.1 px, 0 labels over circles, 0 label pairs overlapping each other; 0 edges over unconnected nodes (11 bent around them); filters exact for 8 families and 4 edge kinds; focus checked for default, hover, selection, and clearing; outline drawn on skill:adversarial-review in a scored copy", exit 0. viz/screenshot.png 196676 bytes, opened and looked at.
+  - `node viz/scripts/smoke.mjs http://127.0.0.1:8123/`: exit 0; its 23:24:35 run printed "smallest label 13.7 px, 0 labels over circles, 0 label pairs overlapping each other; 0 edges over unconnected nodes (9 bent around them); filters exact for 8 families and 4 edge kinds; focus checked for default, hover, selection, and clearing; boxes ordered by size, no lone last-row member, largest empty rectangle 7.0% of the canvas; outline drawn on skill:adversarial-review in a scored copy". Both screenshots opened and looked at.
 
 ## In flight
 - none
 
 ## Open questions
-- Styling (phase 4): the author's.
-- Vendored set (answered 2026-09-28): skill-creator and scroll-world are marked vendored and stay in their families. families.json now has one top-level "vendored" list of node names (9 today) instead of a family flag; smoke passed at 22:56:05 EDT with the legend at 9 nodes.
-- fix/em-dash-in-descriptions (answered 2026-09-28): recruiter-demo-writer only; scroll-world stays as upstream.
-- Q5 (for its own branch): vet-third-party/scripts/scan.py does not scan `.rs` files.
+- none on this branch.
+
+## Follow-ups (their own branches, per the author)
+- recruiter-demo-writer/SKILL.md still has 16 em dashes in its body (the description was fixed on fix/em-dash-in-descriptions).
+- vet-third-party/scripts/scan.py does not scan `.rs` files (Q5).
 
 ## Decisions
 - Family taxonomy lives in viz/scripts/families.json; the extractor has no fallback family.
