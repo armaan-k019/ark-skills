@@ -1,12 +1,12 @@
 # Progress: wiring and gap skills
-Updated: 2026-09-29 09:35 EDT (from `date`)   Branch: feat/gap-skills (from origin/main d6f266a, upstream unset)   Last commit: 7d911b6
+Updated: 2026-09-29 09:56 EDT (from `date`)   Branch: feat/gap-skills (from origin/main d6f266a, upstream unset)   Last commit: d0650bf
 The previous run's log (skills-graph) is in the git history of this file. Track A's log is on chore/wire-skill-references (PR #6).
 
 ## SPEC summary
 Track A (chore/wire-skill-references): done, PR #6 open, not merged. Track B (feat/gap-skills, from main after Track A's PR is open): evidence-first skills, one at a time, stopping after each: B1 spec-writing, B2 visual-loop, B3 debugging (needs the author's Stage A session), B4 and B5 stop and ask. Per skill: list the evidence with paths, draft with skill-creator, eval against a no-skill baseline on a real task (both scores, tokens, time; tune once), add to families.json and rerun the extractor, commit, stop and show.
 
 ## Now
-Track B, B2 visual-loop: committed; STOPPED for the author (SKILL.md and eval numbers), per the run prompt
+Stopped for the author: PR #7 is ready (3 commits, open, mergeable); Q8 cross-references committed on feat/gap-skills
 
 ## Done and verified
 - Track A: PR #6 (https://github.com/armaan-k019/ark-skills/pull/6), acceptance and gate in that branch's PROGRESS.md.
@@ -52,15 +52,17 @@ Track B, B2 visual-loop: committed; STOPPED for the author (SKILL.md and eval nu
 - B2 committed: c9f0f22 (visual-loop/SKILL.md, 82 lines, quick_validate valid), e7ba2fa (families.json build-discipline, graph.json: 32 nodes, 50 edges, visual-loop measured: 100%), 7d911b6 (lessons). Checks at 2026-09-29 09:34 EDT: extractor exit 0; unittest OK; hooks 26/26; node --test 25/26 (test_app.cjs "3 !== 1", fixed by PR #7); smoke exit 1 (family order with build-discipline at 6, fixed by PR #7). No skill hands off to visual-loop yet (0 incoming edges).
 - Combined check in a scratch clone (PR #7's branch plus both new skills and this families.json; 32 nodes, 64 edges): unittest OK, node --test 27/27, smoke exit 1: "edges the page could not route around nodes: visual-loop -> impeccable". Larger bends (380, 470) did not route it. Trying the control point at 0.3 and 0.7 along the edge as well as 0.5 did: smoke exit 0, 20 edges bent, 0 over unconnected nodes, largest empty rectangle 8.6%, smallest label 13.2 px. Patch (not applied): scratchpad proposed-viz-routing.patch (viz/app.js routeEdges, 9 lines).
 
+- Author's answers after B2 (STANDING-DECISIONS.md, last section). Done:
+  - PR #7, commit 2ef88f5: routeEdges also tries the control point at 0.3 and 0.7 after 0.5; new smoke check on scripts/fixtures/graph-routing.json (32 nodes, 64 edges). Without the change it fails ("routing fixture: edges the page could not route around nodes: [\"skill:visual-loop->skill:impeccable:skill-skill\"]"); with it, all 64 edges route. Checks at 2026-09-29 09:54 EDT on the branch: build_graph --out equal to the committed graph; unittest 54 OK; node --test 27/27; hooks 26/26; smoke exit 0 (13 edges bent as before, screenshots unchanged); unittest and node tests rerun after the README edit, both exit 0. Pushed; PR description updated; gh reports OPEN, MERGEABLE, 3 commits. Built in a scratchpad worktree, now removed.
+  - Q8 on feat/gap-skills: 6d01e2e (unattended-build Step 0), a0f8ad3 (spec-writing Step 5), d0650bf (graph: 32 nodes, 52 edges; visual-loop incoming from unattended-build line 28 and spec-writing line 91). Extractor exit 0, unittest OK, hooks 26/26.
+  - Q6: deferred by the author to fix/viz-checks-assert-decided-values after PR #7 merges.
+
 ## In flight
 - none
 
 ## Open questions
-- Q7: after PR #7 and this branch merge, smoke will fail to route visual-loop -> impeccable. The tested fix (proposed-viz-routing.patch) is viz code: add it to PR #7, or its own branch? Blocks: the final regeneration commit on this branch. Raised: B2 stop.
-- Q8: nothing hands off to visual-loop. unattended-build Step 0 says taste work gets "short loops"; naming visual-loop there, or in spec-writing Step 5, would be a one-line cross-reference in another skill. Blocks: nothing. Raised: B2 stop.
-- Q6: viz/scripts/smoke.mjs checks labels, family labels, and colors against the constants in viz/app.js, so a change to a constant alone passes (probe: family labels 8 px red, exit 0). Holding the decided values (13 px floor, 11 px gray family labels, the three kind colors, the dashed border) would mean writing them into the checks, which is viz code, outside Track B's scope. Blocks: nothing. Raised: B2 stop.
-- Q5: the final graph.json and screenshot regeneration on this branch waits until PR #7 is in main (the author's merge order). Blocks: the last commit of feat/gap-skills. Raised: B1 stop.
-- Resolved by the author on 2026-09-29: Q1 (merge order), Q2 (npm logs: use node --test), Q3 and Q4 (PR #7).
+- Q5: the final graph.json and screenshot regeneration on this branch waits until PR #7 is in main. Blocks: the last commit of feat/gap-skills. Raised: B1 stop.
+- Resolved by the author on 2026-09-29: Q1 to Q4 (after B1), Q6 to Q8 (after B2).
 
 ## Decisions
 - spec-writing goes in build-discipline: it writes the SPEC that phased-build and unattended-build run against. The run prompt said to add the name without naming a family.
@@ -69,4 +71,4 @@ Track B, B2 visual-loop: committed; STOPPED for the author (SKILL.md and eval nu
 - Evals run against a clean clone of origin/main in the scratchpad, so neither configuration can see the draft skill or Track A's changes.
 
 ## Next action
-Wait for the author: B2 review and answers to Q6, Q7, Q8. B3 (debugging) needs the author's Stage A session; B4 and B5 need the author first. The final commit on this branch (graph.json and both screenshots) waits for PR #7 in main.
+Wait for the author to merge PR #7. Then: merge origin/main into feat/gap-skills (no rebase), regenerate viz/data/graph.json and both screenshots as the branch's final commit, and run the full checks with node --test. Later, on its own branch after PR #7: fix/viz-checks-assert-decided-values. B3 needs the author's Stage A session; B4 and B5 need the author first.

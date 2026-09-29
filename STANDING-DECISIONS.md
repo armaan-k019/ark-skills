@@ -36,3 +36,8 @@ Task class (Step 0): Track A is machine-checkable (extractor exit code, isolated
 - Acceptance commands use `node --test` on the viz test files instead of `npm test`, which writes logs to ~/.npm/_logs. Track A's wording is not changed.
 - spec-writing stays in build-discipline, and its "measured: 90%" note stays as written.
 - B2 (visual-loop) may start.
+
+## Changes approved by the author on 2026-09-29 (answers after B2)
+- Q7: the edge-routing fix goes into PR #7 as its own commit, with a test that fails without it.
+- Q6: writing the decided values into the viz checks is its own branch later, fix/viz-checks-assert-decided-values, after PR #7 merges. Not now.
+- Q8: one-line cross-references to visual-loop in unattended-build Step 0 and spec-writing Step 5, on feat/gap-skills.
