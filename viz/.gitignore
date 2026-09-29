@@ -1,0 +1,4 @@
+scripts/tmp*/
+scripts/__pycache__/
+node_modules/
+.npm-cache/

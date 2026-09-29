@@ -1,0 +1,43 @@
+/* Plain default styling: system font, neutral background, no palette, no animation. */
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  font-family: system-ui, sans-serif;
+  background: #fff;
+}
+
+#graph {
+  flex: 1;
+  min-width: 0;
+}
+
+#side {
+  width: 24rem;
+  overflow-y: auto;
+  padding: 0 1rem;
+  border-left: 1px solid;
+}
+
+#filters label {
+  display: block;
+}
+
+#legend ul {
+  list-style: none;
+  padding: 0;
+}
+
+.swatch {
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  margin-right: 0.4em;
+  border-radius: 50%;
+  vertical-align: middle;
+  box-sizing: border-box;
+}

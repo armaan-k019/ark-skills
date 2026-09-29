@@ -1,0 +1,93 @@
+{
+  "families": [
+    {
+      "id": "build-discipline",
+      "label": "Build discipline",
+      "members": [
+        "phased-build",
+        "strategic-compact",
+        "unattended-build",
+        "verify-before-done"
+      ]
+    },
+    {
+      "id": "review-and-honesty",
+      "label": "Review and honesty",
+      "members": [
+        "adversarial-review",
+        "capture-lessons",
+        "decision-records",
+        "honest-refusal"
+      ]
+    },
+    {
+      "id": "research",
+      "label": "Research",
+      "members": [
+        "experiment-discipline",
+        "literature-review",
+        "query-to-corpus",
+        "relevance-profile",
+        "scholar-evaluation"
+      ]
+    },
+    {
+      "id": "skill-management",
+      "label": "Skill management",
+      "members": [
+        "skill-audit",
+        "skill-creator",
+        "vet-third-party"
+      ]
+    },
+    {
+      "id": "domain",
+      "label": "Domain",
+      "members": [
+        "recruiter-demo-writer",
+        "scroll-world"
+      ]
+    },
+    {
+      "id": "vendored",
+      "label": "Vendored",
+      "members": [
+        "impeccable",
+        "ponytail",
+        "ponytail-audit",
+        "ponytail-debt",
+        "ponytail-gain",
+        "ponytail-help",
+        "ponytail-review"
+      ]
+    },
+    {
+      "id": "agents",
+      "label": "Agents",
+      "members": [
+        "silent-failure-hunter",
+        "ts-reviewer"
+      ]
+    },
+    {
+      "id": "hooks",
+      "label": "Hooks",
+      "members": [
+        "block-no-verify",
+        "config-protection",
+        "no-em-dash"
+      ]
+    }
+  ],
+  "vendored": [
+    "impeccable",
+    "ponytail",
+    "ponytail-audit",
+    "ponytail-debt",
+    "ponytail-gain",
+    "ponytail-help",
+    "ponytail-review",
+    "scroll-world",
+    "skill-creator"
+  ]
+}

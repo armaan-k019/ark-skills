@@ -1,0 +1,9 @@
+{
+  "families": [
+    { "id": "core", "label": "Core", "members": ["alpha", "beta", "gamma"] },
+    { "id": "extra", "label": "Extra", "members": ["delta", "one", "two"] },
+    { "id": "agents", "label": "Agents", "members": ["helper", "reviewer"] },
+    { "id": "hooks", "label": "Hooks", "members": ["guard"] }
+  ],
+  "vendored": ["delta", "one", "two"]
+}

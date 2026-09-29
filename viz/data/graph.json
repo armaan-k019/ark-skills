@@ -1,0 +1,1030 @@
+{
+  "schema_version": 1,
+  "generated_by": "viz/scripts/build_graph.py",
+  "families": [
+    {
+      "id": "build-discipline",
+      "label": "Build discipline",
+      "rule": "families.json",
+      "file": "viz/scripts/families.json",
+      "line": 4
+    },
+    {
+      "id": "review-and-honesty",
+      "label": "Review and honesty",
+      "rule": "families.json",
+      "file": "viz/scripts/families.json",
+      "line": 14
+    },
+    {
+      "id": "research",
+      "label": "Research",
+      "rule": "families.json",
+      "file": "viz/scripts/families.json",
+      "line": 24
+    },
+    {
+      "id": "skill-management",
+      "label": "Skill management",
+      "rule": "families.json",
+      "file": "viz/scripts/families.json",
+      "line": 35
+    },
+    {
+      "id": "domain",
+      "label": "Domain",
+      "rule": "families.json",
+      "file": "viz/scripts/families.json",
+      "line": 44
+    },
+    {
+      "id": "vendored",
+      "label": "Vendored",
+      "rule": "families.json",
+      "file": "viz/scripts/families.json",
+      "line": 52
+    },
+    {
+      "id": "agents",
+      "label": "Agents",
+      "rule": "families.json",
+      "file": "viz/scripts/families.json",
+      "line": 65
+    },
+    {
+      "id": "hooks",
+      "label": "Hooks",
+      "rule": "families.json",
+      "file": "viz/scripts/families.json",
+      "line": 73
+    }
+  ],
+  "nodes": [
+    {
+      "id": "skill:adversarial-review",
+      "kind": "skill",
+      "name": "adversarial-review",
+      "path": "adversarial-review/SKILL.md",
+      "lines": 91,
+      "description": "Verify high-stakes output with reviewers that did not produce it, either two independent reviewers who must both pass (dual review) or a generator and a strict evaluator iterating to a quality bar (generator-evaluator loop). Use before shipping user-facing code or copy, before submitting a paper, abstract, or portfolio text, for research claims and findings, when hallucination risk is high (citations, numbers, API details), or when asked to \"stress-test\", \"red-team\", or \"get a second opinion\" on work.",
+      "origin": {
+        "from": "body",
+        "text": "Adapted from `santa-method` (originally by Ronald Skelton, distributed in ECC) and ECC's `gan-style-harness` (MIT, see `licenses/ECC-LICENSE`). The unverified cost and quality figures in the originals were dropped.",
+        "line": 10,
+        "license": "MIT"
+      },
+      "license_notice": {
+        "file": "licenses/ECC-LICENSE",
+        "line": 8,
+        "text": "- adversarial-review (from skills/santa-method, originally by Ronald Skelton,",
+        "license": "MIT"
+      },
+      "eval_status": "unmeasured",
+      "family": "review-and-honesty",
+      "vendored": false
+    },
+    {
+      "id": "skill:capture-lessons",
+      "kind": "skill",
+      "name": "capture-lessons",
+      "path": "capture-lessons/SKILL.md",
+      "lines": 62,
+      "description": "At the end of a session or after a failure, extract transferable lessons (what went wrong, the root cause, and what to do next time) into a lessons file, merge duplicates, and promote repeated lessons into CLAUDE.md rules, hooks, or skills. Use after debugging something non-obvious, after a redo or rollback, when the user corrected Claude's approach, before ending a long session, or when asked \"what did we learn\", \"log this\", or \"don't let this happen again\".",
+      "origin": {
+        "from": "body",
+        "text": "Adapted from ECC's `growth-log` and `continuous-learning-v2` skills (MIT, see `licenses/ECC-LICENSE`). ECC's version records every tool call with hooks and a background agent; this version is deliberately manual and runs only when there is something worth learning.",
+        "line": 10,
+        "license": "MIT"
+      },
+      "license_notice": {
+        "file": "licenses/ECC-LICENSE",
+        "line": 14,
+        "text": "- capture-lessons (from skills/growth-log, skills/continuous-learning-v2)",
+        "license": "MIT"
+      },
+      "eval_status": "unmeasured",
+      "family": "review-and-honesty",
+      "vendored": false
+    },
+    {
+      "id": "skill:decision-records",
+      "kind": "skill",
+      "name": "decision-records",
+      "path": "decision-records/SKILL.md",
+      "lines": 68,
+      "description": "Record significant technical or design decisions as short decision records (context, decision, alternatives rejected, consequences) in docs/decisions/, and answer \"why did we do X\" from them. Use when choosing between real alternatives (framework, library, data model, algorithm, API shape, storage, hosting), when the user says \"let's go with\", \"we decided\", or \"record this\", during the plan phase of a large task, or when asked why the codebase is the way it is.",
+      "origin": {
+        "from": "body",
+        "text": "Adapted from ECC's `architecture-decision-records` skill (MIT, see `licenses/ECC-LICENSE`), which uses Michael Nygard's lightweight ADR format.",
+        "line": 10,
+        "license": "MIT"
+      },
+      "license_notice": {
+        "file": "licenses/ECC-LICENSE",
+        "line": 15,
+        "text": "- decision-records (from skills/architecture-decision-records)",
+        "license": "MIT"
+      },
+      "eval_status": "unmeasured",
+      "family": "review-and-honesty",
+      "vendored": false
+    },
+    {
+      "id": "skill:experiment-discipline",
+      "kind": "skill",
+      "name": "experiment-discipline",
+      "path": "experiment-discipline/SKILL.md",
+      "lines": 93,
+      "description": "Run research experiments, ML training runs, and algorithm benchmarks so results are reproducible, compared against a baseline, reported with variance, and logged in an experiment ledger. Use when designing or running an experiment, benchmarking an algorithm or optimization (before/after, scaling with input size), training or evaluating a model, writing PyTorch training code, or reporting numbers in a paper, report, or README.",
+      "origin": {
+        "from": "body",
+        "text": "Adapted from ECC's `mle-workflow`, `pytorch-patterns`, and `benchmark` skills (MIT, see `licenses/ECC-LICENSE`). The production-deployment material (serving, canaries, monitoring) was dropped; this version is scoped to research and benchmarking.",
+        "line": 10,
+        "license": "MIT"
+      },
+      "license_notice": {
+        "file": "licenses/ECC-LICENSE",
+        "line": 12,
+        "text": "- experiment-discipline (from skills/mle-workflow, skills/pytorch-patterns,",
+        "license": "MIT"
+      },
+      "eval_status": "unmeasured",
+      "family": "research",
+      "vendored": false
+    },
+    {
+      "id": "skill:honest-refusal",
+      "kind": "skill",
+      "name": "honest-refusal",
+      "path": "honest-refusal/SKILL.md",
+      "lines": 46,
+      "description": "Encodes the no-fabrication, adversarial-honesty discipline that is this cross-domain research discovery engine's core identity. Use this skill whenever writing or reviewing anything that asserts a connection, evidence claim, confidence level, or finding, including Critic logic, report generation, corpus summaries, or any user-facing output describing what the engine found. Make sure to consult this skill before writing code or copy that could soften a negative result, before deciding how confident language should sound, before implementing or adjusting adversarial review logic, and whenever a request implies making results look better, more complete, or more confident than the underlying evidence supports.",
+      "eval_status": "unmeasured",
+      "family": "review-and-honesty",
+      "vendored": false
+    },
+    {
+      "id": "skill:impeccable",
+      "kind": "skill",
+      "name": "impeccable",
+      "path": "impeccable/SKILL.md",
+      "lines": 176,
+      "description": "Use when the user wants to design, redesign, shape, critique, audit, polish, clarify, distill, harden, optimize, adapt, animate, colorize, extract, or otherwise improve a frontend interface. Covers websites, landing pages, dashboards, product UI, app shells, components, forms, settings, onboarding, and empty states. Handles UX review, visual hierarchy, information architecture, cognitive load, accessibility, performance, responsive behavior, theming, anti-patterns, typography, fonts, spacing, layout, alignment, color, motion, micro-interactions, UX copy, error states, edge cases, i18n, and reusable design systems or tokens. Also use for bland designs that need to become bolder or more delightful, loud designs that should become quieter, live browser iteration on UI elements, or ambitious visual effects that should feel technically extraordinary. Not for backend-only or non-UI tasks.",
+      "origin": {
+        "from": "frontmatter",
+        "license": "Apache 2.0"
+      },
+      "eval_status": "unmeasured",
+      "family": "vendored",
+      "vendored": true
+    },
+    {
+      "id": "skill:literature-review",
+      "kind": "skill",
+      "name": "literature-review",
+      "path": "literature-review/SKILL.md",
+      "lines": 109,
+      "description": "Find, screen, synthesize, and cite a body of academic or technical literature with a logged, reproducible search and verified citations. Use for a paper's related-work or background section, a research proposal or fellowship statement, mapping prior work before starting a research project, precedent research in architecture and computational design, or any request like \"what's the literature on X\", \"find papers on\", or \"write the related work\".",
+      "origin": {
+        "from": "body",
+        "text": "Adapted from the `literature-review` skill distributed in ECC (MIT, see `licenses/ECC-LICENSE`), with sources for architecture and computational design added and the citation rules tightened.",
+        "line": 10,
+        "license": "MIT"
+      },
+      "license_notice": {
+        "file": "licenses/ECC-LICENSE",
+        "line": 10,
+        "text": "- literature-review, scholar-evaluation (from the community skills of the same",
+        "license": "MIT"
+      },
+      "eval_status": "unmeasured",
+      "family": "research",
+      "vendored": false
+    },
+    {
+      "id": "skill:phased-build",
+      "kind": "skill",
+      "name": "phased-build",
+      "path": "phased-build/SKILL.md",
+      "lines": 93,
+      "description": "Run a coding task as gated phases (intake, research, plan, implement, review, verify, commit) where each phase writes one file the next phase reads, with two human approval gates. Use for any feature, change, bug fix, or refactor that touches more than one file or involves a real design choice, when orchestrating subagents or parallel sessions, or when asked to \"plan this out\", \"build this properly\", or \"run the full pipeline\".",
+      "origin": {
+        "from": "body",
+        "text": "Adapted from ECC's `orch-pipeline` and `orch-*` skills, the orchestration section of ECC's longform guide, and its `iterative-retrieval` skill (MIT, see `licenses/ECC-LICENSE`). ECC's version delegates to ECC's own agents; this one uses the skills and agents in this repo.",
+        "line": 10,
+        "license": "MIT"
+      },
+      "license_notice": {
+        "file": "licenses/ECC-LICENSE",
+        "line": 6,
+        "text": "- phased-build (from skills/orch-pipeline, skills/orch-*, skills/iterative-retrieval,",
+        "license": "MIT"
+      },
+      "eval_status": "unmeasured",
+      "family": "build-discipline",
+      "vendored": false
+    },
+    {
+      "id": "skill:ponytail",
+      "kind": "skill",
+      "name": "ponytail",
+      "path": "ponytail/skills/ponytail/SKILL.md",
+      "lines": 120,
+      "description": "Forces the laziest solution that actually works, simplest, shortest, most minimal. Channels a senior dev who has seen everything: question whether the task needs to exist at all (YAGNI), reach for the standard library before custom code, native platform features before dependencies, one line before fifty. Supports intensity levels: lite, full (default), ultra. Use on ANY coding task: writing, adding, refactoring, fixing, reviewing, or designing code, and choosing libraries or dependencies. Also use whenever the user says \"ponytail\", \"be lazy\", \"lazy mode\", \"simplest solution\", \"minimal solution\", \"yagni\", \"do less\", or \"shortest path\", or complains about over-engineering, bloat, boilerplate, or unnecessary dependencies. Do NOT use for non-coding requests (general knowledge, prose, translation, summaries, recipes).",
+      "origin": {
+        "from": "frontmatter",
+        "license": "MIT"
+      },
+      "eval_status": "unmeasured",
+      "family": "vendored",
+      "vendored": true
+    },
+    {
+      "id": "skill:ponytail-audit",
+      "kind": "skill",
+      "name": "ponytail-audit",
+      "path": "ponytail/skills/ponytail-audit/SKILL.md",
+      "lines": 41,
+      "description": "Whole-repo audit for over-engineering. Like ponytail-review, but scans the entire codebase instead of a diff: a ranked list of what to delete, simplify, or replace with stdlib/native equivalents. Use when the user says \"audit this codebase\", \"audit for over-engineering\", \"what can I delete from this repo\", \"find bloat\", \"ponytail-audit\", or \"/ponytail-audit\". One-shot report, does not apply fixes.",
+      "eval_status": "unmeasured",
+      "family": "vendored",
+      "vendored": true
+    },
+    {
+      "id": "skill:ponytail-debt",
+      "kind": "skill",
+      "name": "ponytail-debt",
+      "path": "ponytail/skills/ponytail-debt/SKILL.md",
+      "lines": 44,
+      "description": "Harvest every `ponytail:` comment in the codebase into a debt ledger, so the deliberate shortcuts and deferrals ponytail leaves behind get tracked instead of rotting into \"later means never\". Use when the user says \"ponytail debt\", \"/ponytail-debt\", \"what did ponytail defer\", \"list the shortcuts\", \"ponytail ledger\", or \"what did we mark to do later\". One-shot report, changes nothing.",
+      "eval_status": "unmeasured",
+      "family": "vendored",
+      "vendored": true
+    },
+    {
+      "id": "skill:ponytail-gain",
+      "kind": "skill",
+      "name": "ponytail-gain",
+      "path": "ponytail/skills/ponytail-gain/SKILL.md",
+      "lines": 50,
+      "description": "Show ponytail's measured impact as a compact scoreboard: less code, less cost, more speed, from the benchmark medians. One-shot display, not a persistent mode, and not a per-repo number. Trigger: /ponytail-gain, \"ponytail gain\", \"what does ponytail save\", \"show ponytail impact\", \"ponytail scoreboard\".",
+      "eval_status": "unmeasured",
+      "family": "vendored",
+      "vendored": true
+    },
+    {
+      "id": "skill:ponytail-help",
+      "kind": "skill",
+      "name": "ponytail-help",
+      "path": "ponytail/skills/ponytail-help/SKILL.md",
+      "lines": 71,
+      "description": "Quick-reference card for all ponytail modes, skills, and commands. One-shot display, not a persistent mode. Trigger: /ponytail-help, \"ponytail help\", \"what ponytail commands\", \"how do I use ponytail\".",
+      "eval_status": "unmeasured",
+      "family": "vendored",
+      "vendored": true
+    },
+    {
+      "id": "skill:ponytail-review",
+      "kind": "skill",
+      "name": "ponytail-review",
+      "path": "ponytail/skills/ponytail-review/SKILL.md",
+      "lines": 57,
+      "description": "Code review focused exclusively on over-engineering. Finds what to delete: reinvented standard library, unneeded dependencies, speculative abstractions, dead flexibility. One line per finding: location, what to cut, what replaces it. Use when the user says \"review for over-engineering\", \"what can we delete\", \"is this over-engineered\", \"simplify review\", or invokes /ponytail-review. Complements correctness-focused review, this one only hunts complexity.",
+      "eval_status": "unmeasured",
+      "family": "vendored",
+      "vendored": true
+    },
+    {
+      "id": "skill:query-to-corpus",
+      "kind": "skill",
+      "name": "query-to-corpus",
+      "path": "query-to-corpus/SKILL.md",
+      "lines": 46,
+      "description": "Encodes how a user's research question becomes a seeded, relevance-filtered, contamination-guarded corpus, the front of this cross-domain research discovery engine's pipeline. Use this skill whenever building, reviewing, or modifying anything that turns a user question into a paper corpus, expands a corpus via citation graphs or search, filters candidate papers before ingestion, or checks a corpus for coherence or contamination. Make sure to consult this skill before implementing any paper ingestion step, before adding any keyword-based search or scrape, before relaxing a relevance filter to hit a size target, and whenever a request implies expanding a corpus quickly without specifying how candidates are verified.",
+      "eval_status": "unmeasured",
+      "family": "research",
+      "vendored": false
+    },
+    {
+      "id": "skill:recruiter-demo-writer",
+      "kind": "skill",
+      "name": "recruiter-demo-writer",
+      "path": "recruiter-demo-writer/SKILL.md",
+      "lines": 51,
+      "description": "Use when building, deepening, or reviewing a recruiter-facing demo page under src/app/demos/ in this portfolio (the pattern behind illoca, world-labs, rho, midjourney, whop). Triggers on requests like \"build the Warp demo,\" \"deepen the Whop page,\" \"add a demo for [company],\" \"write the case study copy for [demo],\" or any request to add sections, rewrite copy, or extend an existing page in src/app/demos/. Also use when asked to review a demo page for consistency, tone, voice, or fabricated claims. Not for the older terracotta-palette project pages under src/app/projects/ (urban-gpt, yield, fine-print) \u2014 those follow a different template this skill does not cover.",
+      "eval_status": "unmeasured",
+      "family": "domain",
+      "vendored": false
+    },
+    {
+      "id": "skill:relevance-profile",
+      "kind": "skill",
+      "name": "relevance-profile",
+      "path": "relevance-profile/SKILL.md",
+      "lines": 80,
+      "description": "Defines the multi-axis relevance profile that this cross-domain research discovery engine reports for every candidate connection. Use this skill whenever building, reviewing, or modifying anything that scores, ranks, filters, or summarizes cross-domain connections, including the Critic's output, the Experimentalist's output, any dashboard or report surface, or any code that computes a \"relevance\" or \"quality\" value for a connection. Make sure to consult this skill before adding any new scoring field, before combining existing scores, and before designing how a researcher filters or sorts connections, even if the request just says \"add a score\" or \"rank these by relevance.\"",
+      "eval_status": "unmeasured",
+      "family": "research",
+      "vendored": false
+    },
+    {
+      "id": "skill:scholar-evaluation",
+      "kind": "skill",
+      "name": "scholar-evaluation",
+      "path": "scholar-evaluation/SKILL.md",
+      "lines": 85,
+      "description": "Evaluate a paper, abstract, proposal, thesis chapter, or literature review against a repeatable rubric, including checking whether each claim is supported by what its citation actually says. Use for pre-submission review of your own drafts (conference papers, abstracts, fellowship statements), reviewing others' papers, comparing papers, or requests like \"review my paper\", \"is this ready to submit\", or \"how strong is this study\".",
+      "origin": {
+        "from": "body",
+        "text": "Adapted from the `scholar-evaluation` skill distributed in ECC (MIT, see `licenses/ECC-LICENSE`), with a self-review mode and design-research methods added.",
+        "line": 10,
+        "license": "MIT"
+      },
+      "license_notice": {
+        "file": "licenses/ECC-LICENSE",
+        "line": 10,
+        "text": "- literature-review, scholar-evaluation (from the community skills of the same",
+        "license": "MIT"
+      },
+      "eval_status": "unmeasured",
+      "family": "research",
+      "vendored": false
+    },
+    {
+      "id": "skill:scroll-world",
+      "kind": "skill",
+      "name": "scroll-world",
+      "path": "scroll-world/SKILL.md",
+      "lines": 762,
+      "description": "Build an immersive scroll-scrubbed \"fly through the world\" landing page for any industry or brand using Higgsfield. As the visitor scrolls, a pre-rendered camera flies from outside each scene into its interior, then flows on to the next scene with NO cuts \u2014 one continuous connected flight (Emons-style isometric diorama world, or any art direction you pick). The skill interviews the user for the topic, the story beats/sections, and brand kit, then generates cohesive scenes + seamless camera clips with Higgsfield and wires a portable, framework-agnostic scroll-scrub engine. The video chain renders through Monid by default (Seedance 2.0, pay-per-clip USD \u2014 capability re-checked each build, see Step 4) with Higgsfield credits as the fallback biller. Use when the user wants a \"3D world\" / \"browse-through-the-industry\" hero, a scroll cinematic, a diorama landing, or to turn a business into a scrollable world.",
+      "eval_status": "unmeasured",
+      "family": "domain",
+      "vendored": true
+    },
+    {
+      "id": "skill:skill-audit",
+      "kind": "skill",
+      "name": "skill-audit",
+      "path": "skill-audit/SKILL.md",
+      "lines": 63,
+      "description": "Audit installed Claude Code skills, subagents, and CLAUDE.md files for context cost, overlap, staleness, and quality, then recommend keep, improve, merge, or retire for each. Use after adding skills or agents, when sessions feel slow or context fills quickly, periodically (for example monthly) on a skills repo, before publishing a skills repo, or when asked \"which skills do I actually need\" or \"audit my setup\".",
+      "origin": {
+        "from": "body",
+        "text": "Adapted from ECC's `skill-stocktake` and `context-budget` skills (MIT, see `licenses/ECC-LICENSE`). Numbers come from `scripts/inventory.py`, not from estimates made while reading.",
+        "line": 10,
+        "license": "MIT"
+      },
+      "license_notice": {
+        "file": "licenses/ECC-LICENSE",
+        "line": 16,
+        "text": "- skill-audit (from skills/skill-stocktake, skills/context-budget)",
+        "license": "MIT"
+      },
+      "eval_status": "unmeasured",
+      "family": "skill-management",
+      "vendored": false
+    },
+    {
+      "id": "skill:skill-creator",
+      "kind": "skill",
+      "name": "skill-creator",
+      "path": "skill-creator/SKILL.md",
+      "lines": 485,
+      "description": "Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, edit, or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, or optimize a skill's description for better triggering accuracy.",
+      "eval_status": "unmeasured",
+      "family": "skill-management",
+      "vendored": true
+    },
+    {
+      "id": "skill:strategic-compact",
+      "kind": "skill",
+      "name": "strategic-compact",
+      "path": "strategic-compact/SKILL.md",
+      "lines": 75,
+      "description": "Decide when to /compact, /clear, or start a fresh session, and write a handoff file first so nothing important is lost. Use at phase boundaries in long Claude Code sessions (research done, plan approved, milestone finished, debugging over, approach abandoned), when switching to unrelated work, when output quality starts slipping in a long session, or when asked to \"hand off\", \"wrap up this session\", or \"start fresh\".",
+      "origin": {
+        "from": "body",
+        "text": "Adapted from ECC's `strategic-compact` skill (MIT, see `licenses/ECC-LICENSE`). ECC's hook-driven suggestion script is not included; this version is the decision guide plus a handoff format.",
+        "line": 10,
+        "license": "MIT"
+      },
+      "license_notice": {
+        "file": "licenses/ECC-LICENSE",
+        "line": 5,
+        "text": "- strategic-compact (from skills/strategic-compact)",
+        "license": "MIT"
+      },
+      "eval_status": "unmeasured",
+      "family": "build-discipline",
+      "vendored": false
+    },
+    {
+      "id": "skill:unattended-build",
+      "kind": "skill",
+      "name": "unattended-build",
+      "path": "unattended-build/SKILL.md",
+      "lines": 146,
+      "description": "The autonomy contract for running one coding session across many phases with no human check-in, so that its reports can still be trusted afterwards. Use when asked to build something unattended, overnight, autonomously, \"while I'm away\", or \"without checking in\", when handed a SPEC to build across several phases or stacked PRs with nobody watching, when resuming such a build from PROGRESS.md, when directing or orchestrating another session from its reports, or when deciding whether a task is safe to run unattended at all. Also use to refuse unattended mode for taste-based work (visual design, copy, layout). For builds where a human approves the plan and each commit, use phased-build instead.",
+      "origin": {
+        "from": "body",
+        "text": "Written for this repo from observed practice, not adapted from a third-party source: one real build that ran this way successfully (a site analysis tool with nine external data sources, four stacked PRs, and 341 unit tests), and a parallel attempt that failed.",
+        "line": 12
+      },
+      "eval_status": "unmeasured",
+      "family": "build-discipline",
+      "vendored": false
+    },
+    {
+      "id": "skill:verify-before-done",
+      "kind": "skill",
+      "name": "verify-before-done",
+      "path": "verify-before-done/SKILL.md",
+      "lines": 71,
+      "description": "Run the project's real checks (build, typecheck, lint, tests, diff review) and report their actual output before claiming a coding task is done. Use this skill before saying a feature, fix, or refactor is complete, before committing a finished step, before opening a PR, and whenever a prompt asks for \"tsc + build verification\". Also use when asked \"is this done?\", \"does it work?\", or \"ready to merge?\".",
+      "origin": {
+        "from": "body",
+        "text": "Adapted from ECC's `verification-loop` skill (MIT, see `licenses/ECC-LICENSE`). Changes from the original: checks are discovered from the project instead of assumed, the coverage threshold and whole-repo grep scans were dropped, and the report format forbids claiming a check that was not run.",
+        "line": 10,
+        "license": "MIT"
+      },
+      "license_notice": {
+        "file": "licenses/ECC-LICENSE",
+        "line": 4,
+        "text": "- verify-before-done (from skills/verification-loop)",
+        "license": "MIT"
+      },
+      "eval_status": "unmeasured",
+      "family": "build-discipline",
+      "vendored": false
+    },
+    {
+      "id": "skill:vet-third-party",
+      "kind": "skill",
+      "name": "vet-third-party",
+      "path": "vet-third-party/SKILL.md",
+      "lines": 71,
+      "description": "Vet a third-party skill, hook, subagent, plugin, MCP server config, or agent-facing repo before installing or vendoring it, using a static scan for hidden Unicode, prompt-injection text, install scripts, secret access, config changes, network calls, and code execution, followed by reading every high-risk hit. Use before adding anything from outside to ark-skills or ~/.claude, before enabling an MCP server or plugin, when updating a vendored skill, or when asked \"is this safe to install\".",
+      "origin": {
+        "from": "body",
+        "text": "Adapted from ECC's agentic security guide and its `security-scan` skill (MIT, see `licenses/ECC-LICENSE`). ECC's version relies on its AgentShield npm package; this version ships its own dependency-free scanner.",
+        "line": 10,
+        "license": "MIT"
+      },
+      "license_notice": {
+        "file": "licenses/ECC-LICENSE",
+        "line": 17,
+        "text": "- vet-third-party (from the-security-guide.md, skills/security-scan)",
+        "license": "MIT"
+      },
+      "eval_status": "unmeasured",
+      "family": "skill-management",
+      "vendored": false
+    },
+    {
+      "id": "agent:silent-failure-hunter",
+      "kind": "agent",
+      "path": "agents/silent-failure-hunter.md",
+      "lines": 49,
+      "name": "silent-failure-hunter",
+      "description": "Reviews changed code for silent failures, meaning errors that are swallowed, hidden behind fallbacks, or never propagated. Use after implementing anything that touches network calls, file or database I/O, parsing, async work, or external APIs, and before calling such work done. Reports findings only; does not edit code.",
+      "origin": {
+        "from": "body",
+        "text": "Adapted from ECC's `silent-failure-hunter` agent (MIT, see `licenses/ECC-LICENSE`).",
+        "line": 10,
+        "license": "MIT"
+      },
+      "license_notice": {
+        "file": "licenses/ECC-LICENSE",
+        "line": 19,
+        "text": "- agents/silent-failure-hunter.md, agents/ts-reviewer.md",
+        "license": "MIT"
+      },
+      "family": "agents",
+      "vendored": false
+    },
+    {
+      "id": "agent:ts-reviewer",
+      "kind": "agent",
+      "path": "agents/ts-reviewer.md",
+      "lines": 65,
+      "name": "ts-reviewer",
+      "description": "Reviews TypeScript and JavaScript changes (including Next.js and React) for type safety, async correctness, security, and error handling, after running the project's typecheck and lint. Use after finishing a TS/JS change and before calling it done or opening a PR. Reports findings only; does not edit code.",
+      "origin": {
+        "from": "body",
+        "text": "Adapted from ECC's `typescript-reviewer` agent (MIT, see `licenses/ECC-LICENSE`), trimmed to what matters for Next.js and Node projects.",
+        "line": 10,
+        "license": "MIT"
+      },
+      "license_notice": {
+        "file": "licenses/ECC-LICENSE",
+        "line": 19,
+        "text": "- agents/silent-failure-hunter.md, agents/ts-reviewer.md",
+        "license": "MIT"
+      },
+      "family": "agents",
+      "vendored": false
+    },
+    {
+      "id": "hook:block-no-verify",
+      "kind": "hook",
+      "name": "block-no-verify",
+      "path": "hooks/block-no-verify.js",
+      "lines": 33,
+      "coverage": [
+        {
+          "event": "PreToolUse",
+          "file": "hooks/settings.example.json",
+          "matcher": "Bash",
+          "line": 19
+        }
+      ],
+      "origin": {
+        "from": "body",
+        "text": "Idea from ECC scripts/hooks/block-no-verify.js (MIT, see",
+        "line": 6,
+        "license": "MIT"
+      },
+      "license_notice": {
+        "file": "licenses/ECC-LICENSE",
+        "line": 20,
+        "text": "- hooks/config-protection.js, hooks/block-no-verify.js",
+        "license": "MIT"
+      },
+      "family": "hooks",
+      "vendored": false
+    },
+    {
+      "id": "hook:config-protection",
+      "kind": "hook",
+      "name": "config-protection",
+      "path": "hooks/config-protection.js",
+      "lines": 58,
+      "coverage": [
+        {
+          "event": "PreToolUse",
+          "file": "hooks/settings.example.json",
+          "matcher": "Edit|Write|MultiEdit",
+          "line": 7
+        }
+      ],
+      "origin": {
+        "from": "body",
+        "text": "Adapted from ECC scripts/hooks/config-protection.js (MIT, see",
+        "line": 7,
+        "license": "MIT"
+      },
+      "license_notice": {
+        "file": "licenses/ECC-LICENSE",
+        "line": 20,
+        "text": "- hooks/config-protection.js, hooks/block-no-verify.js",
+        "license": "MIT"
+      },
+      "family": "hooks",
+      "vendored": false
+    },
+    {
+      "id": "hook:no-em-dash",
+      "kind": "hook",
+      "name": "no-em-dash",
+      "path": "hooks/no-em-dash.js",
+      "lines": 49,
+      "coverage": [
+        {
+          "event": "PreToolUse",
+          "file": "hooks/settings.example.json",
+          "matcher": "Edit|Write|MultiEdit|Bash",
+          "line": 13
+        }
+      ],
+      "family": "hooks",
+      "vendored": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "skill:adversarial-review->skill:capture-lessons:skill-skill",
+      "source": "skill:adversarial-review",
+      "target": "skill:capture-lessons",
+      "kind": "skill-skill",
+      "file": "adversarial-review/SKILL.md",
+      "line": 79,
+      "lines": [
+        79
+      ]
+    },
+    {
+      "id": "skill:adversarial-review->skill:honest-refusal:skill-skill",
+      "source": "skill:adversarial-review",
+      "target": "skill:honest-refusal",
+      "kind": "skill-skill",
+      "file": "adversarial-review/SKILL.md",
+      "line": 35,
+      "lines": [
+        35
+      ]
+    },
+    {
+      "id": "skill:adversarial-review->skill:scholar-evaluation:skill-skill",
+      "source": "skill:adversarial-review",
+      "target": "skill:scholar-evaluation",
+      "kind": "skill-skill",
+      "file": "adversarial-review/SKILL.md",
+      "line": 35,
+      "lines": [
+        35
+      ]
+    },
+    {
+      "id": "skill:adversarial-review->skill:verify-before-done:skill-skill",
+      "source": "skill:adversarial-review",
+      "target": "skill:verify-before-done",
+      "kind": "skill-skill",
+      "file": "adversarial-review/SKILL.md",
+      "line": 14,
+      "lines": [
+        14
+      ]
+    },
+    {
+      "id": "skill:capture-lessons->skill:skill-creator:skill-skill",
+      "source": "skill:capture-lessons",
+      "target": "skill:skill-creator",
+      "kind": "skill-skill",
+      "file": "capture-lessons/SKILL.md",
+      "line": 60,
+      "lines": [
+        60
+      ]
+    },
+    {
+      "id": "skill:capture-lessons->hook:config-protection:skill-hook",
+      "source": "skill:capture-lessons",
+      "target": "hook:config-protection",
+      "kind": "skill-hook",
+      "file": "capture-lessons/SKILL.md",
+      "line": 59,
+      "lines": [
+        59
+      ]
+    },
+    {
+      "id": "skill:capture-lessons->hook:no-em-dash:skill-hook",
+      "source": "skill:capture-lessons",
+      "target": "hook:no-em-dash",
+      "kind": "skill-hook",
+      "file": "capture-lessons/SKILL.md",
+      "line": 59,
+      "lines": [
+        59
+      ]
+    },
+    {
+      "id": "skill:honest-refusal->skill:relevance-profile:skill-skill",
+      "source": "skill:honest-refusal",
+      "target": "skill:relevance-profile",
+      "kind": "skill-skill",
+      "file": "honest-refusal/SKILL.md",
+      "line": 34,
+      "lines": [
+        34
+      ]
+    },
+    {
+      "id": "skill:phased-build->skill:adversarial-review:skill-skill",
+      "source": "skill:phased-build",
+      "target": "skill:adversarial-review",
+      "kind": "skill-skill",
+      "file": "phased-build/SKILL.md",
+      "line": 61,
+      "lines": [
+        61
+      ]
+    },
+    {
+      "id": "skill:phased-build->skill:decision-records:skill-skill",
+      "source": "skill:phased-build",
+      "target": "skill:decision-records",
+      "kind": "skill-skill",
+      "file": "phased-build/SKILL.md",
+      "line": 51,
+      "lines": [
+        51
+      ]
+    },
+    {
+      "id": "skill:phased-build->skill:strategic-compact:skill-skill",
+      "source": "skill:phased-build",
+      "target": "skill:strategic-compact",
+      "kind": "skill-skill",
+      "file": "phased-build/SKILL.md",
+      "line": 40,
+      "lines": [
+        40
+      ]
+    },
+    {
+      "id": "skill:phased-build->skill:verify-before-done:skill-skill",
+      "source": "skill:phased-build",
+      "target": "skill:verify-before-done",
+      "kind": "skill-skill",
+      "file": "phased-build/SKILL.md",
+      "line": 55,
+      "lines": [
+        55,
+        65,
+        85,
+        93
+      ]
+    },
+    {
+      "id": "skill:phased-build->agent:silent-failure-hunter:skill-agent",
+      "source": "skill:phased-build",
+      "target": "agent:silent-failure-hunter",
+      "kind": "skill-agent",
+      "file": "phased-build/SKILL.md",
+      "line": 60,
+      "lines": [
+        60
+      ]
+    },
+    {
+      "id": "skill:phased-build->agent:ts-reviewer:skill-agent",
+      "source": "skill:phased-build",
+      "target": "agent:ts-reviewer",
+      "kind": "skill-agent",
+      "file": "phased-build/SKILL.md",
+      "line": 59,
+      "lines": [
+        59
+      ]
+    },
+    {
+      "id": "skill:ponytail-audit->skill:ponytail-review:skill-skill",
+      "source": "skill:ponytail-audit",
+      "target": "skill:ponytail-review",
+      "kind": "skill-skill",
+      "file": "ponytail/skills/ponytail-audit/SKILL.md",
+      "line": 12,
+      "lines": [
+        12,
+        17
+      ]
+    },
+    {
+      "id": "skill:ponytail-debt->skill:ponytail:skill-skill",
+      "source": "skill:ponytail-debt",
+      "target": "skill:ponytail",
+      "kind": "skill-skill",
+      "file": "ponytail/skills/ponytail-debt/SKILL.md",
+      "line": 11,
+      "lines": [
+        11,
+        20,
+        31,
+        35,
+        38
+      ]
+    },
+    {
+      "id": "skill:ponytail-gain->skill:ponytail:skill-skill",
+      "source": "skill:ponytail-gain",
+      "target": "skill:ponytail",
+      "kind": "skill-skill",
+      "file": "ponytail/skills/ponytail-gain/SKILL.md",
+      "line": 27,
+      "lines": [
+        27,
+        30,
+        32,
+        33,
+        50
+      ]
+    },
+    {
+      "id": "skill:ponytail-gain->skill:ponytail-audit:skill-skill",
+      "source": "skill:ponytail-gain",
+      "target": "skill:ponytail-audit",
+      "kind": "skill-skill",
+      "file": "ponytail/skills/ponytail-gain/SKILL.md",
+      "line": 36,
+      "lines": [
+        36
+      ]
+    },
+    {
+      "id": "skill:ponytail-gain->skill:ponytail-debt:skill-skill",
+      "source": "skill:ponytail-gain",
+      "target": "skill:ponytail-debt",
+      "kind": "skill-skill",
+      "file": "ponytail/skills/ponytail-gain/SKILL.md",
+      "line": 35,
+      "lines": [
+        35,
+        44
+      ]
+    },
+    {
+      "id": "skill:ponytail-help->skill:ponytail:skill-skill",
+      "source": "skill:ponytail-help",
+      "target": "skill:ponytail",
+      "kind": "skill-skill",
+      "file": "ponytail/skills/ponytail-help/SKILL.md",
+      "line": 18,
+      "lines": [
+        18,
+        19,
+        20,
+        28,
+        31,
+        35,
+        41,
+        42,
+        53,
+        59,
+        65,
+        71
+      ]
+    },
+    {
+      "id": "skill:ponytail-help->skill:ponytail-audit:skill-skill",
+      "source": "skill:ponytail-help",
+      "target": "skill:ponytail-audit",
+      "kind": "skill-skill",
+      "file": "ponytail/skills/ponytail-help/SKILL.md",
+      "line": 30,
+      "lines": [
+        30
+      ]
+    },
+    {
+      "id": "skill:ponytail-help->skill:ponytail-debt:skill-skill",
+      "source": "skill:ponytail-help",
+      "target": "skill:ponytail-debt",
+      "kind": "skill-skill",
+      "file": "ponytail/skills/ponytail-help/SKILL.md",
+      "line": 31,
+      "lines": [
+        31
+      ]
+    },
+    {
+      "id": "skill:ponytail-help->skill:ponytail-gain:skill-skill",
+      "source": "skill:ponytail-help",
+      "target": "skill:ponytail-gain",
+      "kind": "skill-skill",
+      "file": "ponytail/skills/ponytail-help/SKILL.md",
+      "line": 32,
+      "lines": [
+        32
+      ]
+    },
+    {
+      "id": "skill:ponytail-help->skill:ponytail-review:skill-skill",
+      "source": "skill:ponytail-help",
+      "target": "skill:ponytail-review",
+      "kind": "skill-skill",
+      "file": "ponytail/skills/ponytail-help/SKILL.md",
+      "line": 29,
+      "lines": [
+        29,
+        35
+      ]
+    },
+    {
+      "id": "skill:ponytail-review->skill:ponytail:skill-skill",
+      "source": "skill:ponytail-review",
+      "target": "skill:ponytail",
+      "kind": "skill-skill",
+      "file": "ponytail/skills/ponytail-review/SKILL.md",
+      "line": 55,
+      "lines": [
+        55
+      ]
+    },
+    {
+      "id": "skill:query-to-corpus->skill:honest-refusal:skill-skill",
+      "source": "skill:query-to-corpus",
+      "target": "skill:honest-refusal",
+      "kind": "skill-skill",
+      "file": "query-to-corpus/SKILL.md",
+      "line": 36,
+      "lines": [
+        36
+      ]
+    },
+    {
+      "id": "skill:relevance-profile->skill:honest-refusal:skill-skill",
+      "source": "skill:relevance-profile",
+      "target": "skill:honest-refusal",
+      "kind": "skill-skill",
+      "file": "relevance-profile/SKILL.md",
+      "line": 26,
+      "lines": [
+        26
+      ]
+    },
+    {
+      "id": "skill:scholar-evaluation->skill:adversarial-review:skill-skill",
+      "source": "skill:scholar-evaluation",
+      "target": "skill:adversarial-review",
+      "kind": "skill-skill",
+      "file": "scholar-evaluation/SKILL.md",
+      "line": 85,
+      "lines": [
+        85
+      ]
+    },
+    {
+      "id": "skill:skill-audit->skill:phased-build:skill-skill",
+      "source": "skill:skill-audit",
+      "target": "skill:phased-build",
+      "kind": "skill-skill",
+      "file": "skill-audit/SKILL.md",
+      "line": 46,
+      "lines": [
+        46
+      ]
+    },
+    {
+      "id": "skill:unattended-build->skill:adversarial-review:skill-skill",
+      "source": "skill:unattended-build",
+      "target": "skill:adversarial-review",
+      "kind": "skill-skill",
+      "file": "unattended-build/SKILL.md",
+      "line": 117,
+      "lines": [
+        117,
+        118
+      ]
+    },
+    {
+      "id": "skill:unattended-build->skill:decision-records:skill-skill",
+      "source": "skill:unattended-build",
+      "target": "skill:decision-records",
+      "kind": "skill-skill",
+      "file": "unattended-build/SKILL.md",
+      "line": 97,
+      "lines": [
+        97
+      ]
+    },
+    {
+      "id": "skill:unattended-build->skill:honest-refusal:skill-skill",
+      "source": "skill:unattended-build",
+      "target": "skill:honest-refusal",
+      "kind": "skill-skill",
+      "file": "unattended-build/SKILL.md",
+      "line": 105,
+      "lines": [
+        105
+      ]
+    },
+    {
+      "id": "skill:unattended-build->skill:phased-build:skill-skill",
+      "source": "skill:unattended-build",
+      "target": "skill:phased-build",
+      "kind": "skill-skill",
+      "file": "unattended-build/SKILL.md",
+      "line": 8,
+      "lines": [
+        8,
+        132,
+        134
+      ]
+    },
+    {
+      "id": "skill:unattended-build->skill:strategic-compact:skill-skill",
+      "source": "skill:unattended-build",
+      "target": "skill:strategic-compact",
+      "kind": "skill-skill",
+      "file": "unattended-build/SKILL.md",
+      "line": 97,
+      "lines": [
+        97
+      ]
+    },
+    {
+      "id": "skill:unattended-build->skill:verify-before-done:skill-skill",
+      "source": "skill:unattended-build",
+      "target": "skill:verify-before-done",
+      "kind": "skill-skill",
+      "file": "unattended-build/SKILL.md",
+      "line": 104,
+      "lines": [
+        104,
+        116
+      ]
+    },
+    {
+      "id": "agent:ts-reviewer->agent:silent-failure-hunter:agent-agent",
+      "source": "agent:ts-reviewer",
+      "target": "agent:silent-failure-hunter",
+      "kind": "agent-agent",
+      "file": "agents/ts-reviewer.md",
+      "line": 33,
+      "lines": [
+        33
+      ]
+    }
+  ]
+}
