@@ -64,9 +64,9 @@ test('a node is measured only when its eval status states a score', () => {
   assert.equal(app.isMeasured({ eval_status: 'unmeasured' }), false);
   assert.equal(app.isMeasured({}), false);
   const one = structuredClone(graph);
-  one.nodes[0].eval_status = 'measured: 8/8';
+  one.nodes.find((n) => !app.isMeasured(n)).eval_status = 'measured: 8/8';
   const flags = app.toElements(one).filter((e) => e.group === 'nodes' && e.data.kind !== 'family').map((e) => e.data.measured);
-  assert.equal(flags.filter(Boolean).length, 1);
+  assert.equal(flags.filter(Boolean).length, graph.nodes.filter(app.isMeasured).length + 1);
   assert.equal(app.toElements(graph).filter((e) => e.data.measured).length, graph.nodes.filter(app.isMeasured).length);
 });
 
