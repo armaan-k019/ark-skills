@@ -91,6 +91,16 @@ test('family labels are uppercase with a thin space between letters', () => {
   assert.equal(parent.data.label.split(thin).join(''), graph.families[0].label.toUpperCase());
 });
 
+test('the decided visual values are in the constants', () => {
+  // Literals, not app.js's own values, so changing a constant alone fails here.
+  // The smoke test checks the same values on the drawn page (see DECIDED there).
+  assert.ok(app.MIN_LABEL_PX >= 13, `MIN_LABEL_PX is ${app.MIN_LABEL_PX}, below the decided 13 px floor`);
+  assert.deepEqual(app.FAMILY_LABEL, { px: 11, color: '#6b7280' });
+  assert.deepEqual(app.KIND_COLORS, { skill: '#64748b', agent: '#f59e0b', hook: '#16a34a' });
+  assert.equal(app.VENDORED_BORDER.style, 'dashed');
+  assert.equal(app.VENDORED_BORDER.width, 2);
+});
+
 test('kind colors are three distinct colors', () => {
   assert.deepEqual(Object.keys(app.KIND_COLORS), ['skill', 'agent', 'hook']);
   assert.equal(new Set(Object.values(app.KIND_COLORS)).size, 3);
