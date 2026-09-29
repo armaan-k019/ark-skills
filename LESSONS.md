@@ -74,3 +74,11 @@ Context: vetting ccboard with vet-third-party/scripts/scan.py.
 Root cause: the scanner's TEXT_EXT set has no `.rs`, so none of ccboard's 175 Rust files were scanned, and every serious finding (0.0.0.0 bind, open CORS, unmasked secrets, hook overwrite) was in Rust.
 Next time a scan reports on a repo, I will compare its scanned extensions with the repo's source languages before trusting its counts.
 Evidence: viz/MONITOR-EVAL.md, "A gap in the vetting tool itself". Fixing the scanner is left for its own branch (author's decision, PROGRESS.md Q5).
+
+## A punctuation change inside YAML frontmatter can break the file
+Seen: 2026-09-28 (ark-skills)   Count: 1
+
+Context: replacing an em dash in recruiter-demo-writer's frontmatter description with a colon.
+Root cause: the description is an unquoted YAML scalar, and a colon followed by a space inside it starts a mapping, so the file no longer parsed ("mapping values are not allowed here").
+Next time I edit a SKILL.md description, I will parse the frontmatter with a YAML parser before committing, and prefer commas or parentheses over colons in unquoted values.
+Evidence: commit ecee511 on fix/em-dash-in-descriptions (never pushed) failed yaml.safe_load; replaced by d686c46, which uses a comma and parses.
