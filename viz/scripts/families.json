@@ -8,7 +8,8 @@
         "spec-writing",
         "strategic-compact",
         "unattended-build",
-        "verify-before-done"
+        "verify-before-done",
+        "visual-loop"
       ]
     },
     {

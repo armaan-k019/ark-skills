@@ -14,49 +14,49 @@
       "label": "Review and honesty",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 15
+      "line": 16
     },
     {
       "id": "research",
       "label": "Research",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 25
+      "line": 26
     },
     {
       "id": "skill-management",
       "label": "Skill management",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 36
+      "line": 37
     },
     {
       "id": "domain",
       "label": "Domain",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 45
+      "line": 46
     },
     {
       "id": "vendored",
       "label": "Vendored",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 53
+      "line": 54
     },
     {
       "id": "agents",
       "label": "Agents",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 66
+      "line": 67
     },
     {
       "id": "hooks",
       "label": "Hooks",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 74
+      "line": 75
     }
   ],
   "nodes": [
@@ -495,6 +495,23 @@
       },
       "eval_status": "unmeasured",
       "family": "skill-management",
+      "vendored": false
+    },
+    {
+      "id": "skill:visual-loop",
+      "kind": "skill",
+      "name": "visual-loop",
+      "path": "visual-loop/SKILL.md",
+      "lines": 82,
+      "description": "Run taste work (layout, typography, color, spacing, anything judged by looking) as short rounds in which the human looks at the artifact and decides, and the session builds only what was decided and turns each decision into a check. Use when asked to make a page or UI look better, cleaner, more polished, or more professional, when a human sends numbered feedback on screenshots, when a SPEC or build reaches a STOP for visual design, or when a visual change request arrives in the middle of other work. Also use when tempted to improve a design on your own initiative. For machine-checkable work with nobody watching, use unattended-build; for design craft itself, use impeccable.",
+      "origin": {
+        "from": "body",
+        "text": "Written for this repo from the skills-graph run of 2026-09-28: function-only phases, a STOP at phase 4, then three rounds of the author's feedback on screenshots (F1 to F3, F4 to F6, F7 and F8). The sources are the author's prompts for that run (session transcript, not in the repo), the history of `PROGRESS.md` from 1114514 (\"Phase 4: STOPPED for the author\") to 7812a2e, and `viz/scripts/smoke.mjs`, which has an assertion for each decided value. The failure it guards against is from `unattended-build`'s source project, where four unattended rounds on a visual redesign produced confident, well-tested, thoroughly wrong work. Two rules come from this skill's own eval (Eval and cost, below): writing the decided value into the check (Step 5) and keeping a round small (Step 3).",
+        "line": 10
+      },
+      "eval_status": "measured: 100%",
+      "eval_line": 71,
+      "family": "build-discipline",
       "vendored": false
     },
     {
@@ -1126,6 +1143,76 @@
       "lines": [
         104,
         116
+      ]
+    },
+    {
+      "id": "skill:visual-loop->skill:impeccable:skill-skill",
+      "source": "skill:visual-loop",
+      "target": "skill:impeccable",
+      "kind": "skill-skill",
+      "file": "visual-loop/SKILL.md",
+      "line": 8,
+      "lines": [
+        8
+      ]
+    },
+    {
+      "id": "skill:visual-loop->skill:phased-build:skill-skill",
+      "source": "skill:visual-loop",
+      "target": "skill:phased-build",
+      "kind": "skill-skill",
+      "file": "visual-loop/SKILL.md",
+      "line": 14,
+      "lines": [
+        14
+      ]
+    },
+    {
+      "id": "skill:visual-loop->skill:scroll-world:skill-skill",
+      "source": "skill:visual-loop",
+      "target": "skill:scroll-world",
+      "kind": "skill-skill",
+      "file": "visual-loop/SKILL.md",
+      "line": 36,
+      "lines": [
+        36
+      ]
+    },
+    {
+      "id": "skill:visual-loop->skill:skill-creator:skill-skill",
+      "source": "skill:visual-loop",
+      "target": "skill:skill-creator",
+      "kind": "skill-skill",
+      "file": "visual-loop/SKILL.md",
+      "line": 71,
+      "lines": [
+        71
+      ]
+    },
+    {
+      "id": "skill:visual-loop->skill:unattended-build:skill-skill",
+      "source": "skill:visual-loop",
+      "target": "skill:unattended-build",
+      "kind": "skill-skill",
+      "file": "visual-loop/SKILL.md",
+      "line": 8,
+      "lines": [
+        8,
+        10,
+        14,
+        26
+      ]
+    },
+    {
+      "id": "skill:visual-loop->skill:verify-before-done:skill-skill",
+      "source": "skill:visual-loop",
+      "target": "skill:verify-before-done",
+      "kind": "skill-skill",
+      "file": "visual-loop/SKILL.md",
+      "line": 38,
+      "lines": [
+        38,
+        56
       ]
     },
     {
