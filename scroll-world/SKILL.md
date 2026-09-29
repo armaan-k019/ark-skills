@@ -644,6 +644,7 @@ is the thing most likely to be wrong:
     crops a 16:9 clip to its centre — confirm the focal subject still reads, and remind
     the user this is the stopgap, not the mobile version.
 - Check reduced-motion (should fall back to the stills, no video, no particles).
+- Before calling the page done, run the host project's checks with `verify-before-done`; for the design of the page around the world (type, layout, copy), use `impeccable`.
 
 ---
 

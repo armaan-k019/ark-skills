@@ -85,7 +85,7 @@ Grade claims:
 
 ## 7. Verify every citation before finishing
 
-For each reference: confirm it resolves, confirm authors, year, and venue, confirm the specific claim appears in the source, and confirm the type label. Fix citation metadata from the source page, never from memory. Use the citation style the venue requires.
+For each reference: confirm it resolves, confirm authors, year, and venue, confirm the specific claim appears in the source, and confirm the type label. Fix citation metadata from the source page, never from memory. Use the citation style the venue requires. Report citations you could not verify, and a question the sources do not answer, the way `honest-refusal` describes, instead of softening either.
 
 ## Output
 

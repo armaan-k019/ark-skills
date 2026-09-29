@@ -399,7 +399,7 @@ try {
   // The outline's positive case: serve a copy of graph.json in which one skill
   // states a score, and check the drawn outline, its label clearance, and the legend.
   const scored = structuredClone(graph);
-  const scoredNode = scored.nodes.find((n) => n.kind === 'skill' && !n.vendored);
+  const scoredNode = scored.nodes.find((n) => n.kind === 'skill' && !n.vendored && !measured(n));
   scoredNode.eval_status = 'measured: 1/1';
   const page2 = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   await page2.route('**/data/graph.json', (route) => route.fulfill({ json: scored }));
@@ -419,15 +419,32 @@ try {
     const labelClear = !(l.x1 < c.x2 && c.x1 < l.x2 && l.y1 < c.y2 && c.y1 < l.y2);
     return { outlined, labelClear, legend: document.getElementById('legend').textContent };
   }, { id: scoredNode.id, width: app.MEASURED_OUTLINE.width });
-  check(outline.outlined.length === 1 && outline.outlined[0].id === scoredNode.id, `outlined nodes ${JSON.stringify(outline.outlined)}, expected only ${scoredNode.id}`);
+  const expectedOutlined = scored.nodes.filter(measured).map((n) => n.id).sort();
+  check(JSON.stringify(outline.outlined.map((o) => o.id).sort()) === JSON.stringify(expectedOutlined), `outlined nodes ${JSON.stringify(outline.outlined)}, expected ${expectedOutlined.join(', ')}`);
+  const scoredOutline = outline.outlined.find((o) => o.id === scoredNode.id);
   check(
-    outline.outlined[0].width === app.MEASURED_OUTLINE.width && outline.outlined[0].color.replace(/\s/g, '') === rgb(app.MEASURED_OUTLINE.color),
-    `outline on ${scoredNode.id} is ${JSON.stringify(outline.outlined[0])}`,
+    scoredOutline.width === app.MEASURED_OUTLINE.width && scoredOutline.color.replace(/\s/g, '') === rgb(app.MEASURED_OUTLINE.color),
+    `outline on ${scoredNode.id} is ${JSON.stringify(scoredOutline)}`,
   );
   check(outline.labelClear, `the label of ${scoredNode.id} overlaps its outlined circle`);
-  check(outline.legend.includes('(1 node)'), 'legend does not count the scored node');
+  check(outline.legend.includes(`(${expectedOutlined.length} ${expectedOutlined.length === 1 ? 'node' : 'nodes'})`), 'legend does not count the scored node');
   await page2.close();
-  result = { counts, target, outgoing, incoming, legibility, routing, packing, families: graph.families.length, kinds: kinds.length, scored: scoredNode.id, focusId };
+
+  // Routing on a denser graph: scripts/fixtures/graph-routing.json is this
+  // repo's graph with spec-writing and visual-loop added (32 nodes, 64 edges).
+  // Its visual-loop -> impeccable edge cannot be routed by bending at the
+  // midpoint alone, so this fails if the router stops trying other points.
+  const dense = JSON.parse(await readFile(new URL('./fixtures/graph-routing.json', import.meta.url), 'utf8'));
+  const page3 = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  await page3.route('**/data/graph.json', (route) => route.fulfill({ json: dense }));
+  await page3.goto(base);
+  await page3.waitForFunction(() => window.__graphReady === true || Boolean(window.__graphError), null, { timeout: 20000 });
+  const error3 = await page3.evaluate(() => window.__graphError || null);
+  check(!error3, `page with the routing fixture reported: ${error3}`);
+  const denseUnrouted = await page3.evaluate(() => window.__unroutedEdges || null);
+  check(Array.isArray(denseUnrouted) && denseUnrouted.length === 0, `routing fixture: edges the page could not route around nodes: ${JSON.stringify(denseUnrouted)}`);
+  await page3.close();
+  result = { counts, target, outgoing, incoming, legibility, routing, packing, families: graph.families.length, kinds: kinds.length, scored: scoredNode.id, focusId, denseEdges: dense.edges.length };
 } finally {
   await browser.close();
 }
@@ -442,5 +459,5 @@ console.log(
     `filters exact for ${result.families} families and ${result.kinds} edge kinds; ` +
     `focus checked for default, hover, selection, and clearing; ` +
     `boxes ordered by size, no lone last-row member, largest empty rectangle ${(result.packing.largestEmpty * 100).toFixed(1)}% of the canvas; ` +
-    `outline drawn on ${result.scored} in a scored copy; wrote ${screenshotPath} (no focus) and ${focusShotPath} (${result.focusId} selected)`,
+    `outline drawn on ${result.scored} in a scored copy; routing fixture: all ${result.denseEdges} edges routed; wrote ${screenshotPath} (no focus) and ${focusShotPath} (${result.focusId} selected)`,
 );

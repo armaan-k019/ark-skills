@@ -118,7 +118,8 @@ function packRows(shapes, width) {
   const rows = [];
   const cells = [];
   for (const s of shapes) {
-    let row = rows.find((r) => s.h <= r.h && r.used + (r.used ? GAP : 0) + s.w <= width);
+    const open = rows[rows.length - 1];
+    let row = open && s.h <= open.h && open.used + GAP + s.w <= width ? open : null;
     if (!row) {
       const prev = rows[rows.length - 1];
       row = { y: prev ? prev.y + prev.h + GAP : 0, h: s.h, used: 0 };
@@ -224,11 +225,13 @@ function routeEdges(cy) {
   const unrouted = [];
   cy.edges().forEach((edge) => {
     if (edgeBlockers(edge, members).length === 0) return;
-    for (const bend of ROUTE_BENDS) {
-      edge.style({ 'curve-style': 'unbundled-bezier', 'control-point-distances': bend, 'control-point-weights': 0.5 });
-      if (edgeBlockers(edge, members).length === 0) {
-        edge.data('bend', bend);
-        return;
+    for (const weight of [0.5, 0.3, 0.7]) {
+      for (const bend of ROUTE_BENDS) {
+        edge.style({ 'curve-style': 'unbundled-bezier', 'control-point-distances': bend, 'control-point-weights': weight });
+        if (edgeBlockers(edge, members).length === 0) {
+          edge.data('bend', bend);
+          return;
+        }
       }
     }
     edge.removeStyle('curve-style control-point-distances control-point-weights');

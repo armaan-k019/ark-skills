@@ -54,6 +54,23 @@ test('family cells are ordered by member count, largest first', () => {
   assert.equal(placed.length, counts.length);
 });
 
+test('family cells read from most members to fewest, row by row', () => {
+  // Reading order is rows top to bottom, then cells left to right. A packer
+  // that lets a smaller family fill a gap in an earlier row breaks it; this
+  // repo's own counts did so in a square viewport.
+  const own = graph.families.map((f) => graph.nodes.filter((n) => n.family === f.id).length);
+  for (const set of [own, [7, 5, 5, 4, 3, 3, 2, 2], [9, 6, 4, 4, 3, 2]]) {
+    for (const aspect of [0.5, 1, 1.12, 1.3, 2, 4]) {
+      const cells = app.familyCells(set.map((count, i) => ({ id: `f${i}`, count })), aspect);
+      const rows = [...new Set(cells.map((c) => c.y1))].sort((a, b) => a - b);
+      const reading = rows.flatMap((y) => cells.filter((c) => c.y1 === y).sort((a, b) => a.x1 - b.x1)).map((c) => c.count);
+      reading.forEach((count, i) => {
+        assert.ok(i === 0 || count <= reading[i - 1], `counts ${set} at aspect ${aspect} read ${reading}`);
+      });
+    }
+  }
+});
+
 test('a wide viewport gets more cell columns than a tall one', () => {
   const counts = graph.families.map((f) => ({ id: f.id, count: graph.nodes.filter((n) => n.family === f.id).length }));
   const columns = (aspect) => new Set(app.familyCells(counts, aspect).map((c) => c.x1)).size;

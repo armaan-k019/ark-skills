@@ -1,12 +1,12 @@
 # Progress: wiring and gap skills
-Updated: 2026-09-29 09:56 EDT (from `date`)   Branch: feat/gap-skills (from origin/main d6f266a, upstream unset)   Last commit: d0650bf
+Updated: 2026-09-29 13:03 EDT (from `date`)   Branch: feat/gap-skills (from origin/main d6f266a; origin/main 59e4e32 merged in)   Last commit: d0650bf
 The previous run's log (skills-graph) is in the git history of this file. Track A's log is on chore/wire-skill-references (PR #6).
 
 ## SPEC summary
 Track A (chore/wire-skill-references): done, PR #6 open, not merged. Track B (feat/gap-skills, from main after Track A's PR is open): evidence-first skills, one at a time, stopping after each: B1 spec-writing, B2 visual-loop, B3 debugging (needs the author's Stage A session), B4 and B5 stop and ask. Per skill: list the evidence with paths, draft with skill-creator, eval against a no-skill baseline on a real task (both scores, tokens, time; tune once), add to families.json and rerun the extractor, commit, stop and show.
 
 ## Now
-Stopped for the author: PR #7 is ready (3 commits, open, mergeable); Q8 cross-references committed on feat/gap-skills
+Final steps: PR #7 merged by the author (59e4e32); main merged into this branch; then the final regeneration, verify-before-done, capture-lessons, push, and PR
 
 ## Done and verified
 - Track A: PR #6 (https://github.com/armaan-k019/ark-skills/pull/6), acceptance and gate in that branch's PROGRESS.md.
@@ -57,6 +57,8 @@ Stopped for the author: PR #7 is ready (3 commits, open, mergeable); Q8 cross-re
   - Q8 on feat/gap-skills: 6d01e2e (unattended-build Step 0), a0f8ad3 (spec-writing Step 5), d0650bf (graph: 32 nodes, 52 edges; visual-loop incoming from unattended-build line 28 and spec-writing line 91). Extractor exit 0, unittest OK, hooks 26/26.
   - Q6: deferred by the author to fix/viz-checks-assert-decided-values after PR #7 merges.
 
+- PR #7 merged by the author at 2026-09-29 13:02 EDT (59e4e32). Merged origin/main into this branch (no rebase). Conflicts in LESSONS.md, STANDING-DECISIONS.md, PROGRESS.md, and viz/data/graph.json: main's sides of the first two held nothing the branch lacked except the three clock-lesson lines the branch had updated, so the branch's versions were kept; PROGRESS.md keeps this branch's log (Track A's log is in main's history, e5d423b); graph.json is regenerated in the final commit.
+
 ## In flight
 - none
 
@@ -71,4 +73,4 @@ Stopped for the author: PR #7 is ready (3 commits, open, mergeable); Q8 cross-re
 - Evals run against a clean clone of origin/main in the scratchpad, so neither configuration can see the draft skill or Track A's changes.
 
 ## Next action
-Wait for the author to merge PR #7. Then: merge origin/main into feat/gap-skills (no rebase), regenerate viz/data/graph.json and both screenshots as the branch's final commit, and run the full checks with node --test. Later, on its own branch after PR #7: fix/viz-checks-assert-decided-values. B3 needs the author's Stage A session; B4 and B5 need the author first.
+Final commit: regenerate viz/data/graph.json and both screenshots; then verify-before-done, push feat/gap-skills, and open a PR (not merged).
