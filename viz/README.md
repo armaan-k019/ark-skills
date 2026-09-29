@@ -16,7 +16,7 @@ The page (`index.html`, `app.js`, `style.css`) uses Cytoscape.js 3.34.3, vendore
 ```
 schema_version  1
 generated_by    "viz/scripts/build_graph.py"
-families[]      id, label, rule, file, line (line only for README sections)
+families[]      id, label, rule ("families.json"), file, line
 nodes[]         id, kind (skill | agent | hook), name, description, path, lines, family,
                 origin, license_notice, eval_status, eval_line (skills), coverage (hooks)
 edges[]         id, source, target, kind (skill-skill | skill-hook | skill-agent | agent-skill | agent-agent),
@@ -40,10 +40,7 @@ Files are read as UTF-8; a leading byte-order mark is ignored.
 
 - **name, description:** the frontmatter fields of the same names. Plain, quoted, and block (`>` or `|`) scalars are read.
 - **lines:** the number of lines as Python's `str.splitlines()` counts them. This is one more than `wc -l` when a file has no trailing newline (for example `impeccable/SKILL.md`).
-- **family**, first rule that applies:
-  1. `suite-directory`: the skill sits at `<dir>/<name>/SKILL.md` and `<dir>` holds two or more skills (today only `ponytail/skills`).
-  2. `readme-section`: README.md has a bullet that opens with the node's name in bold (`**name**`, or `**file.js**` for a hook). The family is the nearest `##` or `###` heading above it.
-  3. `top-level-directory`: the node's top-level directory. No node uses this today.
+- **family:** read from `viz/scripts/families.json`, an explicit taxonomy: build-discipline, review-and-honesty, research, skill-management, domain, agents, and hooks, each listing its members by name (a skill's or agent's frontmatter `name`, a hook's file stem). Families appear in the file's order. The build fails if a node is not listed, if the file lists a name that is not a node, if a name is listed twice, or if the file is malformed, so a new or renamed skill cannot land in a default family. To add a skill, add its name to one family in that file.
 - **origin:** the first body line that starts with "Adapted from", "Vendored from", or "Written for this repo" (hooks: a `// Adapted from` or `// Idea from` comment). `license` is the first license name in that line, matched as `MIT`, `Apache 2.0` (or `Apache License 2.0`), `BSD-<n>-Clause`, or `GPL-<n>`. If there is no such line but the frontmatter has a `license` field, origin is `{"from": "frontmatter", "license": ...}`. Otherwise it is omitted.
 - **license_notice:** the line in `licenses/ECC-LICENSE` that lists the node by skill name or by path, with the license named in that file.
 - **eval_status** (skills only): `measured: <score>` when a body line outside fenced code states a pass rate or score written as `N/M` or `N%`, for example "pass rate 8/8" or "scored 92%". Otherwise `unmeasured`. "Each criterion is scored 1 to 10" does not match, because "1 to 10" is not written as `N/M` or `N%`; a scoring instruction that is written that way ("scored 7/10 when it meets the bar") would match, so the rule is a heuristic. Today every skill is `unmeasured`. `ponytail-gain` quotes published benchmark medians for `ponytail`, but those are figures about another skill and are not written as a pass rate or score, so neither node is marked measured. Vendored skills may carry upstream claims, such as those benchmark medians, that this graph does not verify.

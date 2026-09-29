@@ -5,8 +5,11 @@ Standard library only. Every value in the output is read from a file; a field
 that cannot be derived from a file is omitted. The rules are documented in
 viz/README.md.
 
+Families come from viz/scripts/families.json, an explicit taxonomy; a node
+that is not listed there fails the build.
+
 Usage:
-    python3 viz/scripts/build_graph.py [--root PATH] [--out PATH]
+    python3 viz/scripts/build_graph.py [--root PATH] [--out PATH] [--families PATH]
 """
 
 import argparse
@@ -17,6 +20,7 @@ import sys
 from pathlib import Path
 
 SKILL_FILENAME = "SKILL.md"
+FAMILIES_FILE = Path("viz") / "scripts" / "families.json"
 HOOK_SETTINGS = Path("hooks") / "settings.example.json"
 LICENSE_NOTICE = Path("licenses") / "ECC-LICENSE"
 
@@ -29,9 +33,7 @@ EVAL_SCORE = re.compile(
     re.IGNORECASE,
 )
 FENCE = re.compile(r"^ {0,3}(```|~~~)")
-BOLD_BULLET = re.compile(r"^- ((?:\*\*[^*]+\*\*(?:,\s*)?)+)")
-BOLD_NAME = re.compile(r"\*\*([^*]+)\*\*")
-HEADING = re.compile(r"^(#{2,3})\s+(.*?)\s*$")
+FAMILY_ID = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 HOOK_REF = re.compile(r"hooks/([A-Za-z0-9_.-]+)")
 SCRIPT_SUFFIXES = {".js", ".mjs", ".cjs", ".sh", ".py"}
 # Scripts in hooks/ that are support code, not hooks: the shared input helper and the test runner.
@@ -179,27 +181,48 @@ def parse_license_notice(root):
     return entries
 
 
-def parse_readme_families(root):
-    """Map a bold bullet name in README.md to (heading label, heading line)."""
-    path = root / "README.md"
+def load_families(path, root):
+    """Read the family taxonomy: an ordered list of families, each naming its members.
+
+    Any structural problem is an error, so a malformed file cannot leave nodes
+    in a default family. Returns (families for graph.json, member name -> family id).
+    """
+    where = path.relative_to(root).as_posix() if path.is_relative_to(root) else path.as_posix()
     if not path.exists():
-        return {}
-    families = {}
-    heading = None
-    for idx, line in enumerate(read(path).split("\n")):
-        match = HEADING.match(line)
-        if match:
-            heading = (match.group(2).replace("`", ""), idx + 1)
-            continue
-        match = BOLD_BULLET.match(line)
-        if match and heading:
-            for name in BOLD_NAME.findall(match.group(1)):
-                families.setdefault(name.strip(), heading)
-    return families
-
-
-def slug(text):
-    return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+        raise GraphError(f"{where} not found")
+    text = read(path)
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError as err:
+        raise GraphError(f"{where} is not valid JSON: {err}") from err
+    entries = data.get("families") if isinstance(data, dict) else None
+    if not isinstance(entries, list) or not entries:
+        raise GraphError(f'{where}: expected a non-empty "families" list')
+    lines = text.split("\n")
+    families, member_of = [], {}
+    for entry in entries:
+        if not isinstance(entry, dict):
+            raise GraphError(f"{where}: each family must be an object")
+        fid, label, members = entry.get("id"), entry.get("label"), entry.get("members")
+        if not isinstance(fid, str) or not FAMILY_ID.match(fid):
+            raise GraphError(f"{where}: family id {fid!r} must be lowercase words joined by hyphens")
+        if any(f["id"] == fid for f in families):
+            raise GraphError(f"{where}: duplicate family id {fid}")
+        if not isinstance(label, str) or not label.strip():
+            raise GraphError(f"{where}: family {fid} needs a label")
+        if not isinstance(members, list) or not members or not all(isinstance(m, str) and m for m in members):
+            raise GraphError(f"{where}: family {fid} needs a non-empty list of member names")
+        for member in members:
+            if member in member_of:
+                raise GraphError(f"{where}: {member} is listed in both {member_of[member]} and {fid}")
+            member_of[member] = fid
+        id_line = re.compile(r'"id"\s*:\s*"' + re.escape(fid) + '"')
+        line = next((i + 1 for i, l in enumerate(lines) if id_line.search(l)), None)
+        family = {"id": fid, "label": label, "rule": "families.json", "file": where}
+        if line:
+            family["line"] = line
+        families.append(family)
+    return families, member_of
 
 
 def walk_files(top, root, name=None):
@@ -306,38 +329,15 @@ def registered_hooks(root):
     return hooks
 
 
-def build_graph(root, skill_filename=SKILL_FILENAME):
+def build_graph(root, skill_filename=SKILL_FILENAME, families_path=None):
     root = Path(root).resolve()
+    families_path = Path(families_path).resolve() if families_path else root / FAMILIES_FILE
     notices = parse_license_notice(root)
-    readme = parse_readme_families(root)
-    families = {}
     nodes = []
     sources = {}  # node id -> (lines, body_start, kind)
 
-    def add_family(fid, label, rule, file=None, line=None):
-        if fid not in families:
-            fam = {"id": fid, "label": label, "rule": rule}
-            if file:
-                fam["file"] = file
-            if line:
-                fam["line"] = line
-            families[fid] = fam
-        return fid
-
-    def family_for(key, rel_path, suite=None):
-        if suite is not None:
-            return add_family(f"suite:{suite}", suite, "suite-directory", file=suite)
-        if key in readme:
-            label, line = readme[key]
-            return add_family(f"readme:{slug(label)}", label, "readme-section", "README.md", line)
-        top = rel_path.parts[0]
-        return add_family(f"dir:{top}", top, "top-level-directory", file=top)
-
     # Skills
     skill_files = discover_skills(root, skill_filename)
-    parents = {}
-    for path in skill_files:
-        parents.setdefault(path.parent.parent, []).append(path)
     for path in skill_files:
         rel = path.relative_to(root)
         text = read(path)
@@ -351,10 +351,6 @@ def build_graph(root, skill_filename=SKILL_FILENAME):
         if not name:
             raise GraphError(f"{rel.as_posix()}: frontmatter has no name")
         lines = text.split("\n")
-        suite_dir = path.parent.parent
-        suite = None
-        if suite_dir != root and len(parents.get(suite_dir, [])) >= 2:
-            suite = suite_dir.relative_to(root).as_posix()
         node = {
             "id": f"skill:{name}",
             "kind": "skill",
@@ -364,7 +360,6 @@ def build_graph(root, skill_filename=SKILL_FILENAME):
         }
         if fields.get("description"):
             node["description"] = fields["description"]
-        node["family"] = family_for(name, rel, suite)
         origin = find_origin(lines, body_start, ORIGIN_MD)
         if fields.get("license"):
             if origin is None:
@@ -404,7 +399,6 @@ def build_graph(root, skill_filename=SKILL_FILENAME):
             node["name"] = name
         if fields.get("description"):
             node["description"] = fields["description"]
-        node["family"] = family_for(name or path.stem, rel)
         origin = find_origin(lines, body_start, ORIGIN_MD)
         if origin:
             node["origin"] = origin
@@ -444,7 +438,6 @@ def build_graph(root, skill_filename=SKILL_FILENAME):
             "name": stem,
             "path": rel.as_posix(),
             "lines": len(text.splitlines()),
-            "family": family_for(filename, rel),
             "coverage": hooks[filename],
         }
         origin = find_origin(lines, 0, ORIGIN_JS)
@@ -472,6 +465,20 @@ def build_graph(root, skill_filename=SKILL_FILENAME):
     )
     if shared:
         raise GraphError(f"names used by more than one node kind, so mentions are ambiguous: {', '.join(shared)}")
+
+    # Families: every node must be listed in families.json, and every name listed
+    # there must be a node, so a new or renamed node cannot land in a default bucket.
+    families, member_of = load_families(families_path, root)
+    where = families[0]["file"]
+    by_name = {n.get("name") or Path(n["path"]).stem: n for n in nodes}
+    unmapped = sorted(name for name in by_name if name not in member_of)
+    if unmapped:
+        raise GraphError(f"nodes not listed in any family in {where}: {', '.join(unmapped)}")
+    stale = sorted(name for name in member_of if name not in by_name)
+    if stale:
+        raise GraphError(f"{where} lists names that are not nodes: {', '.join(stale)}")
+    for name, node in by_name.items():
+        node["family"] = member_of[name]
 
     # Edges: a body naming another node, one edge per (source, target, kind).
     # The kind is "<source kind>-<target kind>".
@@ -507,11 +514,10 @@ def build_graph(root, skill_filename=SKILL_FILENAME):
                         "lines": hits,
                     })
 
-    used = {n["family"] for n in nodes}
     graph = {
         "schema_version": 1,
         "generated_by": "viz/scripts/build_graph.py",
-        "families": [families[f] for f in sorted(used)],
+        "families": families,
         "nodes": nodes,
         "edges": edges,
     }
@@ -541,10 +547,11 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--root", type=Path, default=default_root)
     parser.add_argument("--out", type=Path, default=None)
+    parser.add_argument("--families", type=Path, default=None, help="default: <root>/viz/scripts/families.json")
     args = parser.parse_args(argv)
     out = args.out or (args.root / "viz" / "data" / "graph.json")
     try:
-        graph = build_graph(args.root)
+        graph = build_graph(args.root, families_path=args.families)
     except (GraphError, OSError, UnicodeDecodeError) as err:
         print(f"build_graph: error: {err}", file=sys.stderr)
         return 1

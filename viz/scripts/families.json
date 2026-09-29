@@ -1,0 +1,76 @@
+{
+  "families": [
+    {
+      "id": "build-discipline",
+      "label": "Build discipline",
+      "members": [
+        "decision-records",
+        "phased-build",
+        "ponytail",
+        "ponytail-debt",
+        "ponytail-gain",
+        "ponytail-help",
+        "strategic-compact",
+        "unattended-build",
+        "verify-before-done"
+      ]
+    },
+    {
+      "id": "review-and-honesty",
+      "label": "Review and honesty",
+      "members": [
+        "adversarial-review",
+        "honest-refusal",
+        "ponytail-audit",
+        "ponytail-review"
+      ]
+    },
+    {
+      "id": "research",
+      "label": "Research",
+      "members": [
+        "experiment-discipline",
+        "literature-review",
+        "query-to-corpus",
+        "relevance-profile",
+        "scholar-evaluation"
+      ]
+    },
+    {
+      "id": "skill-management",
+      "label": "Skill management",
+      "members": [
+        "capture-lessons",
+        "skill-audit",
+        "skill-creator",
+        "vet-third-party"
+      ]
+    },
+    {
+      "id": "domain",
+      "label": "Domain",
+      "members": [
+        "impeccable",
+        "recruiter-demo-writer",
+        "scroll-world"
+      ]
+    },
+    {
+      "id": "agents",
+      "label": "Agents",
+      "members": [
+        "silent-failure-hunter",
+        "ts-reviewer"
+      ]
+    },
+    {
+      "id": "hooks",
+      "label": "Hooks",
+      "members": [
+        "block-no-verify",
+        "config-protection",
+        "no-em-dash"
+      ]
+    }
+  ]
+}

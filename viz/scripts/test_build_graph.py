@@ -22,10 +22,14 @@ REPO = HERE.parent.parent
 FIXTURE_NAME = "SKILL.fixture.md"
 
 
+def build(root):
+    return bg.build_graph(root, skill_filename=FIXTURE_NAME, families_path=Path(root) / "families.json")
+
+
 class FixtureGraph(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.graph = bg.build_graph(FIXTURE, skill_filename=FIXTURE_NAME)
+        cls.graph = build(FIXTURE)
         cls.nodes = {n["id"]: n for n in cls.graph["nodes"]}
         cls.edges = {(e["source"], e["target"], e["kind"]): e for e in cls.graph["edges"]}
 
@@ -186,16 +190,14 @@ class FixtureGraph(unittest.TestCase):
 
     # Families
 
-    def test_family_rules(self):
+    def test_families_come_from_families_json_in_file_order(self):
+        self.assertEqual([f["id"] for f in self.graph["families"]], ["core", "extra", "agents", "hooks"])
         fam = {f["id"]: f for f in self.graph["families"]}
-        self.assertEqual(self.nodes["skill:one"]["family"], "suite:suite/skills")
-        self.assertEqual(self.nodes["skill:alpha"]["family"], "readme:core-skills")
-        self.assertEqual(self.nodes["skill:gamma"]["family"], "readme:core-skills")
-        self.assertEqual(self.nodes["agent:helper"]["family"], "readme:subagents-agents")
-        self.assertEqual(self.nodes["hook:guard"]["family"], "readme:hooks-hooks")
-        self.assertEqual(self.nodes["skill:delta"]["family"], "dir:delta")
-        self.assertEqual(fam["readme:core-skills"]["line"], 3)
-        self.assertEqual(fam["dir:delta"]["rule"], "top-level-directory")
+        self.assertEqual(fam["core"], {"id": "core", "label": "Core", "rule": "families.json", "file": "families.json", "line": 3})
+        self.assertEqual(self.nodes["skill:alpha"]["family"], "core")
+        self.assertEqual(self.nodes["skill:one"]["family"], "extra")
+        self.assertEqual(self.nodes["agent:helper"]["family"], "agents")
+        self.assertEqual(self.nodes["hook:guard"]["family"], "hooks")
 
     # Validation and failure paths
 
@@ -244,9 +246,42 @@ class FailsLoudly(unittest.TestCase):
         return root
 
     def assertBuildFails(self, root, fragment):
-        with self.assertRaises(bg.GraphError) as ctx:
-            bg.build_graph(root, skill_filename=FIXTURE_NAME)
+        with self.assertRaises(bg.GraphError) as ctx, contextlib.redirect_stderr(io.StringIO()):
+            build(root)
         self.assertIn(fragment, str(ctx.exception))
+
+    def test_node_not_listed_in_families_json(self):
+        root = self.mutated("families.json", lambda t: t.replace('"delta", ', ''))
+        self.assertBuildFails(root, "nodes not listed in any family")
+
+    def test_families_json_names_a_node_that_does_not_exist(self):
+        root = self.mutated("families.json", lambda t: t.replace('"guard"', '"guard", "renamed-hook"'))
+        self.assertBuildFails(root, "lists names that are not nodes")
+
+    def test_node_listed_in_two_families(self):
+        root = self.mutated("families.json", lambda t: t.replace('["guard"]', '["guard", "alpha"]'))
+        self.assertBuildFails(root, "listed in both")
+
+    def test_malformed_families_json(self):
+        cases = [
+            ("{}", "non-empty"),
+            ('{"families": []}', "non-empty"),
+            ('{"families": ["core"]}', "must be an object"),
+            ('{"families": [{"id": "Core", "label": "x", "members": ["alpha"]}]}', "lowercase"),
+            ('{"families": [{"id": "core", "members": ["alpha"]}]}', "needs a label"),
+            ('{"families": [{"id": "core", "label": "Core", "members": []}]}', "non-empty list of member"),
+            ('{"families": [{"id": "a", "label": "A", "members": ["alpha"]}, {"id": "a", "label": "B", "members": ["beta"]}]}', "duplicate family id"),
+            ("not json", "not valid JSON"),
+        ]
+        for text, fragment in cases:
+            with self.subTest(families=text):
+                root = self.mutated("families.json", lambda t, text=text: text)
+                self.assertBuildFails(root, fragment)
+
+    def test_missing_families_json(self):
+        root = self.mutated("families.json", lambda t: t)
+        (root / "families.json").unlink()
+        self.assertBuildFails(root, "families.json not found")
 
     def test_skill_without_frontmatter(self):
         root = self.mutated("beta/SKILL.fixture.md", lambda t: t.split("---\n", 2)[2])
@@ -258,7 +293,7 @@ class FailsLoudly(unittest.TestCase):
 
     def test_bom_does_not_hide_frontmatter(self):
         root = self.mutated("beta/SKILL.fixture.md", lambda t: "\ufeff" + t)
-        graph = bg.build_graph(root, skill_filename=FIXTURE_NAME)
+        graph = build(root)
         beta = next(n for n in graph["nodes"] if n["path"] == "beta/SKILL.fixture.md")
         self.assertEqual(beta.get("name"), "beta")
         self.assertIsNotNone(next((e for e in graph["edges"] if e["source"] == "skill:alpha" and e["target"] == "skill:beta"), None))
@@ -268,7 +303,7 @@ class FailsLoudly(unittest.TestCase):
             with self.subTest(settings=bad):
                 root = self.mutated("hooks/settings.example.json", lambda t, bad=bad: bad)
                 with self.assertRaises(bg.GraphError):
-                    bg.build_graph(root, skill_filename=FIXTURE_NAME)
+                    build(root)
 
     def test_command_that_names_no_hook_script(self):
         root = self.mutated(
@@ -309,7 +344,7 @@ class DiscoveryMatchesFind(unittest.TestCase):
         root = self.tree()
         (root / "lower").mkdir()
         (root / "lower" / FIXTURE_NAME.lower()).write_text("---\nname: lower\n---\n", encoding="utf-8")
-        graph = bg.build_graph(root, skill_filename=FIXTURE_NAME)
+        graph = build(root)
         self.assertNotIn("skill:lower", {n["id"] for n in graph["nodes"]})
 
     def test_skill_files_inside_node_modules_are_not_skills(self):
@@ -317,7 +352,7 @@ class DiscoveryMatchesFind(unittest.TestCase):
         dep = root / "viz" / "node_modules" / "somedep" / "skills" / "bundled"
         dep.mkdir(parents=True)
         (dep / FIXTURE_NAME).write_text("---\nname: bundled\n---\n", encoding="utf-8")
-        graph = bg.build_graph(root, skill_filename=FIXTURE_NAME)
+        graph = build(root)
         self.assertNotIn("skill:bundled", {n["id"] for n in graph["nodes"]})
 
     def test_nested_agent_file_is_an_agent(self):
@@ -326,7 +361,9 @@ class DiscoveryMatchesFind(unittest.TestCase):
         (root / "agents" / "extra" / "nested.md").write_text(
             "---\nname: nested\ndescription: nested agent\n---\nbody\n", encoding="utf-8"
         )
-        graph = bg.build_graph(root, skill_filename=FIXTURE_NAME)
+        families = root / "families.json"
+        families.write_text(families.read_text(encoding="utf-8").replace('"reviewer"', '"reviewer", "nested"'), encoding="utf-8")
+        graph = build(root)
         self.assertIn("agent:nested", {n["id"] for n in graph["nodes"]})
 
     def test_non_js_hook_is_registered(self):
@@ -341,7 +378,9 @@ class DiscoveryMatchesFind(unittest.TestCase):
             ),
             encoding="utf-8",
         )
-        graph = bg.build_graph(root, skill_filename=FIXTURE_NAME)
+        families = root / "families.json"
+        families.write_text(families.read_text(encoding="utf-8").replace('["guard"]', '["guard", "lint-guard"]'), encoding="utf-8")
+        graph = build(root)
         self.assertIn("hook:lint-guard", {n["id"] for n in graph["nodes"]})
 
     def test_unregistered_script_is_reported(self):
@@ -349,7 +388,7 @@ class DiscoveryMatchesFind(unittest.TestCase):
         (root / "hooks" / "forgotten.js").write_text("process.exit(0);\n", encoding="utf-8")
         err = io.StringIO()
         with contextlib.redirect_stderr(err):
-            graph = bg.build_graph(root, skill_filename=FIXTURE_NAME)
+            graph = build(root)
         self.assertIn("not registered", err.getvalue())
         self.assertIn("forgotten.js", err.getvalue())
         self.assertNotIn("_input.js", err.getvalue())
