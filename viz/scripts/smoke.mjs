@@ -237,6 +237,57 @@ try {
   await page.check(`#edge-filters input[value="${k0}"]`);
   await expectHidden([], [], 'all filters restored');
 
+  // Focus: edges are faint by default; hovering or selecting a node draws its
+  // edges and neighbors at full opacity and dims every other node.
+  const neighborsOf = (id) => new Set([id, ...graph.edges.filter((e) => e.source === id).map((e) => e.target), ...graph.edges.filter((e) => e.target === id).map((e) => e.source)]);
+  async function expectFocus(id, what) {
+    const want = {
+      nodes: Object.fromEntries(graph.nodes.map((n) => [n.id, id && !neighborsOf(id).has(n.id) ? app.DIM_OPACITY : 1])),
+      edges: Object.fromEntries(graph.edges.map((e) => [e.id, id && (e.source === id || e.target === id) ? 1 : app.EDGE_OPACITY])),
+    };
+    const drawn = () => ({
+      nodes: Object.fromEntries(window.cy.nodes().filter((n) => !n.isParent()).map((n) => [n.id(), parseFloat(n.style('opacity'))])),
+      edges: Object.fromEntries(window.cy.edges().map((e) => [e.id(), parseFloat(e.style('opacity'))])),
+    });
+    const ok = await page
+      .waitForFunction(
+        (w) => {
+          const close = (a, b) => Math.abs(a - b) < 0.01;
+          const nodes = window.cy.nodes().filter((n) => !n.isParent());
+          return nodes.every((n) => close(parseFloat(n.style('opacity')), w.nodes[n.id()])) &&
+            window.cy.edges().every((e) => close(parseFloat(e.style('opacity')), w.edges[e.id()]));
+        },
+        want,
+        { timeout: 5000 },
+      )
+      .then(() => true, () => false);
+    if (!ok) {
+      const now = await page.evaluate(drawn);
+      const off = [
+        ...Object.keys(want.nodes).filter((k) => Math.abs(now.nodes[k] - want.nodes[k]) >= 0.01).map((k) => `${k} ${now.nodes[k]} (want ${want.nodes[k]})`),
+        ...Object.keys(want.edges).filter((k) => Math.abs(now.edges[k] - want.edges[k]) >= 0.01).map((k) => `${k} ${now.edges[k]} (want ${want.edges[k]})`),
+      ];
+      check(false, `${what}: ${off.slice(0, 6).join('; ')}${off.length > 6 ? ` and ${off.length - 6} more` : ''}`);
+    }
+  }
+  const drawnPoint = (id) =>
+    page.evaluate((nodeId) => {
+      const pos = window.cy.getElementById(nodeId).renderedPosition();
+      const box = window.cy.container().getBoundingClientRect();
+      return { x: box.left + pos.x, y: box.top + pos.y };
+    }, id);
+  const emptyPoint = await page.evaluate(() => {
+    const box = window.cy.container().getBoundingClientRect();
+    return { x: box.left + 4, y: box.top + 4 };
+  });
+  await expectFocus(null, 'default (no focus)');
+  const hovered = graph.nodes.find((n) => n.id !== target && graph.edges.some((e) => e.source === n.id || e.target === n.id)).id;
+  const hoverAt = await drawnPoint(hovered);
+  await page.mouse.move(hoverAt.x, hoverAt.y);
+  await expectFocus(hovered, `hover on ${hovered}`);
+  await page.mouse.move(emptyPoint.x, emptyPoint.y);
+  await expectFocus(null, 'hover ended');
+
   // Click the node where it is drawn, as a user would.
   const point = await page.evaluate((id) => {
     const node = window.cy.getElementById(id);
@@ -252,8 +303,13 @@ try {
   const panel = await page.evaluate(readPanel);
   const problems = comparePanel(panel, graph, target);
   check(problems.length === 0, `detail panel for ${target} is wrong: ${problems.join('; ')}`);
+  await expectFocus(target, `selection of ${target}`);
+  await page.mouse.move(emptyPoint.x, emptyPoint.y);
+  await expectFocus(target, `selection of ${target} kept after the pointer leaves`);
 
   await page.screenshot({ path: screenshotPath });
+  await page.mouse.click(emptyPoint.x, emptyPoint.y);
+  await expectFocus(null, 'selection cleared by clicking empty canvas');
   check(pageErrors.length === 0, `page errors: ${pageErrors.join(' | ')}`);
 
   // The outline's positive case: serve a copy of graph.json in which one skill
@@ -300,5 +356,6 @@ console.log(
     `${result.legibility.labelOnLabel} label pairs overlapping each other; ` +
     `0 edges over unconnected nodes (${result.routing.bent} bent around them); ` +
     `filters exact for ${result.families} families and ${result.kinds} edge kinds; ` +
+    `focus checked for default, hover, selection, and clearing; ` +
     `outline drawn on ${result.scored} in a scored copy; wrote ${screenshotPath}`,
 );

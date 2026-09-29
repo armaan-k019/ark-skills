@@ -53,11 +53,21 @@ function fakeCytoscape(state) {
     const handlers = {};
     const cy = {
       on(event, selector, fn) {
-        handlers[`${event} ${selector}`] = fn;
+        if (typeof selector === 'function') handlers[event] = selector;
+        else handlers[`${event} ${selector}`] = fn;
       },
+      batch: (fn) => fn(),
+      elements: () => ({ removeClass() {} }),
       tap(id) {
         const el = nodes.find((n) => n.data.id === id);
-        handlers['tap node']({ target: { id: () => id, data: (k) => el.data[k] } });
+        handlers['tap node']({
+          target: {
+            id: () => id,
+            data: (k) => el.data[k],
+            closedNeighborhood: () => ({ contains: () => true }),
+            connectedEdges: () => ({ addClass() {} }),
+          },
+        });
       },
       nodes() {
         return { filter: () => ({ addClass() {}, removeClass() {} }) };

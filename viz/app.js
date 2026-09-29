@@ -14,6 +14,10 @@ const MEASURED_OUTLINE = { width: 4, color: '#000000' };
 // vendored) gets a dashed border.
 const VENDORED_BORDER = { width: 2, color: '#374151', style: 'dashed' };
 const LABEL_FONT_SIZE = 17;
+// Edges are faint until a node is hovered or selected; then that node's edges
+// and neighbors are drawn at full opacity and every other node is dimmed.
+const EDGE_OPACITY = 0.18;
+const DIM_OPACITY = 0.25;
 
 function isMeasured(n) {
   return typeof n.eval_status === 'string' && n.eval_status.startsWith('measured:');
@@ -234,6 +238,8 @@ if (typeof module === 'object' && module.exports) {
     KIND_COLORS,
     MEASURED_OUTLINE,
     VENDORED_BORDER,
+    EDGE_OPACITY,
+    DIM_OPACITY,
     LABEL_FONT_SIZE,
     SLOT,
   };
@@ -363,7 +369,7 @@ function main() {
     const lines = graph.nodes.map((n) => n.lines).filter((n) => typeof n === 'number');
     list.append(
       el('li', `Node size: grows with the square root of the file's line count (${Math.min(...lines)} to ${Math.max(...lines)} lines here).`),
-      el('li', 'Arrow: from the file that names another node to the node it names.'),
+      el('li', 'Arrow: from the file that names another node to the node it names. Edges are faint until you hover or click a node, which highlights its edges and neighbors.'),
       el('li', 'Boxes: families, from viz/scripts/families.json.'),
     );
     legendEl.append(list);
@@ -413,16 +419,45 @@ function main() {
           },
         },
         { selector: ':parent', style: { 'text-valign': 'top', 'text-margin-y': -4 } },
-        { selector: 'edge', style: { 'curve-style': 'bezier', 'target-arrow-shape': 'triangle' } },
+        { selector: 'edge', style: { 'curve-style': 'bezier', 'target-arrow-shape': 'triangle', opacity: EDGE_OPACITY } },
+        { selector: 'edge.hl', style: { opacity: 1 } },
+        { selector: 'node.dim', style: { opacity: DIM_OPACITY } },
         { selector: '.filtered', style: { display: 'none' } },
       ],
     });
     window.cy = cy;
     renderLegend(graph);
 
+    let selected = null;
+    function focus(node) {
+      cy.batch(() => {
+        cy.elements().removeClass('hl dim');
+        if (!node) return;
+        const hood = node.closedNeighborhood();
+        cy.nodes()
+          .filter((n) => !n.isParent() && !hood.contains(n))
+          .addClass('dim');
+        node.connectedEdges().addClass('hl');
+      });
+    }
+    const isMember = (node) => node.data('kind') !== 'family';
+    cy.on('mouseover', 'node', (evt) => {
+      if (isMember(evt.target)) focus(evt.target);
+    });
+    cy.on('mouseout', 'node', (evt) => {
+      if (isMember(evt.target)) focus(selected);
+    });
     cy.on('tap', 'node', (evt) => {
-      const node = evt.target;
-      if (node.data('kind') !== 'family') showDetails(graph, node.id());
+      if (!isMember(evt.target)) return;
+      selected = evt.target;
+      focus(selected);
+      showDetails(graph, selected.id());
+    });
+    cy.on('tap', (evt) => {
+      if (evt.target === cy) {
+        selected = null;
+        focus(null);
+      }
     });
 
     function addFilter(container, value, text, members) {
