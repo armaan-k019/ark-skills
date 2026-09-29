@@ -3,13 +3,13 @@
 Project lessons for ark-skills, in the capture-lessons format. Each entry is a pattern, not an event.
 
 ## Times written into reports from memory instead of the clock
-Seen: 2026-09-27 (ark-skills, unattended-build eval re-run), 2026-09-28 (ark-skills, skills-graph run)   Count: 2
+Seen: 2026-09-27 (ark-skills, unattended-build eval re-run), 2026-09-28 (ark-skills, skills-graph run), 2026-09-29 (ark-skills, gap-skills run)   Count: 3
 
 Context: keeping PROGRESS.md during an unattended run.
 Root cause: the time was typed as an estimate while writing, not read from a clock in the same step.
 Next time I write a time into a report, I will paste it from a `date` call made in the same step, or write "not clock-stamped".
-Evidence: PROGRESS.md said 03:52 when `date` read 03:22 (review gate 1 flagged it); the eval re-run's PROGRESS.md held two estimated "Updated" times.
-Promotion proposed (not applied): add to unattended-build Step 2, "Every time in PROGRESS.md comes from `date` in the same step."
+Evidence: PROGRESS.md said 03:52 when `date` read 03:22 (review gate 1 flagged it); the eval re-run's PROGRESS.md held two estimated "Updated" times. On 2026-09-29 a script wrote 08:41 into PROGRESS.md while the `date` call in the same command printed 08:35; the time was typed into the script before the clock was read.
+Promoted to: unattended-build Step 2 ("Every time in PROGRESS.md comes from `date` in the same step."), PR #3. The third case happened with the rule in place: pass the `date` output into the script as an argument instead of typing the time.
 
 ## Escape sequences in tool input are decoded before they reach the file
 Seen: 2026-09-28 (ark-skills)   Count: 1
@@ -59,13 +59,13 @@ Root cause: the headless instance keeps a timer loop alive after the script's la
 Next time I use a headless Cytoscape instance in a script or test, I will call `cy.destroy()` in a finally block and run the first attempt under a watchdog.
 Evidence: the check printed its result and then hung past the 120 s tool timeout; with `cy.destroy()` the test exits in about 1 s.
 
-## Killing processes by matching command lines hits more than intended
-Seen: 2026-09-28 (ark-skills)   Count: 1
+## Stopping a process by anything but its own PID hits the wrong process
+Seen: 2026-09-28 (ark-skills, skills-graph run), 2026-09-29 (ark-skills, wiring run)   Count: 2
 
-Context: stopping a hung background Node process.
-Root cause: `ps | grep` on a string from the script matched the wrapper shells that carried the same text, including the current command.
-Next time I start a process I may need to stop, I will keep its PID from `$!` and kill only that PID.
-Evidence: the kill loop stopped the background task's shell and ended the current command with exit 144.
+Context: stopping a hung background Node process, and later a local `python3 -m http.server` started for the smoke test.
+Root cause: the handle did not name the process. `ps | grep` on a script's text matched the wrapper shells too; `cmd && python3 -m http.server ... &` backgrounds the whole list, so `$!` is the subshell's PID and killing it left the server listening.
+Next time I start a process I may need to stop, I will start it as its own statement so `$!` is its PID, kill only that PID, and confirm the port or process is gone afterwards.
+Evidence: the kill loop ended the current command with exit 144; a server stayed listening on port 8123 until it was found with `lsof` and stopped.
 
 ## A static scanner's file-type list decides what it can find
 Seen: 2026-09-28 (ark-skills)   Count: 1
@@ -82,3 +82,27 @@ Context: replacing an em dash in recruiter-demo-writer's frontmatter description
 Root cause: the description is an unquoted YAML scalar, and a colon followed by a space inside it starts a mapping, so the file no longer parsed ("mapping values are not allowed here").
 Next time I edit a SKILL.md description, I will parse the frontmatter with a YAML parser before committing, and prefer commas or parentheses over colons in unquoted values.
 Evidence: commit ecee511 on fix/em-dash-in-descriptions (never pushed) failed yaml.safe_load; replaced by d686c46, which uses a comma and parses.
+
+## A generated file goes stale when another branch changes its inputs
+Seen: 2026-09-29 (ark-skills)   Count: 1
+
+Context: two PRs open at once, one carrying the committed `viz/data/graph.json`, the other changing a skill description that the graph copies.
+Root cause: the graph was generated on its own branch before the other PR merged, and nothing regenerated it after both landed.
+Next time two branches touch a generated file or its inputs, I will say in the second PR that it regenerates the file after the first merges, and run the freshness test on main after each merge.
+Evidence: PR #5 merged before PR #4; `test_build_graph.RealRepo` then failed on main (d6f266a) until chore/wire-skill-references regenerated the graph.
+
+## An exit status read after a subshell is the subshell's, not the command's
+Seen: 2026-09-29 (ark-skills, gap-skills run)   Count: 1
+
+Context: running the smoke test as `(cd viz && node scripts/smoke.mjs ... | tail -n 3); echo "exit=${pipestatus[1]}"` in zsh.
+Root cause: `pipestatus` describes the last pipeline the current shell ran, which was the subshell alone, so it held the subshell's status (the status of `tail`), not the smoke test's.
+Next time I need a command's exit code, I will redirect its output to a file and read `$?` right after that command, with no pipe or subshell around it.
+Evidence: the dry run printed "smoke exit=0" under a thrown "family boxes out of order" error; `node scripts/smoke.mjs ... > file 2>&1; RC=$?` gave 1.
+
+## A test written while no case exists can assume there are none
+Seen: 2026-09-29 (ark-skills, gap-skills run)   Count: 1
+
+Context: adding spec-writing, the first skill whose SKILL.md states an eval score, to the skills graph.
+Root cause: `viz/scripts/test_app.cjs` and the smoke test's outline check mark one node measured in a copy and expect exactly one outlined, and viz/README.md says "none does today"; all three encoded the empty case as a constant.
+Next time I test a case the data does not have yet, I will count the existing cases and add one, instead of asserting a fixed total.
+Evidence: `test_app.cjs:69` failed with "2 !== 1"; smoke reported "outlined nodes [adversarial-review, spec-writing], expected only skill:adversarial-review".
