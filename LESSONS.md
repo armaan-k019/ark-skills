@@ -106,3 +106,19 @@ Context: adding spec-writing, the first skill whose SKILL.md states an eval scor
 Root cause: `viz/scripts/test_app.cjs` and the smoke test's outline check mark one node measured in a copy and expect exactly one outlined, and viz/README.md says "none does today"; all three encoded the empty case as a constant.
 Next time I test a case the data does not have yet, I will count the existing cases and add one, instead of asserting a fixed total.
 Evidence: `test_app.cjs:69` failed with "2 !== 1"; smoke reported "outlined nodes [adversarial-review, spec-writing], expected only skill:adversarial-review".
+
+## zsh reads a colon after a variable name as a modifier
+Seen: 2026-09-28 (ark-skills, skills-graph run), 2026-09-29 (ark-skills, gap-skills run)   Count: 2
+
+Context: building paths and git revisions from shell variables, such as `$BASE:u...` and `git show $c:PROGRESS.md`.
+Root cause: in zsh, `$name:x` applies the history modifier `x` to the variable (`:u` uppercases, `:P` resolves a real path), so the text after the colon is consumed instead of appended.
+Next time I put a colon right after a variable in zsh, I will write `${name}:` with braces.
+Evidence: `git show $c:PROGRESS.md` asked for revision "/Users/armaank019/dev/ark-skills/5b6105fROGRESS.md"; `${c}:PROGRESS.md` worked.
+
+## A check that reads its expected value from the code follows the code
+Seen: 2026-09-29 (ark-skills, gap-skills run)   Count: 1
+
+Context: the viz smoke test checks each visual decision (label floor, family label size and color, kind colors) against the constants in viz/app.js.
+Root cause: the expected value comes from the same constant the page uses, so changing the constant changes both sides and the check still passes; it holds the drawing to the code, not to the decision.
+Next time a check guards a decided value, I will write the value into the check as a literal and confirm it fails when only the code's constant changes.
+Evidence: on a clone of be693b6, FAMILY_LABEL set to 8 px red in app.js alone, `node viz/scripts/smoke.mjs` exit 0 (PROGRESS.md Q6).
