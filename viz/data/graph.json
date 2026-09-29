@@ -1076,6 +1076,17 @@
       ]
     },
     {
+      "id": "skill:spec-writing->skill:visual-loop:skill-skill",
+      "source": "skill:spec-writing",
+      "target": "skill:visual-loop",
+      "kind": "skill-skill",
+      "file": "spec-writing/SKILL.md",
+      "line": 91,
+      "lines": [
+        91
+      ]
+    },
+    {
       "id": "skill:unattended-build->skill:adversarial-review:skill-skill",
       "source": "skill:unattended-build",
       "target": "skill:adversarial-review",
@@ -1143,6 +1154,17 @@
       "lines": [
         104,
         116
+      ]
+    },
+    {
+      "id": "skill:unattended-build->skill:visual-loop:skill-skill",
+      "source": "skill:unattended-build",
+      "target": "skill:visual-loop",
+      "kind": "skill-skill",
+      "file": "unattended-build/SKILL.md",
+      "line": 28,
+      "lines": [
+        28
       ]
     },
     {
