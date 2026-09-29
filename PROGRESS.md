@@ -57,7 +57,7 @@ Open issues:
 - none
 
 ## Open questions
-- Q6 (new): adding Playwright under viz/ (Q1) put three SKILL.md files inside viz/node_modules (playwright-core's playwright-cli, playwright-component-testing, playwright-trace). The phase 1 acceptance command as written counts them, so it no longer matches the graph (33 vs 30). The extractor skips node_modules, because a dependency's bundled skills are not this repo's skills. Changing the acceptance command to `find . -name SKILL.md -not -path "./.git/*" -not -path "*/node_modules/*"` would make it match (30), but changing an acceptance criterion is a stop-and-ask. Blocks: nothing. Raised: at this checkpoint.
+- Q6 (answered 2026-09-28: approved; docs/decisions/0002): adding Playwright under viz/ (Q1) put three SKILL.md files inside viz/node_modules (playwright-core's playwright-cli, playwright-component-testing, playwright-trace). The phase 1 acceptance command as written counts them, so it no longer matches the graph (33 vs 30). The extractor skips node_modules, because a dependency's bundled skills are not this repo's skills. Changing the acceptance command to `find . -name SKILL.md -not -path "./.git/*" -not -path "*/node_modules/*"` would make it match (30), but changing an acceptance criterion is a stop-and-ask. Blocks: nothing. Raised: at this checkpoint.
 - Q5 (open item for its own branch): vet-third-party/scripts/scan.py does not scan `.rs` files (TEXT_EXT has no `.rs`), so none of ccboard's 175 Rust files were scanned. Not fixed in this run, per the author. Recorded in LESSONS.md.
 - Q1 to Q4: answered by the author on 2026-09-28; see STANDING-DECISIONS.md.
 

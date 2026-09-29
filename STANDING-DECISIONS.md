@@ -45,3 +45,4 @@ Task class (Step 0): machine-checkable for phases 1, 2 and 3 (each has runnable 
 - Q3: skill-to-agent and agent-to-agent edges approved; every edge carries a kind so the page can filter by it.
 - Q4: eval status comes only from a score stated in that skill's own SKILL.md; ponytail stays unmeasured; viz/README.md notes that vendored skills may carry upstream claims the graph does not verify.
 - Q5: the scanner's missing Rust coverage is not fixed in this run; it is recorded in LESSONS.md and PROGRESS.md for its own branch.
+- Q6: the phase 1 node-count check becomes `find . -name SKILL.md -not -path "./.git/*" -not -path "*/node_modules/*"` plus agents plus hooks; the extractor's node_modules skip stands (docs/decisions/0002).
