@@ -88,7 +88,7 @@ FINISH
 
 ## Step 5: Mark each criterion machine-checkable or taste
 
-Classify each criterion, not only the task, with `unattended-build` Step 0. A criterion that is a command goes in a phase. "Looks polished", "reads well", or "feels premium" goes behind a STOP phase with an artifact for the author to judge: a screenshot, a rendered page, a draft.
+Classify each criterion, not only the task, with `unattended-build` Step 0. A criterion that is a command goes in a phase. "Looks polished", "reads well", or "feels premium" goes behind a STOP phase with an artifact for the author to judge: a screenshot, a rendered page, a draft. The rounds after that STOP run with `visual-loop`.
 
 A taste decision the author has made can become a check, if it is written as a number. "Node labels: 13 px minimum" became a smoke assertion (the smallest label must be at least 13 px). "No large empty region" did not say how large, so the run picked the threshold itself (at most 10% of the canvas). In a follow-up SPEC, write the number, not the adjective.
 
