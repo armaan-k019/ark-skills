@@ -3,13 +3,13 @@
 Project lessons for ark-skills, in the capture-lessons format. Each entry is a pattern, not an event.
 
 ## Times written into reports from memory instead of the clock
-Seen: 2026-09-27 (ark-skills, unattended-build eval re-run), 2026-09-28 (ark-skills, skills-graph run)   Count: 2
+Seen: 2026-09-27 (ark-skills, unattended-build eval re-run), 2026-09-28 (ark-skills, skills-graph run), 2026-09-29 (ark-skills, gap-skills run, twice)   Count: 4
 
 Context: keeping PROGRESS.md during an unattended run.
 Root cause: the time was typed as an estimate while writing, not read from a clock in the same step.
 Next time I write a time into a report, I will paste it from a `date` call made in the same step, or write "not clock-stamped".
-Evidence: PROGRESS.md said 03:52 when `date` read 03:22 (review gate 1 flagged it); the eval re-run's PROGRESS.md held two estimated "Updated" times.
-Promotion proposed (not applied): add to unattended-build Step 2, "Every time in PROGRESS.md comes from `date` in the same step."
+Evidence: PROGRESS.md said 03:52 when `date` read 03:22 (review gate 1 flagged it); the eval re-run's PROGRESS.md held two estimated "Updated" times. On 2026-09-29 a script wrote 08:41 into PROGRESS.md while the `date` call in the same command printed 08:35; the time was typed into the script before the clock was read.
+Promoted to: unattended-build Step 2 ("Every time in PROGRESS.md comes from `date` in the same step."), PR #3. The third case happened with the rule in place: pass the `date` output into the script as an argument instead of typing the time. The fourth case was the end of a time range typed into body text (08:50 when `date` read 08:46) while the header used the passed-in value: every time in the text, not only the header, comes from the argument.
 
 ## Escape sequences in tool input are decoded before they reach the file
 Seen: 2026-09-28 (ark-skills)   Count: 1
@@ -90,3 +90,51 @@ Context: two PRs open at once, one carrying the committed `viz/data/graph.json`,
 Root cause: the graph was generated on its own branch before the other PR merged, and nothing regenerated it after both landed.
 Next time two branches touch a generated file or its inputs, I will say in the second PR that it regenerates the file after the first merges, and run the freshness test on main after each merge.
 Evidence: PR #5 merged before PR #4; `test_build_graph.RealRepo` then failed on main (d6f266a) until chore/wire-skill-references regenerated the graph.
+
+## An exit status read after a subshell is the subshell's, not the command's
+Seen: 2026-09-29 (ark-skills, gap-skills run)   Count: 1
+
+Context: running the smoke test as `(cd viz && node scripts/smoke.mjs ... | tail -n 3); echo "exit=${pipestatus[1]}"` in zsh.
+Root cause: `pipestatus` describes the last pipeline the current shell ran, which was the subshell alone, so it held the subshell's status (the status of `tail`), not the smoke test's.
+Next time I need a command's exit code, I will redirect its output to a file and read `$?` right after that command, with no pipe or subshell around it.
+Evidence: the dry run printed "smoke exit=0" under a thrown "family boxes out of order" error; `node scripts/smoke.mjs ... > file 2>&1; RC=$?` gave 1.
+
+## A test written while no case exists can assume there are none
+Seen: 2026-09-29 (ark-skills, gap-skills run)   Count: 1
+
+Context: adding spec-writing, the first skill whose SKILL.md states an eval score, to the skills graph.
+Root cause: `viz/scripts/test_app.cjs` and the smoke test's outline check mark one node measured in a copy and expect exactly one outlined, and viz/README.md says "none does today"; all three encoded the empty case as a constant.
+Next time I test a case the data does not have yet, I will count the existing cases and add one, instead of asserting a fixed total.
+Evidence: `test_app.cjs:69` failed with "2 !== 1"; smoke reported "outlined nodes [adversarial-review, spec-writing], expected only skill:adversarial-review".
+
+## zsh is not bash: colon modifiers and unmatched globs
+Seen: 2026-09-28 (ark-skills, skills-graph run), 2026-09-29 (ark-skills, gap-skills run, twice)   Count: 3
+
+Context: shell commands written as if for bash, run in this machine's zsh.
+Root cause: zsh reads `$name:x` as a history modifier (`:u` uppercases, `:P` resolves a real path), and by default stops the whole command when a glob such as `dir/*` matches nothing.
+Next time I write a shell command here, I will put braces around a variable followed by a colon (`${name}:`) and avoid globs that can match nothing, or check the directory first.
+Evidence: `git show $c:PROGRESS.md` asked for revision "/Users/armaank019/dev/ark-skills/5b6105fROGRESS.md"; `rm -rf $B/grade2/$e/C/*` on an empty folder failed with "no matches found" and skipped the copy after it.
+
+## A check that reads its expected value from the code follows the code
+Seen: 2026-09-29 (ark-skills, gap-skills run)   Count: 1
+
+Context: the viz smoke test checks each visual decision (label floor, family label size and color, kind colors) against the constants in viz/app.js.
+Root cause: the expected value comes from the same constant the page uses, so changing the constant changes both sides and the check still passes; it holds the drawing to the code, not to the decision.
+Next time a check guards a decided value, I will write the value into the check as a literal and confirm it fails when only the code's constant changes.
+Evidence: on a clone of be693b6, FAMILY_LABEL set to 8 px red in app.js alone, `node viz/scripts/smoke.mjs` exit 0 (PROGRESS.md Q6).
+
+## A clone of the local repo carries every local branch
+Seen: 2026-09-29 (ark-skills, gap-skills run)   Count: 1
+
+Context: giving eval runs a clean clone of main so neither configuration could see work in progress.
+Root cause: `git clone <local path>` copies every local branch as a remote-tracking ref, so the clones also held chore/wire-skill-references and feat/gap-skills, with unreleased skills in them.
+Next time I make an isolated clone for an eval, I will clone with `--single-branch --branch <base>` (or delete the other refs) and check `git branch -a` in it before any run starts.
+Evidence: a B1 baseline run read chore/wire-skill-references' PROGRESS.md through the clone; the B2 graders found feat/gap-skills in every eval clone.
+
+## Blind grading needs a fresh draw per task and neutral paths
+Seen: 2026-09-29 (ark-skills, gap-skills run)   Count: 1
+
+Context: labeling two eval outputs A and B so a grader cannot tell which configuration wrote which.
+Root cause: one seeded shuffle put the with-skill output under A in all three B1 tasks, and in B2 some outputs quoted their own run paths, which named the configuration.
+Next time I blind a comparison, I will draw the label separately for each task, copy outputs to neutral paths before the runs write anything that names them, and grep the copies for the configuration names.
+Evidence: grade-blind-key.json had with_skill: A for every B1 task; B2 grading copies contained "with_skill" and "without_skill" in smoke logs and a REPLY.md.

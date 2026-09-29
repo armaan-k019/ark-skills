@@ -5,9 +5,11 @@
       "label": "Build discipline",
       "members": [
         "phased-build",
+        "spec-writing",
         "strategic-compact",
         "unattended-build",
-        "verify-before-done"
+        "verify-before-done",
+        "visual-loop"
       ]
     },
     {

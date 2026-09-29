@@ -14,49 +14,49 @@
       "label": "Review and honesty",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 14
+      "line": 16
     },
     {
       "id": "research",
       "label": "Research",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 24
+      "line": 26
     },
     {
       "id": "skill-management",
       "label": "Skill management",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 35
+      "line": 37
     },
     {
       "id": "domain",
       "label": "Domain",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 44
+      "line": 46
     },
     {
       "id": "vendored",
       "label": "Vendored",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 52
+      "line": 54
     },
     {
       "id": "agents",
       "label": "Agents",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 65
+      "line": 67
     },
     {
       "id": "hooks",
       "label": "Hooks",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 73
+      "line": 75
     }
   ],
   "nodes": [
@@ -396,6 +396,23 @@
       "vendored": true
     },
     {
+      "id": "skill:spec-writing",
+      "kind": "skill",
+      "name": "spec-writing",
+      "path": "spec-writing/SKILL.md",
+      "lines": 123,
+      "description": "Write or check the SPEC that a multi-phase coding run builds against, before the run starts. Numbered phases, acceptance criteria written as commands that fail until the work is done, decide-yourself and stop-and-ask lists, scope boundaries, and which criteria are taste that only a human can judge. Use when asked to write a spec, a run prompt, or a brief for an autonomous, overnight, or unattended session, to \"turn this into a SPEC\", to plan a follow-up branch that another session will run, or to review a SPEC or run prompt before launching it. Also use when a run keeps stopping on questions the SPEC should have answered. For running the build itself, use unattended-build.",
+      "origin": {
+        "from": "body",
+        "text": "Written for this repo from its own run prompts (2026-09-26 to 2026-09-29) and the stops they caused. The main source is the skills-graph run: its questions Q1 to Q6 in the history of `PROGRESS.md`, the approved changes at the end of the history of `STANDING-DECISIONS.md`, `docs/decisions/0002-skill-discovery-skips-node-modules.md`, and `LESSONS.md`. Three rules come from this skill's own eval (Known cost, below): the \"no commit\" label in Step 3, the end of Step 4's second rule, and the check of what the SPEC's own commands write in Step 6. Each rule below names the stop or failure it comes from.",
+        "line": 10
+      },
+      "eval_status": "measured: 90%",
+      "eval_line": 109,
+      "family": "build-discipline",
+      "vendored": false
+    },
+    {
       "id": "skill:strategic-compact",
       "kind": "skill",
       "name": "strategic-compact",
@@ -478,6 +495,23 @@
       },
       "eval_status": "unmeasured",
       "family": "skill-management",
+      "vendored": false
+    },
+    {
+      "id": "skill:visual-loop",
+      "kind": "skill",
+      "name": "visual-loop",
+      "path": "visual-loop/SKILL.md",
+      "lines": 82,
+      "description": "Run taste work (layout, typography, color, spacing, anything judged by looking) as short rounds in which the human looks at the artifact and decides, and the session builds only what was decided and turns each decision into a check. Use when asked to make a page or UI look better, cleaner, more polished, or more professional, when a human sends numbered feedback on screenshots, when a SPEC or build reaches a STOP for visual design, or when a visual change request arrives in the middle of other work. Also use when tempted to improve a design on your own initiative. For machine-checkable work with nobody watching, use unattended-build; for design craft itself, use impeccable.",
+      "origin": {
+        "from": "body",
+        "text": "Written for this repo from the skills-graph run of 2026-09-28: function-only phases, a STOP at phase 4, then three rounds of the author's feedback on screenshots (F1 to F3, F4 to F6, F7 and F8). The sources are the author's prompts for that run (session transcript, not in the repo), the history of `PROGRESS.md` from 1114514 (\"Phase 4: STOPPED for the author\") to 7812a2e, and `viz/scripts/smoke.mjs`, which has an assertion for each decided value. The failure it guards against is from `unattended-build`'s source project, where four unattended rounds on a visual redesign produced confident, well-tested, thoroughly wrong work. Two rules come from this skill's own eval (Eval and cost, below): writing the decided value into the check (Step 5) and keeping a round small (Step 3).",
+        "line": 10
+      },
+      "eval_status": "measured: 100%",
+      "eval_line": 71,
+      "family": "build-discipline",
       "vendored": false
     },
     {
@@ -1078,6 +1112,113 @@
       ]
     },
     {
+      "id": "skill:spec-writing->skill:capture-lessons:skill-skill",
+      "source": "skill:spec-writing",
+      "target": "skill:capture-lessons",
+      "kind": "skill-skill",
+      "file": "spec-writing/SKILL.md",
+      "line": 98,
+      "lines": [
+        98
+      ]
+    },
+    {
+      "id": "skill:spec-writing->skill:decision-records:skill-skill",
+      "source": "skill:spec-writing",
+      "target": "skill:decision-records",
+      "kind": "skill-skill",
+      "file": "spec-writing/SKILL.md",
+      "line": 98,
+      "lines": [
+        98
+      ]
+    },
+    {
+      "id": "skill:spec-writing->skill:phased-build:skill-skill",
+      "source": "skill:spec-writing",
+      "target": "skill:phased-build",
+      "kind": "skill-skill",
+      "file": "spec-writing/SKILL.md",
+      "line": 14,
+      "lines": [
+        14
+      ]
+    },
+    {
+      "id": "skill:spec-writing->skill:recruiter-demo-writer:skill-skill",
+      "source": "skill:spec-writing",
+      "target": "skill:recruiter-demo-writer",
+      "kind": "skill-skill",
+      "file": "spec-writing/SKILL.md",
+      "line": 109,
+      "lines": [
+        109
+      ]
+    },
+    {
+      "id": "skill:spec-writing->skill:scroll-world:skill-skill",
+      "source": "skill:spec-writing",
+      "target": "skill:scroll-world",
+      "kind": "skill-skill",
+      "file": "spec-writing/SKILL.md",
+      "line": 22,
+      "lines": [
+        22
+      ]
+    },
+    {
+      "id": "skill:spec-writing->skill:skill-creator:skill-skill",
+      "source": "skill:spec-writing",
+      "target": "skill:skill-creator",
+      "kind": "skill-skill",
+      "file": "spec-writing/SKILL.md",
+      "line": 109,
+      "lines": [
+        109
+      ]
+    },
+    {
+      "id": "skill:spec-writing->skill:unattended-build:skill-skill",
+      "source": "skill:spec-writing",
+      "target": "skill:unattended-build",
+      "kind": "skill-skill",
+      "file": "spec-writing/SKILL.md",
+      "line": 8,
+      "lines": [
+        8,
+        15,
+        35,
+        51,
+        66,
+        82,
+        91,
+        101,
+        109
+      ]
+    },
+    {
+      "id": "skill:spec-writing->skill:vet-third-party:skill-skill",
+      "source": "skill:spec-writing",
+      "target": "skill:vet-third-party",
+      "kind": "skill-skill",
+      "file": "spec-writing/SKILL.md",
+      "line": 25,
+      "lines": [
+        25
+      ]
+    },
+    {
+      "id": "skill:spec-writing->skill:visual-loop:skill-skill",
+      "source": "skill:spec-writing",
+      "target": "skill:visual-loop",
+      "kind": "skill-skill",
+      "file": "spec-writing/SKILL.md",
+      "line": 91,
+      "lines": [
+        91
+      ]
+    },
+    {
       "id": "skill:unattended-build->skill:adversarial-review:skill-skill",
       "source": "skill:unattended-build",
       "target": "skill:adversarial-review",
@@ -1148,6 +1289,17 @@
       ]
     },
     {
+      "id": "skill:unattended-build->skill:visual-loop:skill-skill",
+      "source": "skill:unattended-build",
+      "target": "skill:visual-loop",
+      "kind": "skill-skill",
+      "file": "unattended-build/SKILL.md",
+      "line": 28,
+      "lines": [
+        28
+      ]
+    },
+    {
       "id": "skill:verify-before-done->hook:block-no-verify:skill-hook",
       "source": "skill:verify-before-done",
       "target": "hook:block-no-verify",
@@ -1167,6 +1319,76 @@
       "line": 36,
       "lines": [
         36
+      ]
+    },
+    {
+      "id": "skill:visual-loop->skill:impeccable:skill-skill",
+      "source": "skill:visual-loop",
+      "target": "skill:impeccable",
+      "kind": "skill-skill",
+      "file": "visual-loop/SKILL.md",
+      "line": 8,
+      "lines": [
+        8
+      ]
+    },
+    {
+      "id": "skill:visual-loop->skill:phased-build:skill-skill",
+      "source": "skill:visual-loop",
+      "target": "skill:phased-build",
+      "kind": "skill-skill",
+      "file": "visual-loop/SKILL.md",
+      "line": 14,
+      "lines": [
+        14
+      ]
+    },
+    {
+      "id": "skill:visual-loop->skill:scroll-world:skill-skill",
+      "source": "skill:visual-loop",
+      "target": "skill:scroll-world",
+      "kind": "skill-skill",
+      "file": "visual-loop/SKILL.md",
+      "line": 36,
+      "lines": [
+        36
+      ]
+    },
+    {
+      "id": "skill:visual-loop->skill:skill-creator:skill-skill",
+      "source": "skill:visual-loop",
+      "target": "skill:skill-creator",
+      "kind": "skill-skill",
+      "file": "visual-loop/SKILL.md",
+      "line": 71,
+      "lines": [
+        71
+      ]
+    },
+    {
+      "id": "skill:visual-loop->skill:unattended-build:skill-skill",
+      "source": "skill:visual-loop",
+      "target": "skill:unattended-build",
+      "kind": "skill-skill",
+      "file": "visual-loop/SKILL.md",
+      "line": 8,
+      "lines": [
+        8,
+        10,
+        14,
+        26
+      ]
+    },
+    {
+      "id": "skill:visual-loop->skill:verify-before-done:skill-skill",
+      "source": "skill:visual-loop",
+      "target": "skill:verify-before-done",
+      "kind": "skill-skill",
+      "file": "visual-loop/SKILL.md",
+      "line": 38,
+      "lines": [
+        38,
+        56
       ]
     },
     {

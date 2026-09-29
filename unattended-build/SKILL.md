@@ -25,7 +25,7 @@ State the class in one line before doing any work.
 
 Classify each acceptance criterion, not only the task as a whole. "The hero feels premium", "the copy reads well", and "the layout looks right on mobile" are not commands and cannot fail. A criterion like that never runs unattended, even inside a build that is otherwise machine-checkable: it goes to the human as a stop-and-ask question.
 
-Refuse the pattern for taste-based work, and say why. In the source project, four unattended rounds on a visual redesign produced confident, well-tested, thoroughly wrong work, because no check could fail. That kind of task needs a short loop with the human looking at the artifact, not a longer run.
+Refuse the pattern for taste-based work, and say why. In the source project, four unattended rounds on a visual redesign produced confident, well-tested, thoroughly wrong work, because no check could fail. That kind of task needs a short loop with the human looking at the artifact, not a longer run; `visual-loop` is how to run it.
 
 ## Step 1: Write the standing contract to STANDING-DECISIONS.md
 
