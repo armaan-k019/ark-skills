@@ -60,4 +60,4 @@ Skills: <n> (~<t> description tokens always loaded)   Agents: <n>   MCP servers:
 1. <change>: <why>, saves ~<t> tokens or removes <problem>
 ```
 
-Do not delete, move, or edit any skill, agent, or settings file as part of the audit. Present the report; the user decides and applies changes.
+Do not delete, move, or edit any skill, agent, or settings file as part of the audit. Present the report; the user decides and applies changes. If the user acts on a recommendation to install or vendor a new skill, agent, hook, or plugin, run `vet-third-party` on it first.
