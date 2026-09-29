@@ -32,7 +32,7 @@ Track B, B2 visual-loop, step: gathering evidence (B1 reviewed by the author)
   - `node viz/scripts/smoke.mjs`: exit 1, "family boxes out of order" (Q3); the outline check would also fail (Q4). Screenshots not regenerated.
 - LESSONS.md: two entries (exit status after a subshell; tests that assume no case exists).
 
-- Author's answers after B1 (STANDING-DECISIONS.md, last section). Done, 2026-09-29 08:44 to 08:50 EDT:
+- Author's answers after B1 (STANDING-DECISIONS.md, last section). Done between 2026-09-29 08:44 EDT (fix-branch checks) and 08:46 EDT (`date` when recorded):
   - fix/viz-measured-and-packing: 89c9828 (packer next-fit, measured-node counting in test_app.cjs and smoke.mjs, new reading-order test in test_layout.cjs, viz/README.md lines), 89bf8c5 (README: scroll-world's local line). PR #7 https://github.com/armaan-k019/ark-skills/pull/7, not merged. The new test fails on the old packer ("counts 4,4,5,3,2,7,2,3 at aspect 1 read 7,4,5,4,3,3,2,2"). Checks: build_graph --out equal to the committed graph; unittest 54 OK; node --test 27/27; hooks 26/26; smoke exit 0, screenshots unchanged. Built in a scratchpad worktree so this checkout never left feat/gap-skills; the worktree is removed.
   - PR #3: the author asked to merge it; it was already merged (2026-09-29 01:07 EDT, 2ec0e5a), so nothing was done.
   - PR #6: merged by the author (origin/main be693b6).
