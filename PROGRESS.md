@@ -1,73 +1,51 @@
-# Progress: skills-graph
-Updated: 2026-09-28 23:26 EDT (from `date`)   Branch: feat/skills-graph (from origin/main cd423eb)   Last commit: 9e2cfd7 (F7, F8), before this update
-
-Every time in this file comes from `date`.
+# Progress: wiring and gap skills
+Updated: 2026-09-29 08:36 EDT (from `date`)   Branch: feat/gap-skills (from origin/main d6f266a, upstream unset)   Last commit: d211d16
+The previous run's log (skills-graph) is in the git history of this file. Track A's log is on chore/wire-skill-references (PR #6).
 
 ## SPEC summary
-Static page in viz/ that visualizes this repo: every skill, agent, and hook as a node, clustered by family, with reference edges, hook coverage, license origin, and eval status, all generated from files. Plus viz/MONITOR-EVAL.md, a vetted recommendation (no install) for a live Claude Code session monitor. Second round (author's message of 2026-09-28): Q6 recorded, F1 family taxonomy, F2 encoding, F3 legibility, one review pass over the whole branch with at most one fix round, then stop again for styling. Third round: F4 final family mapping and a vendored flag, F5 edge focus, F6 typography and palette, then stop again; the timestamp PR approved.
+Track A (chore/wire-skill-references): done, PR #6 open, not merged. Track B (feat/gap-skills, from main after Track A's PR is open): evidence-first skills, one at a time, stopping after each: B1 spec-writing, B2 visual-loop, B3 debugging (needs the author's Stage A session), B4 and B5 stop and ask. Per skill: list the evidence with paths, draft with skill-creator, eval against a no-skill baseline on a real task (both scores, tokens, time; tune once), add to families.json and rerun the extractor, commit, stop and show.
 
 ## Now
-Done. The author approved pushing this branch and opening a PR against main (not merged). Work on this branch stops here; follow-ups go in their own branches.
+Track B, B1 spec-writing: committed; STOPPED for the author (SKILL.md and eval numbers), per the run prompt
 
 ## Done and verified
-- Phases 0 to 3 and 5: commits 5b6105f, f8964e8, 66af38b, e72dbb9, 3e4bddf, 0765695, 1114514 (see git log).
-- Q6: docs/decisions/0002 records why the phase 1 count skips node_modules; commit 2579fdc. The fixture test that a node_modules SKILL.md is excluded already existed and fails on the pre-fix extractor.
-- F1: viz/scripts/families.json, seven families; the build fails on an unmapped node, a stale name, a name listed twice, or a malformed or missing file; commit eafbee0. Each of the three family guards was removed in a mutant copy and its test failed.
-- F2 and F3: kind colors (d3 category10 defaults), measured-eval outline, legend, labels below nodes at 17 px wrapping at hyphens, column choice fitted to the viewport, fit on load; commit 5a99a26.
-- Clones deleted: /tmp/monitor-eval/ccboard, claude-agents-dashboard, agent-mission-control. The scan outputs and vetting reports that MONITOR-EVAL.md points to are still in /tmp/monitor-eval/.
-- Timestamp line: branch docs/unattended-build-clock-times at b806f4a, one commit on origin/main, built with git plumbing (no checkout). Pushed after approval; PR #3 open, not merged.
-- Review pass over `git diff origin/main..HEAD` (dual: ts-reviewer and silent-failure-hunter roles, CRITICAL and HIGH only): both FAIL.
-  - ts-reviewer HIGH: (1) edges were drawn straight through unrelated nodes (8 exact centre crossings), so the page showed references that do not exist, such as capture-lessons -> no-em-dash reading as block-no-verify -> no-em-dash; (2) the eval outline was never tested on a scored node (a selector typo passed everything).
-  - silent-failure-hunter HIGH: (3) panel-check did not compare the origin's cited line or label, and checked hook coverage by substring; (4) only one family and one edge kind were exercised, so a closure bug in the edge-kind filter passed; (5) a hook registered under two events got the first line for both. It also found that the first scored skill would fail the smoke test on correct code, because the 4 px outline pushed the circle into the label margin.
-  - Fix round (the one allowed): edges are bent around nodes they do not connect, checked against Cytoscape's drawn path; the measured label margin grows by the outline width; panel-check compares License origin, License notice, and Hook coverage as whole strings; smoke exercises every family and every edge kind by exact hidden sets plus a combined case, checks edge crossings with its own path sampling, and checks the outline on a copy of the data with one scored skill; each hook registration cites its own line (two-event fixture); checkGraph rejects duplicate ids and unknown kinds; the column-choice test is strict; stale fixture and README text corrected.
-  - Evidence the fixes are real: the hook-line test fails on the reviewed extractor; the three reviewer panel mutants are caught by test_panel.cjs; five app.js mutants run through the browser smoke test were all caught (the reviewed app.js without routing; routing skipped but reported clean, caught by the independent crossing check; the edge-kind closure bug; the outline selector typo; the outline without the margin fix).
-- Review fix round: commit 0acba53.
-- F4: the author's final mapping in families.json (build-discipline 4, review-and-honesty 4, research 5, skill-management 3, domain 2, vendored 7, agents 2, hooks 3); a family marked "vendored": true gives each member a vendored boolean, drawn as a 2 px dashed border and counted in the legend; commit 07efb4c.
-- F5: edges at 0.18 opacity by default; hover or selection draws the node's edges and neighbors at full opacity and dims other nodes to 0.25; commit 41c3578. Two mutants (no edge highlight; pointer leaving forgets the selection) fail the smoke test.
-- F6: slate, amber, green (#64748b, #f59e0b, #16a34a); family labels uppercase, letterspaced with thin spaces, gray #6b7280, 11 px as drawn; node labels 13 px or more as drawn, sized from the zoom after the fit; commit follows this file.
-- Vendored list: commit aa5b925. Lesson on YAML frontmatter: commit d694bce.
-- F7 and F8: default screenshot with no focus (viz/screenshot.png) and a focus screenshot with phased-build selected (viz/screenshot-focus.png), both in viz/README.md; family cells ordered by member count and packed into rows; ceil(sqrt(n)) columns widened until the last row holds more than one member (the formula alone leaves a lone member for 3 and 7); commit 9e2cfd7. Largest empty rectangle 7.0% of the canvas (old layout 10.9%, measured the same way).
-- Final runs, 2026-09-28 23:25:13 to 23:25:17 EDT:
-  - Build: "30 nodes {'agent': 2, 'hook': 3, 'skill': 25}, 36 edges {'agent-agent': 1, 'skill-agent': 2, 'skill-hook': 2, 'skill-skill': 31}, 8 families", exit 0; graph.json unchanged by the rebuild.
-  - Phase 1 count (Q6 command): 25 + 2 + 3 = 30; graph 30: MATCH.
-  - `python3 -m unittest discover viz/scripts`: Ran 54 tests, OK.
-  - `npm test` in viz/: 26 of 26 pass.
-  - `node hooks/test-hooks.js`: all 26 passed.
-  - `node viz/scripts/smoke.mjs http://127.0.0.1:8123/`: exit 0; its 23:24:35 run printed "smallest label 13.7 px, 0 labels over circles, 0 label pairs overlapping each other; 0 edges over unconnected nodes (9 bent around them); filters exact for 8 families and 4 edge kinds; focus checked for default, hover, selection, and clearing; boxes ordered by size, no lone last-row member, largest empty rectangle 7.0% of the canvas; outline drawn on skill:adversarial-review in a scored copy". Both screenshots opened and looked at.
+- Track A: PR #6 (https://github.com/armaan-k019/ark-skills/pull/6), acceptance and gate in that branch's PROGRESS.md.
+- B1 evidence gathered (listed in the skill's source paragraph): the author's run prompts of 2026-09-26, 2026-09-28, and 2026-09-29 (session transcript, not in the repo); PROGRESS.md history on origin/main (Q1 to Q6); STANDING-DECISIONS.md on origin/main (approved changes Q1 to Q6); docs/decisions/0002; LESSONS.md; viz/scripts/test_layout.cjs and smoke.mjs.
+- B1 eval iteration 1 (scratchpad spec-writing-workspace/iteration-1; three tasks from this repo: a SPEC for the Rust scanner gap, for the 16 em dashes in recruiter-demo-writer's body, and for viz polish plus a search box; 10 assertions each; graded blind by one grader per task, each running the SPEC's commands on a clean clone of d6f266a):
+  - Pass rate: with skill 27/30 (rust 10, em-dash 7, viz 10); without 21/30 (rust 7, em-dash 7, viz 7). aggregate_benchmark: 90% +/- 17% vs 70% +/- 0%.
+  - Tokens: with skill 240,367 / 215,974 / 271,051 (mean 242,464); without 207,436 / 157,587 / 160,039 (mean 175,021). Delta +67,443 per SPEC.
+  - Time: NOT comparable. Every run launched at 01:31 spent long stretches blocked on the auto-mode classifier (no verdict); two runs stalled and were relaunched. Observed: with 13,061 s / 10,646 s / 11,338 s; without 10,297 s / 1,079 s (retry) / 9,940 s.
+  - Assertions passed by every run (not discriminating): acceptance fails today, both lists, no em dash, premise count. Discriminating: a commit and acceptance per phase, scope in both directions, tools writing outside scope, and staying inside the requested change.
+  - Grader notes: the blind label shuffle put the with-skill SPEC under A in all three tasks; each grader saw one task only.
+- Tune (one round), from iteration 1: phases that do not change the repo say "no commit" (the skill contradicted its own STOP template); running an acceptance command is enough, no building the change to prove it can pass (cost); check what the SPEC's own commands write (`build_graph.py` without `--out`, `npm test` logs in ~/.npm/_logs).
+
+- B1 eval iteration 2 (the tuned skill, with-skill only, same prompts, compared with iteration 1's baseline; graded on a clean clone by graders not told the configuration; the iteration-2 grader prompts also named incidental writes such as temp directories and ~/.npm/_logs under expectation 6, which iteration 1's did not):
+  - Pass rate: with skill 27/30 (rust 8, em-dash 9, viz 10); without 21/30 (unchanged). aggregate_benchmark: 90% +/- 10% vs 70% +/- 0%.
+  - Tokens: with skill 245,207 / 207,762 / 275,105 (mean 242,691; iteration 1 mean 242,464); without mean 175,021. The tune did not lower the cost, so it is recorded in SKILL.md's Known cost as a property.
+  - Time: with skill 2,487 s / 2,368 s / 2,523 s (no stalls observed); baseline times are the stalled iteration-1 values, so no time comparison is claimed.
+  - Remaining failures: expectation 1 (a commit on every phase) fails where a SPEC labels a setup or STOP phase "no commit", which the tuned skill asks for; graders flagged the assertion's wording. Rust expectation 6: `python3 -m unittest discover viz/scripts` makes temp directories in viz/scripts/, which that SPEC's scope marked do-not-modify.
+  - Viewer: scratchpad spec-writing-workspace/iteration-2/review.html (iteration 1's is in iteration-1/).
+- B1 committed: d91f7ba (run contract), 832bba9 (spec-writing/SKILL.md), 1a970ea (families.json and graph), d211d16 (lessons). Contents: spec-writing/SKILL.md (123 lines, `quick_validate.py`: valid); viz/scripts/families.json (build-discipline); viz/data/graph.json regenerated, 2026-09-29 08:33 EDT:
+  - `python3 viz/scripts/build_graph.py`: exit 0; 31 nodes (26 skills, 2 agents, 3 hooks), 44 edges; spec-writing measured: 90% (eval_line 109), the only measured node; 8 outgoing edges (capture-lessons, decision-records, phased-build, recruiter-demo-writer, scroll-world, skill-creator, unattended-build, vet-third-party).
+  - `python3 -m unittest discover viz/scripts`: 54 tests OK. `node hooks/test-hooks.js`: all 26 passed.
+  - `node --test` on the three viz test files (npm test's script, run without npm): 25 pass, 1 FAIL (test_app.cjs:62, "2 !== 1"). See Q4.
+  - `node viz/scripts/smoke.mjs`: exit 1, "family boxes out of order" (Q3); the outline check would also fail (Q4). Screenshots not regenerated.
+- LESSONS.md: two entries (exit status after a subshell; tests that assume no case exists).
 
 ## In flight
 - none
 
 ## Open questions
-- none on this branch.
-
-## Follow-ups (their own branches, per the author)
-- recruiter-demo-writer/SKILL.md still has 16 em dashes in its body (the description was fixed on fix/em-dash-in-descriptions).
-- vet-third-party/scripts/scan.py does not scan `.rs` files (Q5).
+- Q2: `npm test` writes a debug log under ~/.npm/_logs on every run (a grader found this; two logs appeared at 07:10 and 07:12 EDT). That is outside the repo; Track A's acceptance required `cd viz && npm test`. Track B ran the same three files with `node --test` instead. Blocks: nothing. Raised: B1 stop.
+- Q3: adding spec-writing to build-discipline (4 to 5 members) makes `node viz/scripts/smoke.mjs` fail: "family boxes out of order: family:vendored(7), family:review-and-honesty(4), family:build-discipline(5), ..." (dry run in a scratch clone, exit 1). Cause: `packRows` in viz/app.js is first-fit, so a smaller family can fill a gap in an earlier row, which breaks F8's reading order by count. The extractor (exit 0), unittest (54 OK), node tests (26/26), and hooks (26/26) pass. Tested option, not applied: fill only the current row (next-fit, a 2-line change in packRows). Scratch clone results: with spec-writing, smoke exit 0, largest empty rectangle 8.6%, smallest label 13.2 px; on today's 30 nodes, smoke exit 0 and 7.0% (unchanged). Fixing viz/app.js is outside Track B's scope, and placing spec-writing in a different family to pass the check would be choosing a family for a test. Triggered by: "Anything not in the SPEC". Blocks: a passing smoke test on feat/gap-skills and regenerated screenshots. Raised: B1 stop.
+- Q4: spec-writing is the first node whose SKILL.md states a score, and two checks assume there are none: `viz/scripts/test_app.cjs:62` (marks nodes[0] measured and expects exactly 1) and the smoke test's scored-copy outline check (expects only its chosen node outlined and "(1 node)" in the legend). viz/README.md also says "(none does today)". Tested option, not applied: count the existing measured nodes and add one (2 lines in test_app.cjs, 7 in smoke.mjs). With it and the Q3 packing change, a scratch clone of this branch's files passes: node tests 26/26, unittest 54 OK, smoke exit 0 (31 nodes, largest empty rectangle 8.6%, smallest label 13.2 px). Patch: scratchpad proposed-viz-fixes.patch (viz/app.js, viz/scripts/test_app.cjs, viz/scripts/smoke.mjs). Triggered by: changes to viz/ code and tests are outside Track B's scope. Blocks: passing viz tests on feat/gap-skills. Raised: B1 stop.
+- Q1 (carried from Track A): whichever of PR #6 and this branch merges second must regenerate viz/data/graph.json after the first. Blocks: nothing. Raised: PR #6.
 
 ## Decisions
-- Family taxonomy lives in viz/scripts/families.json; the extractor has no fallback family.
-- Kind colors: slate, amber, green as the author asked (Tailwind slate-500, amber-500, green-600). Family labels are letterspaced with thin spaces written as a JavaScript escape. Label font sizes are set from the zoom after the fit, so the pixel sizes hold at any window size on load.
-- The vendored flag comes from the "vendored" list in families.json, per node, so a vendored skill can stay in the family that describes what it does.
-- Labels wrap at hyphens via zero-width spaces written as a JavaScript escape, so no invisible character is committed.
-- An edge is bent only when its straight line would pass over a node it does not connect; the bend is chosen by trying growing offsets on alternate sides and re-reading Cytoscape's drawn control points.
-- Earlier decisions (branch, hook definition, edge rules, em dashes in source descriptions, fixture filenames, Cytoscape, monitor recommendation) are unchanged; see git history of this file.
-
-## Review nits recorded, not fixed (below the CRITICAL/HIGH floor)
-- License origin reads only the SKILL.md body or frontmatter, so skill-creator, scroll-world, and the ponytail sub-skills show "not stated in the file" though a LICENSE file sits beside them (the rule the spec set).
-- A frontmatter license is attached to a body origin line that does not state it (no case today).
-- A non-UTF-8 file (for example a .DS_Store in agents/) fails the build without naming the file; the output write is not guarded.
-- Edge lines and the merged-license case are covered only by the real-repo snapshot test.
-- The skill/hook and agent/hook ambiguity pairs have no test; an agent whose file stem differs from its name is matched only by name.
-- An indented `---` inside a block scalar closes frontmatter; duplicate JSON keys in families.json are last-wins; `_unquote` keeps malformed quoted scalars; license-notice entries on continuation lines or matching no node are dropped silently.
-- The page reports render errors under "Could not load data/graph.json"; the legend's outline swatch is not compared with the drawn outline; label-to-label overlap is counted but not asserted.
-- Edges to ponytail include mentions of the plugin name in a config path and a URL (ponytail-help lines 53 and 71) and the `ponytail:` comment marker (ponytail-debt), consistent with the documented token rule.
-- The vendored cytoscape.min.js contains a literal U+200B from upstream; a repo-wide hidden-Unicode scan would flag it.
-- Two source descriptions (recruiter-demo-writer, scroll-world) contain em dashes, which the page displays as written (recorded decision; the author may choose otherwise).
-- Earlier gate nits are in the git history of this file.
-
-## Lessons
-LESSONS.md at the repo root.
+- spec-writing goes in build-discipline: it writes the SPEC that phased-build and unattended-build run against. The run prompt said to add the name without naming a family.
+- The eval scores are stated in SKILL.md's Known cost, so the extractor marks the node measured; wording them to avoid the extractor's pattern would hide a real measurement.
+- The families.json change is committed on its own, so dropping it is one revert if the author prefers to wait for the viz fixes.
+- Evals run against a clean clone of origin/main in the scratchpad, so neither configuration can see the draft skill or Track A's changes.
 
 ## Next action
-Wait for the author: styling (phase 4), the family mapping, and whether to push docs/unattended-build-clock-times and open its PR. feat/skills-graph stays unpushed.
+Wait for the author: B1 review, and answers to Q3 and Q4. B2 (visual-loop) starts only after that.
