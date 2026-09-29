@@ -107,13 +107,13 @@ Root cause: `viz/scripts/test_app.cjs` and the smoke test's outline check mark o
 Next time I test a case the data does not have yet, I will count the existing cases and add one, instead of asserting a fixed total.
 Evidence: `test_app.cjs:69` failed with "2 !== 1"; smoke reported "outlined nodes [adversarial-review, spec-writing], expected only skill:adversarial-review".
 
-## zsh reads a colon after a variable name as a modifier
-Seen: 2026-09-28 (ark-skills, skills-graph run), 2026-09-29 (ark-skills, gap-skills run)   Count: 2
+## zsh is not bash: colon modifiers and unmatched globs
+Seen: 2026-09-28 (ark-skills, skills-graph run), 2026-09-29 (ark-skills, gap-skills run, twice)   Count: 3
 
-Context: building paths and git revisions from shell variables, such as `$BASE:u...` and `git show $c:PROGRESS.md`.
-Root cause: in zsh, `$name:x` applies the history modifier `x` to the variable (`:u` uppercases, `:P` resolves a real path), so the text after the colon is consumed instead of appended.
-Next time I put a colon right after a variable in zsh, I will write `${name}:` with braces.
-Evidence: `git show $c:PROGRESS.md` asked for revision "/Users/armaank019/dev/ark-skills/5b6105fROGRESS.md"; `${c}:PROGRESS.md` worked.
+Context: shell commands written as if for bash, run in this machine's zsh.
+Root cause: zsh reads `$name:x` as a history modifier (`:u` uppercases, `:P` resolves a real path), and by default stops the whole command when a glob such as `dir/*` matches nothing.
+Next time I write a shell command here, I will put braces around a variable followed by a colon (`${name}:`) and avoid globs that can match nothing, or check the directory first.
+Evidence: `git show $c:PROGRESS.md` asked for revision "/Users/armaank019/dev/ark-skills/5b6105fROGRESS.md"; `rm -rf $B/grade2/$e/C/*` on an empty folder failed with "no matches found" and skipped the copy after it.
 
 ## A check that reads its expected value from the code follows the code
 Seen: 2026-09-29 (ark-skills, gap-skills run)   Count: 1
@@ -122,3 +122,19 @@ Context: the viz smoke test checks each visual decision (label floor, family lab
 Root cause: the expected value comes from the same constant the page uses, so changing the constant changes both sides and the check still passes; it holds the drawing to the code, not to the decision.
 Next time a check guards a decided value, I will write the value into the check as a literal and confirm it fails when only the code's constant changes.
 Evidence: on a clone of be693b6, FAMILY_LABEL set to 8 px red in app.js alone, `node viz/scripts/smoke.mjs` exit 0 (PROGRESS.md Q6).
+
+## A clone of the local repo carries every local branch
+Seen: 2026-09-29 (ark-skills, gap-skills run)   Count: 1
+
+Context: giving eval runs a clean clone of main so neither configuration could see work in progress.
+Root cause: `git clone <local path>` copies every local branch as a remote-tracking ref, so the clones also held chore/wire-skill-references and feat/gap-skills, with unreleased skills in them.
+Next time I make an isolated clone for an eval, I will clone with `--single-branch --branch <base>` (or delete the other refs) and check `git branch -a` in it before any run starts.
+Evidence: a B1 baseline run read chore/wire-skill-references' PROGRESS.md through the clone; the B2 graders found feat/gap-skills in every eval clone.
+
+## Blind grading needs a fresh draw per task and neutral paths
+Seen: 2026-09-29 (ark-skills, gap-skills run)   Count: 1
+
+Context: labeling two eval outputs A and B so a grader cannot tell which configuration wrote which.
+Root cause: one seeded shuffle put the with-skill output under A in all three B1 tasks, and in B2 some outputs quoted their own run paths, which named the configuration.
+Next time I blind a comparison, I will draw the label separately for each task, copy outputs to neutral paths before the runs write anything that names them, and grep the copies for the configuration names.
+Evidence: grade-blind-key.json had with_skill: A for every B1 task; B2 grading copies contained "with_skill" and "without_skill" in smoke logs and a REPLY.md.
