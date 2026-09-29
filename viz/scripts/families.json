@@ -51,7 +51,6 @@
     {
       "id": "vendored",
       "label": "Vendored",
-      "vendored": true,
       "members": [
         "impeccable",
         "ponytail",
@@ -79,5 +78,16 @@
         "no-em-dash"
       ]
     }
+  ],
+  "vendored": [
+    "impeccable",
+    "ponytail",
+    "ponytail-audit",
+    "ponytail-debt",
+    "ponytail-gain",
+    "ponytail-help",
+    "ponytail-review",
+    "scroll-world",
+    "skill-creator"
   ]
 }

@@ -1,5 +1,5 @@
 # Progress: skills-graph
-Updated: 2026-09-28 22:48 EDT (from `date`)   Branch: feat/skills-graph (from origin/main cd423eb, upstream unset, not pushed)   Last commit: 41c3578 (F5), before the F6 commit
+Updated: 2026-09-28 22:57 EDT (from `date`)   Branch: feat/skills-graph (from origin/main cd423eb, upstream unset, not pushed)   Last commit: 0d140c2 (F6), before the vendored-list commit
 
 Every time in this file comes from `date`.
 
@@ -38,15 +38,14 @@ Phase 4: STOPPED again for the author. Styling is taste work and is the author's
 
 ## Open questions
 - Styling (phase 4): the author's.
-- Vendored set vs the repo's own records: README.md says skill-creator is "from anthropics/skills" (Apache 2.0, added in 24255cc) and scroll-world is "Vendored from oso95/scroll-world" (its LICENSE: "Copyright (c) 2026 cyw", added in cba38fa). The author's F4 mapping puts them in skill-management and domain, so their vendored flag is false. Should they move to vendored? Blocks: nothing. Raised: at this checkpoint.
-- fix/em-dash-in-descriptions: the request says recruiter-demo-writer and scroll-world are the author's, not vendored; the repo says scroll-world is vendored. Editing its description changes a vendored file (it would drift from upstream commit 71cc36d3). Held until the author confirms. Blocks: that branch only. Raised: at this checkpoint.
-- No node has a measured eval today: no SKILL.md states a pass rate or score in its own text, so the outline shows nowhere on the real data. It is proved on a scored copy in the smoke test.
+- Vendored set (answered 2026-09-28): skill-creator and scroll-world are marked vendored and stay in their families. families.json now has one top-level "vendored" list of node names (9 today) instead of a family flag; smoke passed at 22:56:05 EDT with the legend at 9 nodes.
+- fix/em-dash-in-descriptions (answered 2026-09-28): recruiter-demo-writer only; scroll-world stays as upstream.
 - Q5 (for its own branch): vet-third-party/scripts/scan.py does not scan `.rs` files.
 
 ## Decisions
 - Family taxonomy lives in viz/scripts/families.json; the extractor has no fallback family.
 - Kind colors: slate, amber, green as the author asked (Tailwind slate-500, amber-500, green-600). Family labels are letterspaced with thin spaces written as a JavaScript escape. Label font sizes are set from the zoom after the fit, so the pixel sizes hold at any window size on load.
-- The vendored flag comes from families.json (a family marked vendored), not from LICENSE files, following the author's mapping.
+- The vendored flag comes from the "vendored" list in families.json, per node, so a vendored skill can stay in the family that describes what it does.
 - Labels wrap at hyphens via zero-width spaces written as a JavaScript escape, so no invisible character is committed.
 - An edge is bent only when its straight line would pass over a node it does not connect; the bend is chosen by trying growing offsets on alternate sides and re-reading Cytoscape's drawn control points.
 - Earlier decisions (branch, hook definition, edge rules, em dashes in source descriptions, fixture filenames, Cytoscape, monitor recommendation) are unchanged; see git history of this file.

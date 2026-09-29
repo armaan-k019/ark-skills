@@ -5,7 +5,6 @@
     {
       "id": "build-discipline",
       "label": "Build discipline",
-      "vendored": false,
       "rule": "families.json",
       "file": "viz/scripts/families.json",
       "line": 4
@@ -13,7 +12,6 @@
     {
       "id": "review-and-honesty",
       "label": "Review and honesty",
-      "vendored": false,
       "rule": "families.json",
       "file": "viz/scripts/families.json",
       "line": 14
@@ -21,7 +19,6 @@
     {
       "id": "research",
       "label": "Research",
-      "vendored": false,
       "rule": "families.json",
       "file": "viz/scripts/families.json",
       "line": 24
@@ -29,7 +26,6 @@
     {
       "id": "skill-management",
       "label": "Skill management",
-      "vendored": false,
       "rule": "families.json",
       "file": "viz/scripts/families.json",
       "line": 35
@@ -37,7 +33,6 @@
     {
       "id": "domain",
       "label": "Domain",
-      "vendored": false,
       "rule": "families.json",
       "file": "viz/scripts/families.json",
       "line": 44
@@ -45,7 +40,6 @@
     {
       "id": "vendored",
       "label": "Vendored",
-      "vendored": true,
       "rule": "families.json",
       "file": "viz/scripts/families.json",
       "line": 52
@@ -53,18 +47,16 @@
     {
       "id": "agents",
       "label": "Agents",
-      "vendored": false,
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 66
+      "line": 65
     },
     {
       "id": "hooks",
       "label": "Hooks",
-      "vendored": false,
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 74
+      "line": 73
     }
   ],
   "nodes": [
@@ -367,7 +359,7 @@
       "description": "Build an immersive scroll-scrubbed \"fly through the world\" landing page for any industry or brand using Higgsfield. As the visitor scrolls, a pre-rendered camera flies from outside each scene into its interior, then flows on to the next scene with NO cuts \u2014 one continuous connected flight (Emons-style isometric diorama world, or any art direction you pick). The skill interviews the user for the topic, the story beats/sections, and brand kit, then generates cohesive scenes + seamless camera clips with Higgsfield and wires a portable, framework-agnostic scroll-scrub engine. The video chain renders through Monid by default (Seedance 2.0, pay-per-clip USD \u2014 capability re-checked each build, see Step 4) with Higgsfield credits as the fallback biller. Use when the user wants a \"3D world\" / \"browse-through-the-industry\" hero, a scroll cinematic, a diorama landing, or to turn a business into a scrollable world.",
       "eval_status": "unmeasured",
       "family": "domain",
-      "vendored": false
+      "vendored": true
     },
     {
       "id": "skill:skill-audit",
@@ -401,7 +393,7 @@
       "description": "Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, edit, or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, or optimize a skill's description for better triggering accuracy.",
       "eval_status": "unmeasured",
       "family": "skill-management",
-      "vendored": false
+      "vendored": true
     },
     {
       "id": "skill:strategic-compact",

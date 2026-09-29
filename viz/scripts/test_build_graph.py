@@ -203,14 +203,13 @@ class FixtureGraph(unittest.TestCase):
     def test_families_come_from_families_json_in_file_order(self):
         self.assertEqual([f["id"] for f in self.graph["families"]], ["core", "extra", "agents", "hooks"])
         fam = {f["id"]: f for f in self.graph["families"]}
-        self.assertEqual(fam["core"], {"id": "core", "label": "Core", "vendored": False, "rule": "families.json", "file": "families.json", "line": 3})
-        self.assertTrue(fam["extra"]["vendored"])
+        self.assertEqual(fam["core"], {"id": "core", "label": "Core", "rule": "families.json", "file": "families.json", "line": 3})
         self.assertEqual(self.nodes["skill:alpha"]["family"], "core")
         self.assertEqual(self.nodes["skill:one"]["family"], "extra")
         self.assertEqual(self.nodes["agent:helper"]["family"], "agents")
         self.assertEqual(self.nodes["hook:guard"]["family"], "hooks")
 
-    def test_vendored_flag_comes_from_the_family(self):
+    def test_vendored_flag_comes_from_the_vendored_list(self):
         for node_id in ("skill:delta", "skill:one", "skill:two"):
             self.assertIs(self.nodes[node_id]["vendored"], True, node_id)
         for node_id in ("skill:alpha", "agent:helper", "hook:guard"):
@@ -275,6 +274,10 @@ class FailsLoudly(unittest.TestCase):
         root = self.mutated("families.json", lambda t: t.replace('"guard"', '"guard", "renamed-hook"'))
         self.assertBuildFails(root, "lists names that are not nodes")
 
+    def test_vendored_list_names_a_node_that_does_not_exist(self):
+        root = self.mutated("families.json", lambda t: t.replace('"vendored": ["delta"', '"vendored": ["ghost", "delta"'))
+        self.assertBuildFails(root, "lists names that are not nodes")
+
     def test_node_listed_in_two_families(self):
         root = self.mutated("families.json", lambda t: t.replace('["guard"]', '["guard", "alpha"]'))
         self.assertBuildFails(root, "listed in both")
@@ -289,7 +292,8 @@ class FailsLoudly(unittest.TestCase):
             ('{"families": [{"id": "core", "label": "Core", "members": []}]}', "non-empty list of member"),
             ('{"families": [{"id": "a", "label": "A", "members": ["alpha"]}, {"id": "a", "label": "B", "members": ["beta"]}]}', "duplicate family id"),
             ("not json", "not valid JSON"),
-            ('{"families": [{"id": "core", "label": "Core", "vendored": "yes", "members": ["alpha"]}]}', "vendored must be true or false"),
+            ('{"families": [{"id": "core", "label": "Core", "members": ["alpha"]}], "vendored": "alpha"}', "must be a list of node names"),
+            ('{"families": [{"id": "core", "label": "Core", "members": ["alpha"]}], "vendored": ["alpha", "alpha"]}', "lists a name twice"),
         ]
         for text, fragment in cases:
             with self.subTest(families=text):
