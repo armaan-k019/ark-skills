@@ -96,43 +96,61 @@ function toElements(graph) {
   return parents.concat(nodes, edges);
 }
 
-// Each family gets its own cell so family boxes never overlap: cells are sized
-// by member count (a near-square grid of fixed slots, one per member) and
-// arranged in a grid of cells. The number of cell columns is the one that lets
-// the whole graph fit the viewport at the largest zoom, which keeps labels as
-// large as possible. Members are placed inside their cell by Cytoscape's
-// built-in grid layout.
+// Each family gets its own cell so family boxes never overlap. A cell is a grid
+// of fixed slots, one per member. Cells are ordered by member count, largest
+// first, and packed into rows (first fit, by decreasing height). Every row width
+// in a range is tried, and the packing that fits the viewport at the largest zoom
+// wins, which fills the canvas and keeps labels as large as possible. Members are
+// placed inside their cell by Cytoscape's built-in grid layout.
 const SLOT = { w: 130, h: 140 };
 const GAP = 50;
 
-function placeCells(shapes, cols) {
-  const colW = [];
-  const rowH = [];
-  shapes.forEach((s, i) => {
-    const col = i % cols;
-    const row = Math.floor(i / cols);
-    colW[col] = Math.max(colW[col] || 0, s.w);
-    rowH[row] = Math.max(rowH[row] || 0, s.h);
-  });
-  const offset = (sizes, n) => sizes.slice(0, n).reduce((sum, size) => sum + size + GAP, 0);
-  return {
-    w: offset(colW, colW.length) - GAP,
-    h: offset(rowH, rowH.length) - GAP,
-    cells: shapes.map((s, i) => ({ ...s, x1: offset(colW, i % cols), y1: offset(rowH, Math.floor(i / cols)) })),
-  };
+// Columns per family: start at ceil(sqrt(n)) and widen until the last row holds
+// more than one member (ceil(sqrt(n)) alone leaves a lone member for n = 3 or 7).
+function familyColumns(n) {
+  if (n <= 1) return 1;
+  let cols = Math.ceil(Math.sqrt(n));
+  while (cols < n && n % cols === 1) cols += 1;
+  return cols;
+}
+
+function packRows(shapes, width) {
+  const rows = [];
+  const cells = [];
+  for (const s of shapes) {
+    let row = rows.find((r) => s.h <= r.h && r.used + (r.used ? GAP : 0) + s.w <= width);
+    if (!row) {
+      const prev = rows[rows.length - 1];
+      row = { y: prev ? prev.y + prev.h + GAP : 0, h: s.h, used: 0 };
+      rows.push(row);
+    }
+    const x1 = row.used ? row.used + GAP : 0;
+    cells.push({ ...s, x1, y1: row.y });
+    row.used = x1 + s.w;
+  }
+  const last = rows[rows.length - 1];
+  return { cells, w: Math.max(...rows.map((r) => r.used)), h: last.y + last.h };
 }
 
 function familyCells(families, aspect = 1) {
-  const shapes = families.map((f) => {
-    const c = Math.max(1, Math.ceil(Math.sqrt(f.count)));
-    const r = Math.max(1, Math.ceil(f.count / c));
-    return { id: f.id, cols: c, rows: r, w: c * SLOT.w, h: r * SLOT.h };
-  });
+  const shapes = families
+    .map((f, index) => ({ f, index }))
+    .sort((a, b) => b.f.count - a.f.count || a.index - b.index)
+    .map(({ f }) => {
+      const c = familyColumns(f.count);
+      const r = Math.max(1, Math.ceil(f.count / c));
+      return { id: f.id, count: f.count, cols: c, rows: r, w: c * SLOT.w, h: r * SLOT.h };
+    });
+  const widest = Math.max(...shapes.map((s) => s.w));
+  const total = shapes.reduce((sum, s) => sum + s.w + GAP, -GAP);
   let best = null;
-  for (let cols = 1; cols <= Math.max(1, shapes.length); cols++) {
-    const placed = placeCells(shapes, cols);
-    const scale = Math.min(aspect / placed.w, 1 / placed.h);
-    if (!best || scale > best.scale) best = { scale, cells: placed.cells };
+  for (let width = widest; width <= total; width += SLOT.w / 2) {
+    const packed = packRows(shapes, width);
+    const scale = Math.min(aspect / packed.w, 1 / packed.h);
+    const fill = shapes.reduce((sum, s) => sum + s.w * s.h, 0) / (packed.w * packed.h);
+    if (!best || scale > best.scale + 1e-9 || (Math.abs(scale - best.scale) <= 1e-9 && fill > best.fill)) {
+      best = { scale, fill, cells: packed.cells };
+    }
   }
   return best.cells;
 }
@@ -254,6 +272,7 @@ if (typeof module === 'object' && module.exports) {
     toElements,
     nodeDetails,
     familyCells,
+    familyColumns,
     layoutFamilies,
     sizeLabels,
     isMeasured,

@@ -38,6 +38,22 @@ test('family cells do not overlap at any viewport shape', () => {
   }
 });
 
+test('no family ends with a lone member in its last row', () => {
+  for (let n = 2; n <= 30; n++) {
+    const cols = app.familyColumns(n);
+    const last = n - cols * (Math.ceil(n / cols) - 1);
+    assert.ok(cols >= Math.ceil(Math.sqrt(n)), `n=${n}: ${cols} columns is fewer than ceil(sqrt(n))`);
+    assert.ok(last >= 2, `n=${n}: ${cols} columns leaves ${last} in the last row`);
+  }
+});
+
+test('family cells are ordered by member count, largest first', () => {
+  const counts = graph.families.map((f) => ({ id: f.id, count: graph.nodes.filter((n) => n.family === f.id).length }));
+  const placed = app.familyCells(counts, 1.08).map((c) => c.count);
+  assert.deepEqual(placed, [...placed].sort((a, b) => b - a));
+  assert.equal(placed.length, counts.length);
+});
+
 test('a wide viewport gets more cell columns than a tall one', () => {
   const counts = graph.families.map((f) => ({ id: f.id, count: graph.nodes.filter((n) => n.family === f.id).length }));
   const columns = (aspect) => new Set(app.familyCells(counts, aspect).map((c) => c.x1)).size;

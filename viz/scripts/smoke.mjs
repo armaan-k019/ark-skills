@@ -21,6 +21,8 @@ const { readPanel, comparePanel } = panelCheck;
 const base = process.argv[2] || 'http://127.0.0.1:8123/';
 const graphPath = new URL('../data/graph.json', import.meta.url);
 const screenshotPath = fileURLToPath(new URL('../screenshot.png', import.meta.url));
+const focusShotPath = fileURLToPath(new URL('../screenshot-focus.png', import.meta.url));
+const FOCUS_NODE = 'skill:phased-build';
 
 function check(condition, message) {
   if (!condition) throw new Error(message);
@@ -79,6 +81,55 @@ try {
     return hit;
   });
   check(overlaps.length === 0, `family boxes overlap: ${overlaps.join(', ')}`);
+
+  // Packing: boxes in reading order go from most members to fewest, no box ends
+  // with a lone member in its last row, and no empty rectangle larger than a
+  // tenth of the canvas (measured on a 16 by 16 grid over the canvas).
+  const packing = await page.evaluate(() => {
+    const cy = window.cy;
+    const parents = cy.nodes(':parent').map((p) => {
+      const bb = p.renderedBoundingBox();
+      const ys = p.children().map((c) => Math.round(c.position('y')));
+      const rows = [...new Set(ys)].sort((a, b) => a - b);
+      const lastRow = ys.filter((y) => y === rows[rows.length - 1]).length;
+      return { id: p.id(), count: p.children().length, x1: bb.x1, y1: bb.y1, y2: bb.y2, lastRow };
+    });
+    const W = cy.width();
+    const H = cy.height();
+    const N = 16;
+    const boxes = cy.nodes(':parent').map((p) => p.renderedBoundingBox());
+    const occupied = [];
+    for (let i = 0; i < N; i++) {
+      occupied.push([]);
+      for (let j = 0; j < N; j++) {
+        const c = { x1: (j * W) / N, x2: ((j + 1) * W) / N, y1: (i * H) / N, y2: ((i + 1) * H) / N };
+        occupied[i].push(boxes.some((bb) => bb.x1 < c.x2 && c.x1 < bb.x2 && bb.y1 < c.y2 && c.y1 < bb.y2));
+      }
+    }
+    let largest = 0;
+    for (let i1 = 0; i1 < N; i1++) for (let j1 = 0; j1 < N; j1++) for (let i2 = i1; i2 < N; i2++) for (let j2 = j1; j2 < N; j2++) {
+      let empty = true;
+      for (let i = i1; i <= i2 && empty; i++) for (let j = j1; j <= j2 && empty; j++) if (occupied[i][j]) empty = false;
+      if (empty) largest = Math.max(largest, (i2 - i1 + 1) * (j2 - j1 + 1));
+    }
+    return { parents, largestEmpty: largest / (N * N) };
+  });
+  // Reading order: boxes whose vertical extents overlap share a row; rows top to
+  // bottom, boxes in a row left to right.
+  const rowsOfBoxes = [];
+  for (const p of [...packing.parents].sort((a, b) => a.y1 - b.y1)) {
+    const row = rowsOfBoxes.find((r) => p.y1 < r.y2);
+    if (row) {
+      row.boxes.push(p);
+      row.y2 = Math.max(row.y2, p.y2);
+    } else rowsOfBoxes.push({ y2: p.y2, boxes: [p] });
+  }
+  const reading = rowsOfBoxes.flatMap((r) => r.boxes.sort((a, b) => a.x1 - b.x1));
+  for (let i = 1; i < reading.length; i++) {
+    check(reading[i].count <= reading[i - 1].count, `family boxes out of order: ${reading.map((p) => `${p.id}(${p.count})`).join(', ')}`);
+  }
+  for (const p of packing.parents) check(p.count < 2 || p.lastRow >= 2, `${p.id} ends with ${p.lastRow} member in its last row`);
+  check(packing.largestEmpty <= 0.1, `largest empty rectangle is ${(packing.largestEmpty * 100).toFixed(1)}% of the canvas, expected at most 10%`);
 
   // Encoding: color by kind, outline only on nodes whose own SKILL.md states a
   // score, and a legend whose swatches match and which says what size means.
@@ -298,6 +349,15 @@ try {
     return { x: box.left + 4, y: box.top + 4 };
   });
   await expectFocus(null, 'default (no focus)');
+  // The default screenshot: nothing selected, nothing hovered.
+  await page.mouse.move(0, 0);
+  const emptyStart = await page.evaluate(() => {
+    const box = window.cy.container().getBoundingClientRect();
+    return { x: box.left + 4, y: box.top + 4 };
+  });
+  await page.mouse.move(emptyStart.x, emptyStart.y);
+  await expectFocus(null, 'default before the screenshot');
+  await page.screenshot({ path: screenshotPath });
   const hovered = graph.nodes.find((n) => n.id !== target && graph.edges.some((e) => e.source === n.id || e.target === n.id)).id;
   const hoverAt = await drawnPoint(hovered);
   await page.mouse.move(hoverAt.x, hoverAt.y);
@@ -324,9 +384,16 @@ try {
   await page.mouse.move(emptyPoint.x, emptyPoint.y);
   await expectFocus(target, `selection of ${target} kept after the pointer leaves`);
 
-  await page.screenshot({ path: screenshotPath });
   await page.mouse.click(emptyPoint.x, emptyPoint.y);
   await expectFocus(null, 'selection cleared by clicking empty canvas');
+
+  // The focus screenshot: phased-build selected, pointer away from the graph.
+  const focusId = graph.nodes.some((n) => n.id === FOCUS_NODE) ? FOCUS_NODE : target;
+  const focusAt = await drawnPoint(focusId);
+  await page.mouse.click(focusAt.x, focusAt.y);
+  await page.mouse.move(emptyPoint.x, emptyPoint.y);
+  await expectFocus(focusId, `selection of ${focusId} for the focus screenshot`);
+  await page.screenshot({ path: focusShotPath });
   check(pageErrors.length === 0, `page errors: ${pageErrors.join(' | ')}`);
 
   // The outline's positive case: serve a copy of graph.json in which one skill
@@ -360,7 +427,7 @@ try {
   check(outline.labelClear, `the label of ${scoredNode.id} overlaps its outlined circle`);
   check(outline.legend.includes('(1 node)'), 'legend does not count the scored node');
   await page2.close();
-  result = { counts, target, outgoing, incoming, legibility, routing, families: graph.families.length, kinds: kinds.length, scored: scoredNode.id };
+  result = { counts, target, outgoing, incoming, legibility, routing, packing, families: graph.families.length, kinds: kinds.length, scored: scoredNode.id, focusId };
 } finally {
   await browser.close();
 }
@@ -374,5 +441,6 @@ console.log(
     `0 edges over unconnected nodes (${result.routing.bent} bent around them); ` +
     `filters exact for ${result.families} families and ${result.kinds} edge kinds; ` +
     `focus checked for default, hover, selection, and clearing; ` +
-    `outline drawn on ${result.scored} in a scored copy; wrote ${screenshotPath}`,
+    `boxes ordered by size, no lone last-row member, largest empty rectangle ${(result.packing.largestEmpty * 100).toFixed(1)}% of the canvas; ` +
+    `outline drawn on ${result.scored} in a scored copy; wrote ${screenshotPath} (no focus) and ${focusShotPath} (${result.focusId} selected)`,
 );
