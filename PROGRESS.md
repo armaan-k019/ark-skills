@@ -1,12 +1,12 @@
 # Progress: wiring and gap skills
-Updated: 2026-09-29 08:50 EDT (from `date`)   Branch: feat/gap-skills (from origin/main d6f266a, upstream unset)   Last commit: d211d16
+Updated: 2026-09-29 09:07 EDT (from `date`)   Branch: feat/gap-skills (from origin/main d6f266a, upstream unset)   Last commit: d211d16
 The previous run's log (skills-graph) is in the git history of this file. Track A's log is on chore/wire-skill-references (PR #6).
 
 ## SPEC summary
 Track A (chore/wire-skill-references): done, PR #6 open, not merged. Track B (feat/gap-skills, from main after Track A's PR is open): evidence-first skills, one at a time, stopping after each: B1 spec-writing, B2 visual-loop, B3 debugging (needs the author's Stage A session), B4 and B5 stop and ask. Per skill: list the evidence with paths, draft with skill-creator, eval against a no-skill baseline on a real task (both scores, tokens, time; tune once), add to families.json and rerun the extractor, commit, stop and show.
 
 ## Now
-Track B, B2 visual-loop, step: eval iteration 1 running (6 runs)
+Track B, B2 visual-loop, step: eval iteration 2 running (3 with-skill runs, tuned draft)
 
 ## Done and verified
 - Track A: PR #6 (https://github.com/armaan-k019/ark-skills/pull/6), acceptance and gate in that branch's PROGRESS.md.
@@ -41,10 +41,18 @@ Track B, B2 visual-loop, step: eval iteration 1 running (6 runs)
 - The run prompt names "six human gates"; the evidence shows five author decision points in the skills-graph run: Q1 to Q5 (2026-09-28 05:07 EDT), Q6 and F1 to F3 (20:35 EDT), F4 to F6 (22:40 EDT), the vendored question (22:55 EDT), F7 and F8 (23:21 EDT); three are visual rounds. The draft cites these.
 - B2 draft in the scratchpad (draft-b2/visual-loop/SKILL.md, 76 lines) until the eval finishes. Eval iteration 1 launched at 2026-09-29 08:50 EDT: three tasks (vague-restyle, feedback-round with a false premise, reverse-earlier-decision), each run in its own clone of main be693b6 with its own port.
 
+- B2 eval iteration 1 (scratchpad draft-b2/visual-loop-workspace/iteration-1; each run in its own clone of be693b6; graded blind per task with a random A/B label, though some outputs quote run paths that name the configuration):
+  - Pass: with skill 15/15 (vague 5/5, feedback 6/6, reverse 4/4); without 7/15 (vague 1/5, feedback 5/6, reverse 1/4). aggregate_benchmark (mean of per-task rates): 100% +/- 0% vs 43% +/- 35%.
+  - Tokens: with 102,781 / 150,240 / 88,801 (mean 113,941); without 143,845 / 147,867 / 126,254 (mean 139,322). Time: with 348 / 584 / 227 s (mean 386); without 619 / 593 / 375 s (mean 529). No classifier stalls in these runs.
+  - Without the skill: vague restyled and committed the panel with no question; reverse lowered the labels to 11 px and rewrote the smoke floor to match, then reported it; feedback changed the page on F10's false premise (autounselectify).
+  - Finding used in the tune: the smoke assertions compare the drawing with constants read from viz/app.js, so they do not hold the author's decisions. Probe on a clone of be693b6: FAMILY_LABEL set to 8 px red in app.js alone, `node viz/scripts/smoke.mjs` exit 0.
+- B2 tune (one round), at 2026-09-29 09:07 EDT: Step 5 writes the decided value into the check (and drops the draft's claim that the existing checks already hold decisions); Step 3 keeps a round small (the author's rounds had 3, 3, and 2 items; the with-skill vague run asked 10 questions).
+
 ## In flight
 - none
 
 ## Open questions
+- Q6: viz/scripts/smoke.mjs checks labels, family labels, and colors against the constants in viz/app.js, so a change to a constant alone passes (probe: family labels 8 px red, exit 0). Holding the decided values (13 px floor, 11 px gray family labels, the three kind colors, the dashed border) would mean writing them into the checks, which is viz code, outside Track B's scope. Blocks: nothing. Raised: not yet.
 - Q5: the final graph.json and screenshot regeneration on this branch waits until PR #7 is in main (the author's merge order). Blocks: the last commit of feat/gap-skills. Raised: B1 stop.
 - Resolved by the author on 2026-09-29: Q1 (merge order), Q2 (npm logs: use node --test), Q3 and Q4 (PR #7).
 
