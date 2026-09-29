@@ -35,6 +35,8 @@ Scope:
 3. The three to five strongest claims: check each against its cited source.
 4. Everything else.
 
+When a claim needs sources the work does not cite, find them with `literature-review` first; this skill judges the evidence, it does not search for it.
+
 ## 3. Score each applicable dimension (1 to 5, or N/A)
 
 5 excellent, ready; 4 good, minor fixes; 3 adequate, meaningful gaps; 2 weak, substantial revision; 1 poor, validity or clarity problems.
