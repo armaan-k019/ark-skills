@@ -14,49 +14,49 @@
       "label": "Review and honesty",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 14
+      "line": 15
     },
     {
       "id": "research",
       "label": "Research",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 24
+      "line": 25
     },
     {
       "id": "skill-management",
       "label": "Skill management",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 35
+      "line": 36
     },
     {
       "id": "domain",
       "label": "Domain",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 44
+      "line": 45
     },
     {
       "id": "vendored",
       "label": "Vendored",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 52
+      "line": 53
     },
     {
       "id": "agents",
       "label": "Agents",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 65
+      "line": 66
     },
     {
       "id": "hooks",
       "label": "Hooks",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 73
+      "line": 74
     }
   ],
   "nodes": [
@@ -311,7 +311,7 @@
       "name": "recruiter-demo-writer",
       "path": "recruiter-demo-writer/SKILL.md",
       "lines": 51,
-      "description": "Use when building, deepening, or reviewing a recruiter-facing demo page under src/app/demos/ in this portfolio (the pattern behind illoca, world-labs, rho, midjourney, whop). Triggers on requests like \"build the Warp demo,\" \"deepen the Whop page,\" \"add a demo for [company],\" \"write the case study copy for [demo],\" or any request to add sections, rewrite copy, or extend an existing page in src/app/demos/. Also use when asked to review a demo page for consistency, tone, voice, or fabricated claims. Not for the older terracotta-palette project pages under src/app/projects/ (urban-gpt, yield, fine-print) \u2014 those follow a different template this skill does not cover.",
+      "description": "Use when building, deepening, or reviewing a recruiter-facing demo page under src/app/demos/ in this portfolio (the pattern behind illoca, world-labs, rho, midjourney, whop). Triggers on requests like \"build the Warp demo,\" \"deepen the Whop page,\" \"add a demo for [company],\" \"write the case study copy for [demo],\" or any request to add sections, rewrite copy, or extend an existing page in src/app/demos/. Also use when asked to review a demo page for consistency, tone, voice, or fabricated claims. Not for the older terracotta-palette project pages under src/app/projects/ (urban-gpt, yield, fine-print), which follow a different template this skill does not cover.",
       "eval_status": "unmeasured",
       "family": "domain",
       "vendored": false
@@ -394,6 +394,23 @@
       "eval_status": "unmeasured",
       "family": "skill-management",
       "vendored": true
+    },
+    {
+      "id": "skill:spec-writing",
+      "kind": "skill",
+      "name": "spec-writing",
+      "path": "spec-writing/SKILL.md",
+      "lines": 123,
+      "description": "Write or check the SPEC that a multi-phase coding run builds against, before the run starts. Numbered phases, acceptance criteria written as commands that fail until the work is done, decide-yourself and stop-and-ask lists, scope boundaries, and which criteria are taste that only a human can judge. Use when asked to write a spec, a run prompt, or a brief for an autonomous, overnight, or unattended session, to \"turn this into a SPEC\", to plan a follow-up branch that another session will run, or to review a SPEC or run prompt before launching it. Also use when a run keeps stopping on questions the SPEC should have answered. For running the build itself, use unattended-build.",
+      "origin": {
+        "from": "body",
+        "text": "Written for this repo from its own run prompts (2026-09-26 to 2026-09-29) and the stops they caused. The main source is the skills-graph run: its questions Q1 to Q6 in the history of `PROGRESS.md`, the approved changes at the end of the history of `STANDING-DECISIONS.md`, `docs/decisions/0002-skill-discovery-skips-node-modules.md`, and `LESSONS.md`. Three rules come from this skill's own eval (Known cost, below): the \"no commit\" label in Step 3, the end of Step 4's second rule, and the check of what the SPEC's own commands write in Step 6. Each rule below names the stop or failure it comes from.",
+        "line": 10
+      },
+      "eval_status": "measured: 90%",
+      "eval_line": 109,
+      "family": "build-discipline",
+      "vendored": false
     },
     {
       "id": "skill:strategic-compact",
@@ -943,6 +960,102 @@
       "line": 46,
       "lines": [
         46
+      ]
+    },
+    {
+      "id": "skill:spec-writing->skill:capture-lessons:skill-skill",
+      "source": "skill:spec-writing",
+      "target": "skill:capture-lessons",
+      "kind": "skill-skill",
+      "file": "spec-writing/SKILL.md",
+      "line": 98,
+      "lines": [
+        98
+      ]
+    },
+    {
+      "id": "skill:spec-writing->skill:decision-records:skill-skill",
+      "source": "skill:spec-writing",
+      "target": "skill:decision-records",
+      "kind": "skill-skill",
+      "file": "spec-writing/SKILL.md",
+      "line": 98,
+      "lines": [
+        98
+      ]
+    },
+    {
+      "id": "skill:spec-writing->skill:phased-build:skill-skill",
+      "source": "skill:spec-writing",
+      "target": "skill:phased-build",
+      "kind": "skill-skill",
+      "file": "spec-writing/SKILL.md",
+      "line": 14,
+      "lines": [
+        14
+      ]
+    },
+    {
+      "id": "skill:spec-writing->skill:recruiter-demo-writer:skill-skill",
+      "source": "skill:spec-writing",
+      "target": "skill:recruiter-demo-writer",
+      "kind": "skill-skill",
+      "file": "spec-writing/SKILL.md",
+      "line": 109,
+      "lines": [
+        109
+      ]
+    },
+    {
+      "id": "skill:spec-writing->skill:scroll-world:skill-skill",
+      "source": "skill:spec-writing",
+      "target": "skill:scroll-world",
+      "kind": "skill-skill",
+      "file": "spec-writing/SKILL.md",
+      "line": 22,
+      "lines": [
+        22
+      ]
+    },
+    {
+      "id": "skill:spec-writing->skill:skill-creator:skill-skill",
+      "source": "skill:spec-writing",
+      "target": "skill:skill-creator",
+      "kind": "skill-skill",
+      "file": "spec-writing/SKILL.md",
+      "line": 109,
+      "lines": [
+        109
+      ]
+    },
+    {
+      "id": "skill:spec-writing->skill:unattended-build:skill-skill",
+      "source": "skill:spec-writing",
+      "target": "skill:unattended-build",
+      "kind": "skill-skill",
+      "file": "spec-writing/SKILL.md",
+      "line": 8,
+      "lines": [
+        8,
+        15,
+        35,
+        51,
+        66,
+        82,
+        91,
+        101,
+        109
+      ]
+    },
+    {
+      "id": "skill:spec-writing->skill:vet-third-party:skill-skill",
+      "source": "skill:spec-writing",
+      "target": "skill:vet-third-party",
+      "kind": "skill-skill",
+      "file": "spec-writing/SKILL.md",
+      "line": 25,
+      "lines": [
+        25
       ]
     },
     {
