@@ -10,6 +10,9 @@ const FAMILY_PREFIX = 'family:';
 const KIND_COLORS = { skill: '#1f77b4', agent: '#ff7f0e', hook: '#2ca02c' };
 // A node whose own SKILL.md states an eval score gets this outline.
 const MEASURED_OUTLINE = { width: 4, color: '#000000' };
+// A node carried from another repository (families.json marks its family
+// vendored) gets a dashed border.
+const VENDORED_BORDER = { width: 2, color: '#374151', style: 'dashed' };
 const LABEL_FONT_SIZE = 17;
 
 function isMeasured(n) {
@@ -41,6 +44,7 @@ function checkGraph(graph) {
   for (const n of graph.nodes) {
     if (!families.has(n.family)) throw new Error(`node ${n.id} has unknown family ${n.family}`);
     if (!(n.kind in KIND_COLORS)) throw new Error(`node ${n.id} has unknown kind ${n.kind}`);
+    if (typeof n.vendored !== 'boolean') throw new Error(`node ${n.id} has no vendored flag`);
   }
   for (const e of graph.edges) {
     if (!ids.has(e.source) || !ids.has(e.target)) throw new Error(`edge ${e.id} has a missing endpoint`);
@@ -65,6 +69,7 @@ function toElements(graph) {
       label: nodeLabel(n.name || n.id),
       kind: n.kind,
       measured: isMeasured(n),
+      vendored: n.vendored === true,
       family: n.family,
       parent: FAMILY_PREFIX + n.family,
       size: nodeSize(n.lines),
@@ -228,6 +233,7 @@ if (typeof module === 'object' && module.exports) {
     FAMILY_PREFIX,
     KIND_COLORS,
     MEASURED_OUTLINE,
+    VENDORED_BORDER,
     LABEL_FONT_SIZE,
     SLOT,
   };
@@ -347,6 +353,13 @@ function main() {
     const outlineItem = el('li');
     outlineItem.append(outline, `outline: an eval score stated in the skill's own SKILL.md (${measured} ${measured === 1 ? 'node' : 'nodes'})`);
     list.append(outlineItem);
+    const dashed = el('span');
+    dashed.className = 'swatch outline';
+    dashed.style.border = `${VENDORED_BORDER.width}px ${VENDORED_BORDER.style} ${VENDORED_BORDER.color}`;
+    const vendored = graph.nodes.filter((n) => n.vendored).length;
+    const vendoredItem = el('li');
+    vendoredItem.append(dashed, `dashed border: vendored, carried from another repository (${vendored} ${vendored === 1 ? 'node' : 'nodes'})`);
+    list.append(vendoredItem);
     const lines = graph.nodes.map((n) => n.lines).filter((n) => typeof n === 'number');
     list.append(
       el('li', `Node size: grows with the square root of the file's line count (${Math.min(...lines)} to ${Math.max(...lines)} lines here).`),
@@ -382,6 +395,15 @@ function main() {
           selector: `node[kind = "${kind}"]`,
           style: { 'background-color': color },
         })),
+        {
+          selector: 'node[?vendored]',
+          style: {
+            'border-width': VENDORED_BORDER.width,
+            'border-style': VENDORED_BORDER.style,
+            'border-color': VENDORED_BORDER.color,
+            'text-margin-y': 4 + VENDORED_BORDER.width,
+          },
+        },
         {
           selector: 'node[?measured]',
           style: {

@@ -4,12 +4,7 @@
       "id": "build-discipline",
       "label": "Build discipline",
       "members": [
-        "decision-records",
         "phased-build",
-        "ponytail",
-        "ponytail-debt",
-        "ponytail-gain",
-        "ponytail-help",
         "strategic-compact",
         "unattended-build",
         "verify-before-done"
@@ -20,9 +15,9 @@
       "label": "Review and honesty",
       "members": [
         "adversarial-review",
-        "honest-refusal",
-        "ponytail-audit",
-        "ponytail-review"
+        "capture-lessons",
+        "decision-records",
+        "honest-refusal"
       ]
     },
     {
@@ -40,7 +35,6 @@
       "id": "skill-management",
       "label": "Skill management",
       "members": [
-        "capture-lessons",
         "skill-audit",
         "skill-creator",
         "vet-third-party"
@@ -50,9 +44,22 @@
       "id": "domain",
       "label": "Domain",
       "members": [
-        "impeccable",
         "recruiter-demo-writer",
         "scroll-world"
+      ]
+    },
+    {
+      "id": "vendored",
+      "label": "Vendored",
+      "vendored": true,
+      "members": [
+        "impeccable",
+        "ponytail",
+        "ponytail-audit",
+        "ponytail-debt",
+        "ponytail-gain",
+        "ponytail-help",
+        "ponytail-review"
       ]
     },
     {

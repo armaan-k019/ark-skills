@@ -5,6 +5,7 @@
     {
       "id": "build-discipline",
       "label": "Build discipline",
+      "vendored": false,
       "rule": "families.json",
       "file": "viz/scripts/families.json",
       "line": 4
@@ -12,44 +13,58 @@
     {
       "id": "review-and-honesty",
       "label": "Review and honesty",
+      "vendored": false,
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 19
+      "line": 14
     },
     {
       "id": "research",
       "label": "Research",
+      "vendored": false,
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 29
+      "line": 24
     },
     {
       "id": "skill-management",
       "label": "Skill management",
+      "vendored": false,
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 40
+      "line": 35
     },
     {
       "id": "domain",
       "label": "Domain",
+      "vendored": false,
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 50
+      "line": 44
+    },
+    {
+      "id": "vendored",
+      "label": "Vendored",
+      "vendored": true,
+      "rule": "families.json",
+      "file": "viz/scripts/families.json",
+      "line": 52
     },
     {
       "id": "agents",
       "label": "Agents",
+      "vendored": false,
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 59
+      "line": 66
     },
     {
       "id": "hooks",
       "label": "Hooks",
+      "vendored": false,
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 67
+      "line": 74
     }
   ],
   "nodes": [
@@ -73,7 +88,8 @@
         "license": "MIT"
       },
       "eval_status": "unmeasured",
-      "family": "review-and-honesty"
+      "family": "review-and-honesty",
+      "vendored": false
     },
     {
       "id": "skill:capture-lessons",
@@ -95,7 +111,8 @@
         "license": "MIT"
       },
       "eval_status": "unmeasured",
-      "family": "skill-management"
+      "family": "review-and-honesty",
+      "vendored": false
     },
     {
       "id": "skill:decision-records",
@@ -117,7 +134,8 @@
         "license": "MIT"
       },
       "eval_status": "unmeasured",
-      "family": "build-discipline"
+      "family": "review-and-honesty",
+      "vendored": false
     },
     {
       "id": "skill:experiment-discipline",
@@ -139,7 +157,8 @@
         "license": "MIT"
       },
       "eval_status": "unmeasured",
-      "family": "research"
+      "family": "research",
+      "vendored": false
     },
     {
       "id": "skill:honest-refusal",
@@ -149,7 +168,8 @@
       "lines": 46,
       "description": "Encodes the no-fabrication, adversarial-honesty discipline that is this cross-domain research discovery engine's core identity. Use this skill whenever writing or reviewing anything that asserts a connection, evidence claim, confidence level, or finding, including Critic logic, report generation, corpus summaries, or any user-facing output describing what the engine found. Make sure to consult this skill before writing code or copy that could soften a negative result, before deciding how confident language should sound, before implementing or adjusting adversarial review logic, and whenever a request implies making results look better, more complete, or more confident than the underlying evidence supports.",
       "eval_status": "unmeasured",
-      "family": "review-and-honesty"
+      "family": "review-and-honesty",
+      "vendored": false
     },
     {
       "id": "skill:impeccable",
@@ -163,7 +183,8 @@
         "license": "Apache 2.0"
       },
       "eval_status": "unmeasured",
-      "family": "domain"
+      "family": "vendored",
+      "vendored": true
     },
     {
       "id": "skill:literature-review",
@@ -185,7 +206,8 @@
         "license": "MIT"
       },
       "eval_status": "unmeasured",
-      "family": "research"
+      "family": "research",
+      "vendored": false
     },
     {
       "id": "skill:phased-build",
@@ -207,7 +229,8 @@
         "license": "MIT"
       },
       "eval_status": "unmeasured",
-      "family": "build-discipline"
+      "family": "build-discipline",
+      "vendored": false
     },
     {
       "id": "skill:ponytail",
@@ -221,7 +244,8 @@
         "license": "MIT"
       },
       "eval_status": "unmeasured",
-      "family": "build-discipline"
+      "family": "vendored",
+      "vendored": true
     },
     {
       "id": "skill:ponytail-audit",
@@ -231,7 +255,8 @@
       "lines": 41,
       "description": "Whole-repo audit for over-engineering. Like ponytail-review, but scans the entire codebase instead of a diff: a ranked list of what to delete, simplify, or replace with stdlib/native equivalents. Use when the user says \"audit this codebase\", \"audit for over-engineering\", \"what can I delete from this repo\", \"find bloat\", \"ponytail-audit\", or \"/ponytail-audit\". One-shot report, does not apply fixes.",
       "eval_status": "unmeasured",
-      "family": "review-and-honesty"
+      "family": "vendored",
+      "vendored": true
     },
     {
       "id": "skill:ponytail-debt",
@@ -241,7 +266,8 @@
       "lines": 44,
       "description": "Harvest every `ponytail:` comment in the codebase into a debt ledger, so the deliberate shortcuts and deferrals ponytail leaves behind get tracked instead of rotting into \"later means never\". Use when the user says \"ponytail debt\", \"/ponytail-debt\", \"what did ponytail defer\", \"list the shortcuts\", \"ponytail ledger\", or \"what did we mark to do later\". One-shot report, changes nothing.",
       "eval_status": "unmeasured",
-      "family": "build-discipline"
+      "family": "vendored",
+      "vendored": true
     },
     {
       "id": "skill:ponytail-gain",
@@ -251,7 +277,8 @@
       "lines": 50,
       "description": "Show ponytail's measured impact as a compact scoreboard: less code, less cost, more speed, from the benchmark medians. One-shot display, not a persistent mode, and not a per-repo number. Trigger: /ponytail-gain, \"ponytail gain\", \"what does ponytail save\", \"show ponytail impact\", \"ponytail scoreboard\".",
       "eval_status": "unmeasured",
-      "family": "build-discipline"
+      "family": "vendored",
+      "vendored": true
     },
     {
       "id": "skill:ponytail-help",
@@ -261,7 +288,8 @@
       "lines": 71,
       "description": "Quick-reference card for all ponytail modes, skills, and commands. One-shot display, not a persistent mode. Trigger: /ponytail-help, \"ponytail help\", \"what ponytail commands\", \"how do I use ponytail\".",
       "eval_status": "unmeasured",
-      "family": "build-discipline"
+      "family": "vendored",
+      "vendored": true
     },
     {
       "id": "skill:ponytail-review",
@@ -271,7 +299,8 @@
       "lines": 57,
       "description": "Code review focused exclusively on over-engineering. Finds what to delete: reinvented standard library, unneeded dependencies, speculative abstractions, dead flexibility. One line per finding: location, what to cut, what replaces it. Use when the user says \"review for over-engineering\", \"what can we delete\", \"is this over-engineered\", \"simplify review\", or invokes /ponytail-review. Complements correctness-focused review, this one only hunts complexity.",
       "eval_status": "unmeasured",
-      "family": "review-and-honesty"
+      "family": "vendored",
+      "vendored": true
     },
     {
       "id": "skill:query-to-corpus",
@@ -281,7 +310,8 @@
       "lines": 46,
       "description": "Encodes how a user's research question becomes a seeded, relevance-filtered, contamination-guarded corpus, the front of this cross-domain research discovery engine's pipeline. Use this skill whenever building, reviewing, or modifying anything that turns a user question into a paper corpus, expands a corpus via citation graphs or search, filters candidate papers before ingestion, or checks a corpus for coherence or contamination. Make sure to consult this skill before implementing any paper ingestion step, before adding any keyword-based search or scrape, before relaxing a relevance filter to hit a size target, and whenever a request implies expanding a corpus quickly without specifying how candidates are verified.",
       "eval_status": "unmeasured",
-      "family": "research"
+      "family": "research",
+      "vendored": false
     },
     {
       "id": "skill:recruiter-demo-writer",
@@ -291,7 +321,8 @@
       "lines": 51,
       "description": "Use when building, deepening, or reviewing a recruiter-facing demo page under src/app/demos/ in this portfolio (the pattern behind illoca, world-labs, rho, midjourney, whop). Triggers on requests like \"build the Warp demo,\" \"deepen the Whop page,\" \"add a demo for [company],\" \"write the case study copy for [demo],\" or any request to add sections, rewrite copy, or extend an existing page in src/app/demos/. Also use when asked to review a demo page for consistency, tone, voice, or fabricated claims. Not for the older terracotta-palette project pages under src/app/projects/ (urban-gpt, yield, fine-print) \u2014 those follow a different template this skill does not cover.",
       "eval_status": "unmeasured",
-      "family": "domain"
+      "family": "domain",
+      "vendored": false
     },
     {
       "id": "skill:relevance-profile",
@@ -301,7 +332,8 @@
       "lines": 80,
       "description": "Defines the multi-axis relevance profile that this cross-domain research discovery engine reports for every candidate connection. Use this skill whenever building, reviewing, or modifying anything that scores, ranks, filters, or summarizes cross-domain connections, including the Critic's output, the Experimentalist's output, any dashboard or report surface, or any code that computes a \"relevance\" or \"quality\" value for a connection. Make sure to consult this skill before adding any new scoring field, before combining existing scores, and before designing how a researcher filters or sorts connections, even if the request just says \"add a score\" or \"rank these by relevance.\"",
       "eval_status": "unmeasured",
-      "family": "research"
+      "family": "research",
+      "vendored": false
     },
     {
       "id": "skill:scholar-evaluation",
@@ -323,7 +355,8 @@
         "license": "MIT"
       },
       "eval_status": "unmeasured",
-      "family": "research"
+      "family": "research",
+      "vendored": false
     },
     {
       "id": "skill:scroll-world",
@@ -333,7 +366,8 @@
       "lines": 762,
       "description": "Build an immersive scroll-scrubbed \"fly through the world\" landing page for any industry or brand using Higgsfield. As the visitor scrolls, a pre-rendered camera flies from outside each scene into its interior, then flows on to the next scene with NO cuts \u2014 one continuous connected flight (Emons-style isometric diorama world, or any art direction you pick). The skill interviews the user for the topic, the story beats/sections, and brand kit, then generates cohesive scenes + seamless camera clips with Higgsfield and wires a portable, framework-agnostic scroll-scrub engine. The video chain renders through Monid by default (Seedance 2.0, pay-per-clip USD \u2014 capability re-checked each build, see Step 4) with Higgsfield credits as the fallback biller. Use when the user wants a \"3D world\" / \"browse-through-the-industry\" hero, a scroll cinematic, a diorama landing, or to turn a business into a scrollable world.",
       "eval_status": "unmeasured",
-      "family": "domain"
+      "family": "domain",
+      "vendored": false
     },
     {
       "id": "skill:skill-audit",
@@ -355,7 +389,8 @@
         "license": "MIT"
       },
       "eval_status": "unmeasured",
-      "family": "skill-management"
+      "family": "skill-management",
+      "vendored": false
     },
     {
       "id": "skill:skill-creator",
@@ -365,7 +400,8 @@
       "lines": 485,
       "description": "Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, edit, or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, or optimize a skill's description for better triggering accuracy.",
       "eval_status": "unmeasured",
-      "family": "skill-management"
+      "family": "skill-management",
+      "vendored": false
     },
     {
       "id": "skill:strategic-compact",
@@ -387,7 +423,8 @@
         "license": "MIT"
       },
       "eval_status": "unmeasured",
-      "family": "build-discipline"
+      "family": "build-discipline",
+      "vendored": false
     },
     {
       "id": "skill:unattended-build",
@@ -402,7 +439,8 @@
         "line": 12
       },
       "eval_status": "unmeasured",
-      "family": "build-discipline"
+      "family": "build-discipline",
+      "vendored": false
     },
     {
       "id": "skill:verify-before-done",
@@ -424,7 +462,8 @@
         "license": "MIT"
       },
       "eval_status": "unmeasured",
-      "family": "build-discipline"
+      "family": "build-discipline",
+      "vendored": false
     },
     {
       "id": "skill:vet-third-party",
@@ -446,7 +485,8 @@
         "license": "MIT"
       },
       "eval_status": "unmeasured",
-      "family": "skill-management"
+      "family": "skill-management",
+      "vendored": false
     },
     {
       "id": "agent:silent-failure-hunter",
@@ -467,7 +507,8 @@
         "text": "- agents/silent-failure-hunter.md, agents/ts-reviewer.md",
         "license": "MIT"
       },
-      "family": "agents"
+      "family": "agents",
+      "vendored": false
     },
     {
       "id": "agent:ts-reviewer",
@@ -488,7 +529,8 @@
         "text": "- agents/silent-failure-hunter.md, agents/ts-reviewer.md",
         "license": "MIT"
       },
-      "family": "agents"
+      "family": "agents",
+      "vendored": false
     },
     {
       "id": "hook:block-no-verify",
@@ -516,7 +558,8 @@
         "text": "- hooks/config-protection.js, hooks/block-no-verify.js",
         "license": "MIT"
       },
-      "family": "hooks"
+      "family": "hooks",
+      "vendored": false
     },
     {
       "id": "hook:config-protection",
@@ -544,7 +587,8 @@
         "text": "- hooks/config-protection.js, hooks/block-no-verify.js",
         "license": "MIT"
       },
-      "family": "hooks"
+      "family": "hooks",
+      "vendored": false
     },
     {
       "id": "hook:no-em-dash",
@@ -560,7 +604,8 @@
           "line": 13
         }
       ],
-      "family": "hooks"
+      "family": "hooks",
+      "vendored": false
     }
   ],
   "edges": [

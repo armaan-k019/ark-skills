@@ -70,6 +70,14 @@ test('a node is measured only when its eval status states a score', () => {
   assert.equal(app.toElements(graph).filter((e) => e.data.measured).length, graph.nodes.filter(app.isMeasured).length);
 });
 
+test('the vendored flag passes through and is required', () => {
+  const vendored = app.toElements(graph).filter((e) => e.data.vendored).map((e) => e.data.id).sort();
+  assert.deepEqual(vendored, graph.nodes.filter((n) => n.vendored).map((n) => n.id).sort());
+  const missing = structuredClone(graph);
+  delete missing.nodes[0].vendored;
+  assert.throws(() => app.checkGraph(missing), /no vendored flag/);
+});
+
 test('labels may wrap at hyphens and keep their text', () => {
   const zwsp = String.fromCharCode(0x200b);
   assert.equal(app.nodeLabel('verify-before-done'), `verify-${zwsp}before-${zwsp}done`);

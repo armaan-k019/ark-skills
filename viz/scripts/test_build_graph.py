@@ -203,11 +203,18 @@ class FixtureGraph(unittest.TestCase):
     def test_families_come_from_families_json_in_file_order(self):
         self.assertEqual([f["id"] for f in self.graph["families"]], ["core", "extra", "agents", "hooks"])
         fam = {f["id"]: f for f in self.graph["families"]}
-        self.assertEqual(fam["core"], {"id": "core", "label": "Core", "rule": "families.json", "file": "families.json", "line": 3})
+        self.assertEqual(fam["core"], {"id": "core", "label": "Core", "vendored": False, "rule": "families.json", "file": "families.json", "line": 3})
+        self.assertTrue(fam["extra"]["vendored"])
         self.assertEqual(self.nodes["skill:alpha"]["family"], "core")
         self.assertEqual(self.nodes["skill:one"]["family"], "extra")
         self.assertEqual(self.nodes["agent:helper"]["family"], "agents")
         self.assertEqual(self.nodes["hook:guard"]["family"], "hooks")
+
+    def test_vendored_flag_comes_from_the_family(self):
+        for node_id in ("skill:delta", "skill:one", "skill:two"):
+            self.assertIs(self.nodes[node_id]["vendored"], True, node_id)
+        for node_id in ("skill:alpha", "agent:helper", "hook:guard"):
+            self.assertIs(self.nodes[node_id]["vendored"], False, node_id)
 
     # Validation and failure paths
 
@@ -282,6 +289,7 @@ class FailsLoudly(unittest.TestCase):
             ('{"families": [{"id": "core", "label": "Core", "members": []}]}', "non-empty list of member"),
             ('{"families": [{"id": "a", "label": "A", "members": ["alpha"]}, {"id": "a", "label": "B", "members": ["beta"]}]}', "duplicate family id"),
             ("not json", "not valid JSON"),
+            ('{"families": [{"id": "core", "label": "Core", "vendored": "yes", "members": ["alpha"]}]}', "vendored must be true or false"),
         ]
         for text, fragment in cases:
             with self.subTest(families=text):

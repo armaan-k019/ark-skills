@@ -6,7 +6,8 @@ that cannot be derived from a file is omitted. The rules are documented in
 viz/README.md.
 
 Families come from viz/scripts/families.json, an explicit taxonomy; a node
-that is not listed there fails the build.
+that is not listed there fails the build. A family marked "vendored": true
+there marks its members as carried from another repository.
 
 Usage:
     python3 viz/scripts/build_graph.py [--root PATH] [--out PATH] [--families PATH]
@@ -204,6 +205,7 @@ def load_families(path, root):
         if not isinstance(entry, dict):
             raise GraphError(f"{where}: each family must be an object")
         fid, label, members = entry.get("id"), entry.get("label"), entry.get("members")
+        vendored = entry.get("vendored", False)
         if not isinstance(fid, str) or not FAMILY_ID.match(fid):
             raise GraphError(f"{where}: family id {fid!r} must be lowercase words joined by hyphens")
         if any(f["id"] == fid for f in families):
@@ -212,13 +214,15 @@ def load_families(path, root):
             raise GraphError(f"{where}: family {fid} needs a label")
         if not isinstance(members, list) or not members or not all(isinstance(m, str) and m for m in members):
             raise GraphError(f"{where}: family {fid} needs a non-empty list of member names")
+        if not isinstance(vendored, bool):
+            raise GraphError(f"{where}: family {fid} vendored must be true or false")
         for member in members:
             if member in member_of:
                 raise GraphError(f"{where}: {member} is listed in both {member_of[member]} and {fid}")
             member_of[member] = fid
         id_line = re.compile(r'"id"\s*:\s*"' + re.escape(fid) + '"')
         line = next((i + 1 for i, l in enumerate(lines) if id_line.search(l)), None)
-        family = {"id": fid, "label": label, "rule": "families.json", "file": where}
+        family = {"id": fid, "label": label, "vendored": vendored, "rule": "families.json", "file": where}
         if line:
             family["line"] = line
         families.append(family)
@@ -483,8 +487,11 @@ def build_graph(root, skill_filename=SKILL_FILENAME, families_path=None):
     stale = sorted(name for name in member_of if name not in by_name)
     if stale:
         raise GraphError(f"{where} lists names that are not nodes: {', '.join(stale)}")
+    vendored_families = {f["id"] for f in families if f["vendored"]}
     for name, node in by_name.items():
         node["family"] = member_of[name]
+        # Vendored: carried from another repository, as families.json declares.
+        node["vendored"] = node["family"] in vendored_families
 
     # Edges: a body naming another node, one edge per (source, target, kind).
     # The kind is "<source kind>-<target kind>".

@@ -93,12 +93,20 @@ try {
     window.cy
       .nodes()
       .filter((n) => !n.isParent())
-      .map((n) => ({ id: n.id(), bg: n.style('background-color'), border: parseFloat(n.style('border-width')) })),
+      .map((n) => ({
+        id: n.id(),
+        bg: n.style('background-color'),
+        border: parseFloat(n.style('border-width')),
+        borderStyle: n.style('border-style'),
+      })),
   );
   for (const d of drawn) {
     const json = graph.nodes.find((n) => n.id === d.id);
     check(d.bg.replace(/\s/g, '') === kindColors[json.kind], `${d.id} (${json.kind}) is drawn ${d.bg}, expected ${kindColors[json.kind]}`);
-    check(d.border > 0 === measured(json), `${d.id}: outline ${d.border}px but measured is ${measured(json)}`);
+    const width = measured(json) ? app.MEASURED_OUTLINE.width : json.vendored ? app.VENDORED_BORDER.width : 0;
+    check(d.border === width, `${d.id}: border ${d.border}px, expected ${width} (measured ${measured(json)}, vendored ${json.vendored})`);
+    const style = json.vendored ? 'dashed' : 'solid';
+    check(width === 0 || d.borderStyle === style, `${d.id}: border style ${d.borderStyle}, expected ${style}`);
   }
   const legend = await page.evaluate(() => ({
     swatches: [...document.querySelectorAll('#legend .swatch[data-kind]')].map((s) => ({
@@ -114,6 +122,11 @@ try {
   check(legend.text.includes("Node size: grows with the square root of the file's line count"), 'legend does not say what node size means');
   const measuredCount = graph.nodes.filter(measured).length;
   check(legend.text.includes(`(${measuredCount} ${measuredCount === 1 ? 'node' : 'nodes'})`), 'legend outline count does not match the data');
+  const vendoredCount = graph.nodes.filter((n) => n.vendored).length;
+  check(
+    legend.text.includes(`dashed border: vendored, carried from another repository (${vendoredCount} ${vendoredCount === 1 ? 'node' : 'nodes'})`),
+    'legend vendored count does not match the data',
+  );
 
   // Legibility: labels at least 12 px as drawn, no label box over any node
   // circle, and the whole graph inside the viewport after load.
@@ -246,7 +259,7 @@ try {
   // The outline's positive case: serve a copy of graph.json in which one skill
   // states a score, and check the drawn outline, its label clearance, and the legend.
   const scored = structuredClone(graph);
-  const scoredNode = scored.nodes.find((n) => n.kind === 'skill');
+  const scoredNode = scored.nodes.find((n) => n.kind === 'skill' && !n.vendored);
   scoredNode.eval_status = 'measured: 1/1';
   const page2 = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   await page2.route('**/data/graph.json', (route) => route.fulfill({ json: scored }));
@@ -254,18 +267,18 @@ try {
   await page2.waitForFunction(() => window.__graphReady === true || Boolean(window.__graphError), null, { timeout: 20000 });
   const error2 = await page2.evaluate(() => window.__graphError || null);
   check(!error2, `page with a scored node reported: ${error2}`);
-  const outline = await page2.evaluate((id) => {
+  const outline = await page2.evaluate(({ id, width }) => {
     const cy = window.cy;
     const outlined = cy
       .nodes()
-      .filter((n) => !n.isParent() && parseFloat(n.style('border-width')) > 0)
+      .filter((n) => !n.isParent() && parseFloat(n.style('border-width')) >= width)
       .map((n) => ({ id: n.id(), width: parseFloat(n.style('border-width')), color: n.style('border-color') }));
     const node = cy.getElementById(id);
     const c = node.boundingBox({ includeLabels: false, includeOverlays: false });
     const l = node.boundingBox({ includeNodes: false, includeEdges: false, includeLabels: true, includeOverlays: false });
     const labelClear = !(l.x1 < c.x2 && c.x1 < l.x2 && l.y1 < c.y2 && c.y1 < l.y2);
     return { outlined, labelClear, legend: document.getElementById('legend').textContent };
-  }, scoredNode.id);
+  }, { id: scoredNode.id, width: app.MEASURED_OUTLINE.width });
   check(outline.outlined.length === 1 && outline.outlined[0].id === scoredNode.id, `outlined nodes ${JSON.stringify(outline.outlined)}, expected only ${scoredNode.id}`);
   check(
     outline.outlined[0].width === app.MEASURED_OUTLINE.width && outline.outlined[0].color.replace(/\s/g, '') === rgb(app.MEASURED_OUTLINE.color),

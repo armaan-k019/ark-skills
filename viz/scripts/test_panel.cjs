@@ -115,6 +115,8 @@ test('the page renders and signals ready', async () => {
     assert.ok(legend.includes(`${kind} (${GRAPH.nodes.filter((n) => n.kind === kind).length})`), `legend: ${kind}`);
   }
   assert.ok(legend.includes("Node size: grows with the square root of the file's line count"), 'legend: node size');
+  const vendored = GRAPH.nodes.filter((n) => n.vendored).length;
+  assert.ok(legend.includes(`dashed border: vendored, carried from another repository (${vendored} nodes)`), 'legend: vendored');
   const swatches = page.elements.legend.children[1].children.map((li) => li.children[0]).filter((s) => s && s.dataset.kind);
   assert.deepEqual(swatches.map((s) => [s.dataset.kind, s.style.backgroundColor]), [['skill', '#1f77b4'], ['agent', '#ff7f0e'], ['hook', '#2ca02c']]);
   const kinds = new Set(GRAPH.edges.map((e) => e.kind));
