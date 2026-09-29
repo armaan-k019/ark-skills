@@ -16,7 +16,7 @@ A user arrives with a research question, not a corpus. Turning that question int
 
 Each step depends on the one before it. A citation-graph expansion is only as trustworthy as the seeds it started from, and a filtered corpus is only as coherent as the expansion that produced its candidates.
 
-Step 2's verified seeds can come from a `literature-review` search, which also leaves a log of how they were found; the connections later drawn from the finished corpus are scored with `relevance-profile`.
+Step 2's verified seeds can come from a `literature-review` search, which also leaves a log of how they were found; the connections later drawn from the finished corpus are profiled with `relevance-profile`.
 
 ## The contamination guard
 
