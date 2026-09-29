@@ -3,13 +3,13 @@
 Project lessons for ark-skills, in the capture-lessons format. Each entry is a pattern, not an event.
 
 ## Times written into reports from memory instead of the clock
-Seen: 2026-09-27 (ark-skills, unattended-build eval re-run), 2026-09-28 (ark-skills, skills-graph run), 2026-09-29 (ark-skills, gap-skills run)   Count: 3
+Seen: 2026-09-27 (ark-skills, unattended-build eval re-run), 2026-09-28 (ark-skills, skills-graph run), 2026-09-29 (ark-skills, gap-skills run, twice)   Count: 4
 
 Context: keeping PROGRESS.md during an unattended run.
 Root cause: the time was typed as an estimate while writing, not read from a clock in the same step.
 Next time I write a time into a report, I will paste it from a `date` call made in the same step, or write "not clock-stamped".
 Evidence: PROGRESS.md said 03:52 when `date` read 03:22 (review gate 1 flagged it); the eval re-run's PROGRESS.md held two estimated "Updated" times. On 2026-09-29 a script wrote 08:41 into PROGRESS.md while the `date` call in the same command printed 08:35; the time was typed into the script before the clock was read.
-Promoted to: unattended-build Step 2 ("Every time in PROGRESS.md comes from `date` in the same step."), PR #3. The third case happened with the rule in place: pass the `date` output into the script as an argument instead of typing the time.
+Promoted to: unattended-build Step 2 ("Every time in PROGRESS.md comes from `date` in the same step."), PR #3. The third case happened with the rule in place: pass the `date` output into the script as an argument instead of typing the time. The fourth case was the end of a time range typed into body text (08:50 when `date` read 08:46) while the header used the passed-in value: every time in the text, not only the header, comes from the argument.
 
 ## Escape sequences in tool input are decoded before they reach the file
 Seen: 2026-09-28 (ark-skills)   Count: 1
