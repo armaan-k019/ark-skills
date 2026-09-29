@@ -14,6 +14,7 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import panelCheck from './panel-check.cjs';
+import app from '../app.js';
 
 const { readPanel, comparePanel } = panelCheck;
 
@@ -79,6 +80,66 @@ try {
   });
   check(overlaps.length === 0, `family boxes overlap: ${overlaps.join(', ')}`);
 
+  // Encoding: color by kind, outline only on nodes whose own SKILL.md states a
+  // score, and a legend whose swatches match and which says what size means.
+  const rgb = (hex) => {
+    const n = parseInt(hex.slice(1), 16);
+    return `rgb(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255})`;
+  };
+  const kindColors = Object.fromEntries(Object.entries(app.KIND_COLORS).map(([k, v]) => [k, rgb(v)]));
+  check(new Set(Object.values(kindColors)).size === Object.keys(kindColors).length, 'kind colors are not distinct');
+  const measured = (n) => typeof n.eval_status === 'string' && n.eval_status.startsWith('measured:');
+  const drawn = await page.evaluate(() =>
+    window.cy
+      .nodes()
+      .filter((n) => !n.isParent())
+      .map((n) => ({ id: n.id(), bg: n.style('background-color'), border: parseFloat(n.style('border-width')) })),
+  );
+  for (const d of drawn) {
+    const json = graph.nodes.find((n) => n.id === d.id);
+    check(d.bg.replace(/\s/g, '') === kindColors[json.kind], `${d.id} (${json.kind}) is drawn ${d.bg}, expected ${kindColors[json.kind]}`);
+    check(d.border > 0 === measured(json), `${d.id}: outline ${d.border}px but measured is ${measured(json)}`);
+  }
+  const legend = await page.evaluate(() => ({
+    swatches: [...document.querySelectorAll('#legend .swatch[data-kind]')].map((s) => ({
+      kind: s.dataset.kind,
+      color: getComputedStyle(s).backgroundColor,
+    })),
+    text: document.getElementById('legend').textContent,
+  }));
+  for (const [kind, color] of Object.entries(kindColors)) {
+    const swatch = legend.swatches.find((s) => s.kind === kind);
+    check(swatch && swatch.color.replace(/\s/g, '') === color, `legend swatch for ${kind} is ${swatch && swatch.color}, expected ${color}`);
+  }
+  check(legend.text.includes("Node size: grows with the square root of the file's line count"), 'legend does not say what node size means');
+  const measuredCount = graph.nodes.filter(measured).length;
+  check(legend.text.includes(`(${measuredCount} ${measuredCount === 1 ? 'node' : 'nodes'})`), 'legend outline count does not match the data');
+
+  // Legibility: labels at least 12 px as drawn, no label box over any node
+  // circle, and the whole graph inside the viewport after load.
+  const legibility = await page.evaluate(() => {
+    const cy = window.cy;
+    const zoom = cy.zoom();
+    const members = cy.nodes().filter((n) => !n.isParent());
+    const minFontPx = Math.min(...members.map((n) => parseFloat(n.style('font-size')) * zoom));
+    const circles = members.map((n) => ({ id: n.id(), bb: n.boundingBox({ includeLabels: false, includeOverlays: false }) }));
+    const labels = cy
+      .nodes()
+      .map((n) => ({ id: n.id(), bb: n.boundingBox({ includeNodes: false, includeEdges: false, includeLabels: true, includeOverlays: false }) }))
+      .filter((l) => l.bb.w > 0 && l.bb.h > 0);
+    const hit = (a, b) => a.x1 < b.x2 && b.x1 < a.x2 && a.y1 < b.y2 && b.y1 < a.y2;
+    const labelOnCircle = [];
+    for (const l of labels) for (const c of circles) if (hit(l.bb, c.bb)) labelOnCircle.push(`${l.id} label over ${c.id}`);
+    let labelOnLabel = 0;
+    for (let i = 0; i < labels.length; i++) for (let j = i + 1; j < labels.length; j++) if (hit(labels[i].bb, labels[j].bb)) labelOnLabel++;
+    const all = cy.elements().renderedBoundingBox();
+    return { zoom, minFontPx, labelOnCircle, labelOnLabel, labels: labels.length, box: { x1: all.x1, y1: all.y1, x2: all.x2, y2: all.y2 }, view: { w: cy.width(), h: cy.height() } };
+  });
+  check(legibility.minFontPx >= 12, `smallest label is ${legibility.minFontPx.toFixed(1)} px as drawn, expected at least 12`);
+  check(legibility.labelOnCircle.length === 0, `labels over node circles: ${legibility.labelOnCircle.join(', ')}`);
+  const { box, view } = legibility;
+  check(box.x1 >= -1 && box.y1 >= -1 && box.x2 <= view.w + 1 && box.y2 <= view.h + 1, `graph does not fit the viewport: ${JSON.stringify({ box, view })}`);
+
   // Filters: unchecking a family hides exactly its members; unchecking an edge
   // kind hides exactly that kind's edges. Each is restored afterwards. Cytoscape
   // applies class changes on its next frame, so wait (up to 5 s) for the counts.
@@ -134,7 +195,7 @@ try {
 
   await page.screenshot({ path: screenshotPath });
   check(pageErrors.length === 0, `page errors: ${pageErrors.join(' | ')}`);
-  result = { counts, target, outgoing, incoming };
+  result = { counts, target, outgoing, incoming, legibility };
 } finally {
   await browser.close();
 }
@@ -143,5 +204,6 @@ console.log(
   `OK: rendered ${result.counts.nodes} nodes and ${result.counts.edges} edges ` +
     `(JSON ${graph.nodes.length} and ${graph.edges.length}), ${result.counts.parents} families; ` +
     `clicked ${result.target}, panel shows Outgoing (${result.outgoing}) and Incoming (${result.incoming}); ` +
-    `wrote ${screenshotPath}`,
+    `smallest label ${result.legibility.minFontPx.toFixed(1)} px, 0 labels over circles, ` +
+    `${result.legibility.labelOnLabel} label pairs overlapping each other; wrote ${screenshotPath}`,
 );

@@ -22,6 +22,8 @@ class FakeElement {
     this.childNodes = [];
     this.dataset = {};
     this.listeners = {};
+    this.style = {};
+    this.className = '';
   }
   get children() {
     return this.childNodes.filter((c) => c instanceof FakeElement);
@@ -35,8 +37,9 @@ class FakeElement {
   append(...items) {
     for (const item of items) this.childNodes.push(item instanceof FakeElement ? item : String(item));
   }
-  replaceChildren() {
+  replaceChildren(...items) {
     this.childNodes = [];
+    this.append(...items);
   }
   addEventListener(type, fn) {
     this.listeners[type] = fn;
@@ -70,6 +73,8 @@ function fakeCytoscape(state) {
         return { one: (_e, fn) => { done = fn; }, run: () => done && done() };
       },
       fit() {},
+      width: () => 0,
+      height: () => 0,
     };
     state.cy = cy;
     return cy;
@@ -77,7 +82,7 @@ function fakeCytoscape(state) {
 }
 
 async function loadPage(source = APP, graph = GRAPH) {
-  const ids = ['graph', 'status', 'filters', 'edge-filters', 'details'];
+  const ids = ['graph', 'status', 'legend', 'filters', 'edge-filters', 'details'];
   const elements = Object.fromEntries(ids.map((id) => [id, new FakeElement(id === 'graph' ? 'main' : 'div')]));
   const state = {};
   const window = {};
@@ -105,6 +110,13 @@ test('the page renders and signals ready', async () => {
   assert.equal(page.window.__graphReady, true);
   assert.match(page.elements.status.textContent, new RegExp(`^${GRAPH.nodes.length} nodes, ${GRAPH.edges.length} edges`));
   assert.equal(page.elements.filters.children.length, GRAPH.families.length);
+  const legend = page.elements.legend.textContent;
+  for (const kind of ['skill', 'agent', 'hook']) {
+    assert.ok(legend.includes(`${kind} (${GRAPH.nodes.filter((n) => n.kind === kind).length})`), `legend: ${kind}`);
+  }
+  assert.ok(legend.includes("Node size: grows with the square root of the file's line count"), 'legend: node size');
+  const swatches = page.elements.legend.children[1].children.map((li) => li.children[0]).filter((s) => s && s.dataset.kind);
+  assert.deepEqual(swatches.map((s) => [s.dataset.kind, s.style.backgroundColor]), [['skill', '#1f77b4'], ['agent', '#ff7f0e'], ['hook', '#2ca02c']]);
   const kinds = new Set(GRAPH.edges.map((e) => e.kind));
   assert.equal(page.elements['edge-filters'].children.length, kinds.size);
   for (const label of page.elements['edge-filters'].children) {

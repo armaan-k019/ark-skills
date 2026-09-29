@@ -24,15 +24,24 @@ function laidOut() {
 const inside = (p, bb) => p.x >= bb.x1 && p.x <= bb.x2 && p.y >= bb.y1 && p.y <= bb.y2;
 const overlap = (a, b) => a.x1 < b.x2 && b.x1 < a.x2 && a.y1 < b.y2 && b.y1 < a.y2;
 
-test('family cells do not overlap', () => {
+test('family cells do not overlap at any viewport shape', () => {
   const counts = graph.families.map((f) => ({ id: f.id, count: graph.nodes.filter((n) => n.family === f.id).length }));
-  const cells = app.familyCells(counts);
   const box = (c) => ({ x1: c.x1, y1: c.y1, x2: c.x1 + c.w, y2: c.y1 + c.h });
-  for (let i = 0; i < cells.length; i++) {
-    for (let j = i + 1; j < cells.length; j++) {
-      assert.ok(!overlap(box(cells[i]), box(cells[j])), `${cells[i].id} and ${cells[j].id} overlap`);
+  for (const aspect of [0.5, 1, 1.12, 2, 4]) {
+    const cells = app.familyCells(counts, aspect);
+    assert.equal(cells.length, counts.length);
+    for (let i = 0; i < cells.length; i++) {
+      for (let j = i + 1; j < cells.length; j++) {
+        assert.ok(!overlap(box(cells[i]), box(cells[j])), `aspect ${aspect}: ${cells[i].id} and ${cells[j].id} overlap`);
+      }
     }
   }
+});
+
+test('a wider viewport never gets fewer cell columns than a taller one', () => {
+  const counts = graph.families.map((f) => ({ id: f.id, count: graph.nodes.filter((n) => n.family === f.id).length }));
+  const columns = (aspect) => new Set(app.familyCells(counts, aspect).map((c) => c.x1)).size;
+  assert.ok(columns(4) >= columns(0.25), `wide ${columns(4)} vs tall ${columns(0.25)}`);
 });
 
 test('rendered family boxes do not overlap and hold only their own members', () => {

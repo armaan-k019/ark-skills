@@ -53,6 +53,28 @@ test('shape check rejects a missing endpoint and an unknown family', () => {
   assert.throws(() => app.checkGraph({ nodes: [] }), /expected shape/);
 });
 
+test('a node is measured only when its eval status states a score', () => {
+  assert.equal(app.isMeasured({ eval_status: 'measured: 8/8' }), true);
+  assert.equal(app.isMeasured({ eval_status: 'unmeasured' }), false);
+  assert.equal(app.isMeasured({}), false);
+  const one = structuredClone(graph);
+  one.nodes[0].eval_status = 'measured: 8/8';
+  const flags = app.toElements(one).filter((e) => e.group === 'nodes' && e.data.kind !== 'family').map((e) => e.data.measured);
+  assert.equal(flags.filter(Boolean).length, 1);
+  assert.equal(app.toElements(graph).filter((e) => e.data.measured).length, graph.nodes.filter(app.isMeasured).length);
+});
+
+test('labels may wrap at hyphens and keep their text', () => {
+  const zwsp = String.fromCharCode(0x200b);
+  assert.equal(app.nodeLabel('verify-before-done'), `verify-${zwsp}before-${zwsp}done`);
+  assert.equal(app.nodeLabel('verify-before-done').split(zwsp).join(''), 'verify-before-done');
+});
+
+test('kind colors are three distinct colors', () => {
+  assert.deepEqual(Object.keys(app.KIND_COLORS), ['skill', 'agent', 'hook']);
+  assert.equal(new Set(Object.values(app.KIND_COLORS)).size, 3);
+});
+
 test('node size grows with line count and tolerates a missing count', () => {
   assert.equal(app.nodeSize(undefined), 16);
   assert.ok(app.nodeSize(762) > app.nodeSize(46));

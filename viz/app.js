@@ -5,6 +5,22 @@
 
 const FAMILY_PREFIX = 'family:';
 
+// Node color by kind: the first three colors of d3's category10 scheme, a common
+// default for telling categories apart. Not a designed palette.
+const KIND_COLORS = { skill: '#1f77b4', agent: '#ff7f0e', hook: '#2ca02c' };
+// A node whose own SKILL.md states an eval score gets this outline.
+const MEASURED_OUTLINE = { width: 4, color: '#000000' };
+const LABEL_FONT_SIZE = 17;
+
+function isMeasured(n) {
+  return typeof n.eval_status === 'string' && n.eval_status.startsWith('measured:');
+}
+
+// Zero-width spaces after hyphens let long names wrap at hyphens.
+function nodeLabel(name) {
+  return String(name).replace(/-/g, '-\u200b');
+}
+
 function checkGraph(graph) {
   const ok =
     graph &&
@@ -39,8 +55,9 @@ function toElements(graph) {
     group: 'nodes',
     data: {
       id: n.id,
-      label: n.name || n.id,
+      label: nodeLabel(n.name || n.id),
       kind: n.kind,
+      measured: isMeasured(n),
       family: n.family,
       parent: FAMILY_PREFIX + n.family,
       size: nodeSize(n.lines),
@@ -55,18 +72,14 @@ function toElements(graph) {
 
 // Each family gets its own cell so family boxes never overlap: cells are sized
 // by member count (a near-square grid of fixed slots, one per member) and
-// arranged in a grid of cells. Members are placed inside their cell by
-// Cytoscape's built-in grid layout.
-const SLOT = { w: 190, h: 120 };
-const GAP = 80;
+// arranged in a grid of cells. The number of cell columns is the one that lets
+// the whole graph fit the viewport at the largest zoom, which keeps labels as
+// large as possible. Members are placed inside their cell by Cytoscape's
+// built-in grid layout.
+const SLOT = { w: 130, h: 140 };
+const GAP = 50;
 
-function familyCells(families) {
-  const cols = Math.max(1, Math.ceil(Math.sqrt(families.length)));
-  const shapes = families.map((f) => {
-    const c = Math.max(1, Math.ceil(Math.sqrt(f.count)));
-    const r = Math.max(1, Math.ceil(f.count / c));
-    return { id: f.id, cols: c, rows: r, w: c * SLOT.w, h: r * SLOT.h };
-  });
+function placeCells(shapes, cols) {
   const colW = [];
   const rowH = [];
   shapes.forEach((s, i) => {
@@ -76,11 +89,26 @@ function familyCells(families) {
     rowH[row] = Math.max(rowH[row] || 0, s.h);
   });
   const offset = (sizes, n) => sizes.slice(0, n).reduce((sum, size) => sum + size + GAP, 0);
-  return shapes.map((s, i) => ({
-    ...s,
-    x1: offset(colW, i % cols),
-    y1: offset(rowH, Math.floor(i / cols)),
-  }));
+  return {
+    w: offset(colW, colW.length) - GAP,
+    h: offset(rowH, rowH.length) - GAP,
+    cells: shapes.map((s, i) => ({ ...s, x1: offset(colW, i % cols), y1: offset(rowH, Math.floor(i / cols)) })),
+  };
+}
+
+function familyCells(families, aspect = 1) {
+  const shapes = families.map((f) => {
+    const c = Math.max(1, Math.ceil(Math.sqrt(f.count)));
+    const r = Math.max(1, Math.ceil(f.count / c));
+    return { id: f.id, cols: c, rows: r, w: c * SLOT.w, h: r * SLOT.h };
+  });
+  let best = null;
+  for (let cols = 1; cols <= Math.max(1, shapes.length); cols++) {
+    const placed = placeCells(shapes, cols);
+    const scale = Math.min(aspect / placed.w, 1 / placed.h);
+    if (!best || scale > best.scale) best = { scale, cells: placed.cells };
+  }
+  return best.cells;
 }
 
 function layoutFamilies(cy, graph) {
@@ -88,7 +116,10 @@ function layoutFamilies(cy, graph) {
     id: f.id,
     count: graph.nodes.filter((n) => n.family === f.id).length,
   }));
-  for (const cell of familyCells(counts)) {
+  const w = cy.width();
+  const h = cy.height();
+  const aspect = w > 0 && h > 0 ? w / h : 1;
+  for (const cell of familyCells(counts, aspect)) {
     const members = cy.getElementById(FAMILY_PREFIX + cell.id).children();
     members
       .layout({
@@ -118,7 +149,21 @@ function nodeDetails(graph, id) {
 }
 
 if (typeof module === 'object' && module.exports) {
-  module.exports = { checkGraph, nodeSize, toElements, nodeDetails, familyCells, layoutFamilies, FAMILY_PREFIX };
+  module.exports = {
+    checkGraph,
+    nodeSize,
+    toElements,
+    nodeDetails,
+    familyCells,
+    layoutFamilies,
+    isMeasured,
+    nodeLabel,
+    FAMILY_PREFIX,
+    KIND_COLORS,
+    MEASURED_OUTLINE,
+    LABEL_FONT_SIZE,
+    SLOT,
+  };
 }
 
 if (typeof document !== 'undefined') {
@@ -130,6 +175,7 @@ function main() {
   const detailsEl = document.getElementById('details');
   const filtersEl = document.getElementById('filters');
   const edgeFiltersEl = document.getElementById('edge-filters');
+  const legendEl = document.getElementById('legend');
 
   function fail(message) {
     statusEl.textContent = message;
@@ -214,6 +260,35 @@ function main() {
     detailsEl.append(edgeList('Incoming', info.incoming, graph, 'source'));
   }
 
+  function renderLegend(graph) {
+    legendEl.replaceChildren(el('h2', 'Legend'));
+    const list = el('ul');
+    for (const [kind, color] of Object.entries(KIND_COLORS)) {
+      const swatch = el('span');
+      swatch.className = 'swatch';
+      swatch.dataset.kind = kind;
+      swatch.style.backgroundColor = color;
+      const count = graph.nodes.filter((n) => n.kind === kind).length;
+      const item = el('li');
+      item.append(swatch, `${kind} (${count})`);
+      list.append(item);
+    }
+    const outline = el('span');
+    outline.className = 'swatch outline';
+    outline.style.border = `${MEASURED_OUTLINE.width}px solid ${MEASURED_OUTLINE.color}`;
+    const measured = graph.nodes.filter(isMeasured).length;
+    const outlineItem = el('li');
+    outlineItem.append(outline, `outline: an eval score stated in the skill's own SKILL.md (${measured} ${measured === 1 ? 'node' : 'nodes'})`);
+    list.append(outlineItem);
+    const lines = graph.nodes.map((n) => n.lines).filter((n) => typeof n === 'number');
+    list.append(
+      el('li', `Node size: grows with the square root of the file's line count (${Math.min(...lines)} to ${Math.max(...lines)} lines here).`),
+      el('li', 'Arrow: from the file that names another node to the node it names.'),
+      el('li', 'Boxes: families, from viz/scripts/families.json.'),
+    );
+    legendEl.append(list);
+  }
+
   function render(graph) {
     statusEl.textContent =
       `${graph.nodes.length} nodes, ${graph.edges.length} edges, ${graph.families.length} families, ` +
@@ -223,14 +298,34 @@ function main() {
       container: document.getElementById('graph'),
       elements: toElements(graph),
       style: [
-        { selector: 'node', style: { label: 'data(label)', 'font-family': 'system-ui, sans-serif' } },
+        {
+          selector: 'node',
+          style: {
+            label: 'data(label)',
+            'font-family': 'system-ui, sans-serif',
+            'font-size': LABEL_FONT_SIZE,
+            'text-valign': 'bottom',
+            'text-margin-y': 4,
+            'text-wrap': 'wrap',
+            'text-max-width': `${SLOT.w - 10}px`,
+          },
+        },
         { selector: 'node[size]', style: { width: 'data(size)', height: 'data(size)' } },
-        { selector: ':parent', style: { 'text-valign': 'top' } },
+        ...Object.entries(KIND_COLORS).map(([kind, color]) => ({
+          selector: `node[kind = "${kind}"]`,
+          style: { 'background-color': color },
+        })),
+        {
+          selector: 'node[?measured]',
+          style: { 'border-width': MEASURED_OUTLINE.width, 'border-color': MEASURED_OUTLINE.color },
+        },
+        { selector: ':parent', style: { 'text-valign': 'top', 'text-margin-y': -4 } },
         { selector: 'edge', style: { 'curve-style': 'bezier', 'target-arrow-shape': 'triangle' } },
         { selector: '.filtered', style: { display: 'none' } },
       ],
     });
     window.cy = cy;
+    renderLegend(graph);
 
     cy.on('tap', 'node', (evt) => {
       const node = evt.target;

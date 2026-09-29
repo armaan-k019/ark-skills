@@ -26,3 +26,18 @@ body {
 #filters label {
   display: block;
 }
+
+#legend ul {
+  list-style: none;
+  padding: 0;
+}
+
+.swatch {
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  margin-right: 0.4em;
+  border-radius: 50%;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
