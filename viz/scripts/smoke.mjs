@@ -148,7 +148,24 @@ try {
     const all = cy.elements().renderedBoundingBox();
     return { zoom, minFontPx, labelOnCircle, labelOnLabel, labels: labels.length, box: { x1: all.x1, y1: all.y1, x2: all.x2, y2: all.y2 }, view: { w: cy.width(), h: cy.height() } };
   });
-  check(legibility.minFontPx >= 12, `smallest label is ${legibility.minFontPx.toFixed(1)} px as drawn, expected at least 12`);
+  check(legibility.minFontPx >= app.MIN_LABEL_PX, `smallest node label is ${legibility.minFontPx.toFixed(1)} px as drawn, expected at least ${app.MIN_LABEL_PX}`);
+
+  // Family labels: uppercase, letterspaced, 11 px as drawn, gray.
+  const thin = String.fromCharCode(0x2009);
+  const familyLabels = await page.evaluate(() =>
+    window.cy.nodes(':parent').map((p) => ({
+      id: p.id(),
+      label: p.data('label'),
+      px: parseFloat(p.style('font-size')) * window.cy.zoom(),
+      color: p.style('color'),
+    })),
+  );
+  for (const f of familyLabels) {
+    const json = graph.families.find((x) => `${app.FAMILY_PREFIX}${x.id}` === f.id);
+    check(f.label === [...json.label.toUpperCase()].join(thin), `family label of ${f.id} is not uppercase and letterspaced: ${JSON.stringify(f.label)}`);
+    check(Math.abs(f.px - app.FAMILY_LABEL.px) < 0.5, `family label of ${f.id} is ${f.px.toFixed(2)} px, expected ${app.FAMILY_LABEL.px}`);
+    check(f.color.replace(/\s/g, '') === rgb(app.FAMILY_LABEL.color), `family label of ${f.id} is ${f.color}, expected ${rgb(app.FAMILY_LABEL.color)}`);
+  }
   check(legibility.labelOnCircle.length === 0, `labels over node circles: ${legibility.labelOnCircle.join(', ')}`);
   const { box, view } = legibility;
   check(box.x1 >= -1 && box.y1 >= -1 && box.x2 <= view.w + 1 && box.y2 <= view.h + 1, `graph does not fit the viewport: ${JSON.stringify({ box, view })}`);

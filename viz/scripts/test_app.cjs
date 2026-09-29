@@ -84,6 +84,13 @@ test('labels may wrap at hyphens and keep their text', () => {
   assert.equal(app.nodeLabel('verify-before-done').split(zwsp).join(''), 'verify-before-done');
 });
 
+test('family labels are uppercase with a thin space between letters', () => {
+  const thin = String.fromCharCode(0x2009);
+  assert.equal(app.familyLabel('Build discipline'), [...'BUILD DISCIPLINE'].join(thin));
+  const parent = app.toElements(graph).find((e) => e.data.kind === 'family');
+  assert.equal(parent.data.label.split(thin).join(''), graph.families[0].label.toUpperCase());
+});
+
 test('kind colors are three distinct colors', () => {
   assert.deepEqual(Object.keys(app.KIND_COLORS), ['skill', 'agent', 'hook']);
   assert.equal(new Set(Object.values(app.KIND_COLORS)).size, 3);

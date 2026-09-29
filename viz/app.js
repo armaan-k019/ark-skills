@@ -5,9 +5,13 @@
 
 const FAMILY_PREFIX = 'family:';
 
-// Node color by kind: the first three colors of d3's category10 scheme, a common
-// default for telling categories apart. Not a designed palette.
-const KIND_COLORS = { skill: '#1f77b4', agent: '#ff7f0e', hook: '#2ca02c' };
+// Node color by kind, a quiet palette: slate for skills, amber for agents, green
+// for hooks (Tailwind's slate-500, amber-500, and green-600).
+const KIND_COLORS = { skill: '#64748b', agent: '#f59e0b', hook: '#16a34a' };
+// Family labels: uppercase, letterspaced, 11 px as drawn, gray. Node labels are
+// at least 13 px as drawn.
+const FAMILY_LABEL = { px: 11, color: '#6b7280' };
+const MIN_LABEL_PX = 13;
 // A node whose own SKILL.md states an eval score gets this outline.
 const MEASURED_OUTLINE = { width: 4, color: '#000000' };
 // A node carried from another repository (families.json marks its family
@@ -21,6 +25,12 @@ const DIM_OPACITY = 0.25;
 
 function isMeasured(n) {
   return typeof n.eval_status === 'string' && n.eval_status.startsWith('measured:');
+}
+
+// Canvas text has no letter-spacing, so family labels put a thin space between
+// letters.
+function familyLabel(label) {
+  return [...String(label).toUpperCase()].join('\u2009');
 }
 
 // Zero-width spaces after hyphens let long names wrap at hyphens.
@@ -64,7 +74,7 @@ function nodeSize(lines) {
 function toElements(graph) {
   const parents = graph.families.map((f) => ({
     group: 'nodes',
-    data: { id: FAMILY_PREFIX + f.id, label: f.label, kind: 'family', family: f.id },
+    data: { id: FAMILY_PREFIX + f.id, label: familyLabel(f.label), kind: 'family', family: f.id },
   }));
   const nodes = graph.nodes.map((n) => ({
     group: 'nodes',
@@ -209,6 +219,22 @@ function routeEdges(cy) {
   return unrouted;
 }
 
+// Font sizes are in graph units, which the zoom scales. After the fit, set them
+// from the zoom so labels draw at the intended pixel sizes, and fit again until
+// the zoom settles (bigger labels widen the graph a little).
+function sizeLabels(cy) {
+  const members = cy.nodes().filter((n) => !n.isParent());
+  const families = cy.nodes().filter((n) => n.isParent());
+  for (let i = 0; i < 6; i++) {
+    const zoom = cy.zoom();
+    members.style('font-size', Math.max(LABEL_FONT_SIZE, (MIN_LABEL_PX + 0.1) / zoom));
+    families.style('font-size', FAMILY_LABEL.px / zoom);
+    cy.fit(undefined, 20);
+    if (Math.abs(cy.zoom() - zoom) < 1e-4) break;
+  }
+  families.style('font-size', FAMILY_LABEL.px / cy.zoom());
+}
+
 function nodeDetails(graph, id) {
   const node = graph.nodes.find((n) => n.id === id);
   if (!node) return null;
@@ -229,13 +255,17 @@ if (typeof module === 'object' && module.exports) {
     nodeDetails,
     familyCells,
     layoutFamilies,
+    sizeLabels,
     isMeasured,
     nodeLabel,
+    familyLabel,
     edgePath,
     edgeBlockers,
     routeEdges,
     FAMILY_PREFIX,
     KIND_COLORS,
+    FAMILY_LABEL,
+    MIN_LABEL_PX,
     MEASURED_OUTLINE,
     VENDORED_BORDER,
     EDGE_OPACITY,
@@ -418,7 +448,10 @@ function main() {
             'text-margin-y': 4 + MEASURED_OUTLINE.width,
           },
         },
-        { selector: ':parent', style: { 'text-valign': 'top', 'text-margin-y': -4 } },
+        {
+          selector: ':parent',
+          style: { 'text-valign': 'top', 'text-margin-y': -4, 'text-wrap': 'none', color: FAMILY_LABEL.color },
+        },
         { selector: 'edge', style: { 'curve-style': 'bezier', 'target-arrow-shape': 'triangle', opacity: EDGE_OPACITY } },
         { selector: 'edge.hl', style: { opacity: 1 } },
         { selector: 'node.dim', style: { opacity: DIM_OPACITY } },
@@ -491,6 +524,7 @@ function main() {
     layoutFamilies(cy, graph);
     window.__unroutedEdges = routeEdges(cy);
     cy.fit(undefined, 20);
+    sizeLabels(cy);
     window.__graphReady = true;
   }
 }

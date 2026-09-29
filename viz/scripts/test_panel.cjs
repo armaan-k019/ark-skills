@@ -70,7 +70,7 @@ function fakeCytoscape(state) {
         });
       },
       nodes() {
-        return { filter: () => ({ addClass() {}, removeClass() {} }) };
+        return { filter: () => ({ addClass() {}, removeClass() {}, style() {} }) };
       },
       edges() {
         return { forEach() {}, filter: () => ({ addClass() {}, removeClass() {} }) };
@@ -83,6 +83,7 @@ function fakeCytoscape(state) {
         return { one: (_e, fn) => { done = fn; }, run: () => done && done() };
       },
       fit() {},
+      zoom: () => 1,
       width: () => 0,
       height: () => 0,
     };
@@ -128,7 +129,7 @@ test('the page renders and signals ready', async () => {
   const vendored = GRAPH.nodes.filter((n) => n.vendored).length;
   assert.ok(legend.includes(`dashed border: vendored, carried from another repository (${vendored} nodes)`), 'legend: vendored');
   const swatches = page.elements.legend.children[1].children.map((li) => li.children[0]).filter((s) => s && s.dataset.kind);
-  assert.deepEqual(swatches.map((s) => [s.dataset.kind, s.style.backgroundColor]), [['skill', '#1f77b4'], ['agent', '#ff7f0e'], ['hook', '#2ca02c']]);
+  assert.deepEqual(swatches.map((s) => [s.dataset.kind, s.style.backgroundColor]), [['skill', '#64748b'], ['agent', '#f59e0b'], ['hook', '#16a34a']]);
   const kinds = new Set(GRAPH.edges.map((e) => e.kind));
   assert.equal(page.elements['edge-filters'].children.length, kinds.size);
   for (const label of page.elements['edge-filters'].children) {

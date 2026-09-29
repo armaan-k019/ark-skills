@@ -1,10 +1,10 @@
 # Progress: skills-graph
-Updated: 2026-09-28 21:04 EDT (from `date`)   Branch: feat/skills-graph (from origin/main cd423eb, upstream unset, not pushed)   Last commit: 5a99a26 (F2, F3), before the review-fix commit
+Updated: 2026-09-28 22:48 EDT (from `date`)   Branch: feat/skills-graph (from origin/main cd423eb, upstream unset, not pushed)   Last commit: 41c3578 (F5), before the F6 commit
 
 Every time in this file comes from `date`.
 
 ## SPEC summary
-Static page in viz/ that visualizes this repo: every skill, agent, and hook as a node, clustered by family, with reference edges, hook coverage, license origin, and eval status, all generated from files. Plus viz/MONITOR-EVAL.md, a vetted recommendation (no install) for a live Claude Code session monitor. Second round (author's message of 2026-09-28): Q6 recorded, F1 family taxonomy, F2 encoding, F3 legibility, one review pass over the whole branch with at most one fix round, then stop again for styling.
+Static page in viz/ that visualizes this repo: every skill, agent, and hook as a node, clustered by family, with reference edges, hook coverage, license origin, and eval status, all generated from files. Plus viz/MONITOR-EVAL.md, a vetted recommendation (no install) for a live Claude Code session monitor. Second round (author's message of 2026-09-28): Q6 recorded, F1 family taxonomy, F2 encoding, F3 legibility, one review pass over the whole branch with at most one fix round, then stop again for styling. Third round: F4 final family mapping and a vendored flag, F5 edge focus, F6 typography and palette, then stop again; the timestamp PR approved.
 
 ## Now
 Phase 4: STOPPED again for the author. Styling is taste work and is the author's.
@@ -15,33 +15,38 @@ Phase 4: STOPPED again for the author. Styling is taste work and is the author's
 - F1: viz/scripts/families.json, seven families; the build fails on an unmapped node, a stale name, a name listed twice, or a malformed or missing file; commit eafbee0. Each of the three family guards was removed in a mutant copy and its test failed.
 - F2 and F3: kind colors (d3 category10 defaults), measured-eval outline, legend, labels below nodes at 17 px wrapping at hyphens, column choice fitted to the viewport, fit on load; commit 5a99a26.
 - Clones deleted: /tmp/monitor-eval/ccboard, claude-agents-dashboard, agent-mission-control. The scan outputs and vetting reports that MONITOR-EVAL.md points to are still in /tmp/monitor-eval/.
-- Timestamp line: branch docs/unattended-build-clock-times at b806f4a, one commit on origin/main, built with git plumbing (no checkout). Not pushed, no PR yet.
+- Timestamp line: branch docs/unattended-build-clock-times at b806f4a, one commit on origin/main, built with git plumbing (no checkout). Pushed after approval; PR #3 open, not merged.
 - Review pass over `git diff origin/main..HEAD` (dual: ts-reviewer and silent-failure-hunter roles, CRITICAL and HIGH only): both FAIL.
   - ts-reviewer HIGH: (1) edges were drawn straight through unrelated nodes (8 exact centre crossings), so the page showed references that do not exist, such as capture-lessons -> no-em-dash reading as block-no-verify -> no-em-dash; (2) the eval outline was never tested on a scored node (a selector typo passed everything).
   - silent-failure-hunter HIGH: (3) panel-check did not compare the origin's cited line or label, and checked hook coverage by substring; (4) only one family and one edge kind were exercised, so a closure bug in the edge-kind filter passed; (5) a hook registered under two events got the first line for both. It also found that the first scored skill would fail the smoke test on correct code, because the 4 px outline pushed the circle into the label margin.
   - Fix round (the one allowed): edges are bent around nodes they do not connect, checked against Cytoscape's drawn path; the measured label margin grows by the outline width; panel-check compares License origin, License notice, and Hook coverage as whole strings; smoke exercises every family and every edge kind by exact hidden sets plus a combined case, checks edge crossings with its own path sampling, and checks the outline on a copy of the data with one scored skill; each hook registration cites its own line (two-event fixture); checkGraph rejects duplicate ids and unknown kinds; the column-choice test is strict; stale fixture and README text corrected.
   - Evidence the fixes are real: the hook-line test fails on the reviewed extractor; the three reviewer panel mutants are caught by test_panel.cjs; five app.js mutants run through the browser smoke test were all caught (the reviewed app.js without routing; routing skipped but reported clean, caught by the independent crossing check; the edge-kind closure bug; the outline selector typo; the outline without the margin fix).
-- Final runs, 2026-09-28 21:02:33 to 21:02:37 EDT:
-  - Build: `python3 viz/scripts/build_graph.py` printed "30 nodes {'agent': 2, 'hook': 3, 'skill': 25}, 36 edges {'agent-agent': 1, 'skill-agent': 2, 'skill-hook': 2, 'skill-skill': 31}, 7 families", exit 0; graph.json unchanged by the rebuild.
-  - Phase 1 count with the Q6 command: `find . -name SKILL.md -not -path "./.git/*" -not -path "*/node_modules/*"` = 25, agents 2, hooks 3, sum 30, graph 30: MATCH. Endpoints: 0 missing; validate() raised for an injected bad edge; json.load exit 0.
-  - Phase 2: `python3 -m unittest discover viz/scripts`: Ran 52 tests, OK.
-  - Page tests: `npm test` in viz/: 22 of 22 pass.
-  - Repo hooks: `node hooks/test-hooks.js`: all 26 passed.
-  - Phase 3: `node viz/scripts/smoke.mjs http://127.0.0.1:8123/` printed "OK: rendered 30 nodes and 36 edges (JSON 30 and 36), 7 families; clicked skill:phased-build, panel shows Outgoing (6) and Incoming (2); smallest label 12.2 px, 0 labels over circles, 0 label pairs overlapping each other; 0 edges over unconnected nodes (9 bent around them); filters exact for 7 families and 4 edge kinds; outline drawn on skill:adversarial-review in a scored copy", exit 0. viz/screenshot.png: 196388 bytes, opened and looked at.
+- Review fix round: commit 0acba53.
+- F4: the author's final mapping in families.json (build-discipline 4, review-and-honesty 4, research 5, skill-management 3, domain 2, vendored 7, agents 2, hooks 3); a family marked "vendored": true gives each member a vendored boolean, drawn as a 2 px dashed border and counted in the legend; commit 07efb4c.
+- F5: edges at 0.18 opacity by default; hover or selection draws the node's edges and neighbors at full opacity and dims other nodes to 0.25; commit 41c3578. Two mutants (no edge highlight; pointer leaving forgets the selection) fail the smoke test.
+- F6: slate, amber, green (#64748b, #f59e0b, #16a34a); family labels uppercase, letterspaced with thin spaces, gray #6b7280, 11 px as drawn; node labels 13 px or more as drawn, sized from the zoom after the fit; commit follows this file.
+- Final runs, 2026-09-28 22:46:53 to 22:46:58 EDT:
+  - Build: "30 nodes {'agent': 2, 'hook': 3, 'skill': 25}, 36 edges {'agent-agent': 1, 'skill-agent': 2, 'skill-hook': 2, 'skill-skill': 31}, 8 families", exit 0; graph.json unchanged by the rebuild.
+  - Phase 1 count (Q6 command): 25 + 2 + 3 = 30; graph 30: MATCH.
+  - `python3 -m unittest discover viz/scripts`: Ran 53 tests, OK.
+  - `npm test` in viz/: 24 of 24 pass.
+  - `node hooks/test-hooks.js`: all 26 passed.
+  - `node viz/scripts/smoke.mjs http://127.0.0.1:8123/`: "OK: rendered 30 nodes and 36 edges (JSON 30 and 36), 8 families; clicked skill:phased-build, panel shows Outgoing (6) and Incoming (2); smallest label 13.1 px, 0 labels over circles, 0 label pairs overlapping each other; 0 edges over unconnected nodes (11 bent around them); filters exact for 8 families and 4 edge kinds; focus checked for default, hover, selection, and clearing; outline drawn on skill:adversarial-review in a scored copy", exit 0. viz/screenshot.png 196676 bytes, opened and looked at.
 
 ## In flight
 - none
 
 ## Open questions
 - Styling (phase 4): the author's.
-- The family mapping in viz/scripts/families.json is a judgment call (for example ponytail-review and ponytail-audit under review-and-honesty, honest-refusal under review-and-honesty, vet-third-party and capture-lessons under skill-management). The author may want to move entries.
+- Vendored set vs the repo's own records: README.md says skill-creator is "from anthropics/skills" (Apache 2.0, added in 24255cc) and scroll-world is "Vendored from oso95/scroll-world" (its LICENSE: "Copyright (c) 2026 cyw", added in cba38fa). The author's F4 mapping puts them in skill-management and domain, so their vendored flag is false. Should they move to vendored? Blocks: nothing. Raised: at this checkpoint.
+- fix/em-dash-in-descriptions: the request says recruiter-demo-writer and scroll-world are the author's, not vendored; the repo says scroll-world is vendored. Editing its description changes a vendored file (it would drift from upstream commit 71cc36d3). Held until the author confirms. Blocks: that branch only. Raised: at this checkpoint.
 - No node has a measured eval today: no SKILL.md states a pass rate or score in its own text, so the outline shows nowhere on the real data. It is proved on a scored copy in the smoke test.
-- Push and PR for docs/unattended-build-clock-times: waiting, because the author's message said not to push yet.
 - Q5 (for its own branch): vet-third-party/scripts/scan.py does not scan `.rs` files.
 
 ## Decisions
 - Family taxonomy lives in viz/scripts/families.json; the extractor has no fallback family.
-- Kind colors are the first three colors of d3's category10 scheme, a default for distinguishable categories, not a palette.
+- Kind colors: slate, amber, green as the author asked (Tailwind slate-500, amber-500, green-600). Family labels are letterspaced with thin spaces written as a JavaScript escape. Label font sizes are set from the zoom after the fit, so the pixel sizes hold at any window size on load.
+- The vendored flag comes from families.json (a family marked vendored), not from LICENSE files, following the author's mapping.
 - Labels wrap at hyphens via zero-width spaces written as a JavaScript escape, so no invisible character is committed.
 - An edge is bent only when its straight line would pass over a node it does not connect; the bend is chosen by trying growing offsets on alternate sides and re-reading Cytoscape's drawn control points.
 - Earlier decisions (branch, hook definition, edge rules, em dashes in source descriptions, fixture filenames, Cytoscape, monitor recommendation) are unchanged; see git history of this file.
@@ -53,7 +58,7 @@ Phase 4: STOPPED again for the author. Styling is taste work and is the author's
 - Edge lines and the merged-license case are covered only by the real-repo snapshot test.
 - The skill/hook and agent/hook ambiguity pairs have no test; an agent whose file stem differs from its name is matched only by name.
 - An indented `---` inside a block scalar closes frontmatter; duplicate JSON keys in families.json are last-wins; `_unquote` keeps malformed quoted scalars; license-notice entries on continuation lines or matching no node are dropped silently.
-- The page reports render errors under "Could not load data/graph.json"; the legend's outline swatch is not compared with the drawn outline; label-to-label overlap is counted but not asserted; the smallest label is 12.2 px against a 12 px floor, so one more member in a family may trip it.
+- The page reports render errors under "Could not load data/graph.json"; the legend's outline swatch is not compared with the drawn outline; label-to-label overlap is counted but not asserted.
 - Edges to ponytail include mentions of the plugin name in a config path and a URL (ponytail-help lines 53 and 71) and the `ponytail:` comment marker (ponytail-debt), consistent with the documented token rule.
 - The vendored cytoscape.min.js contains a literal U+200B from upstream; a repo-wide hidden-Unicode scan would flag it.
 - Two source descriptions (recruiter-demo-writer, scroll-world) contain em dashes, which the page displays as written (recorded decision; the author may choose otherwise).
