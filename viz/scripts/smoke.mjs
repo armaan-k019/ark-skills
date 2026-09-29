@@ -399,7 +399,7 @@ try {
   // The outline's positive case: serve a copy of graph.json in which one skill
   // states a score, and check the drawn outline, its label clearance, and the legend.
   const scored = structuredClone(graph);
-  const scoredNode = scored.nodes.find((n) => n.kind === 'skill' && !n.vendored);
+  const scoredNode = scored.nodes.find((n) => n.kind === 'skill' && !n.vendored && !measured(n));
   scoredNode.eval_status = 'measured: 1/1';
   const page2 = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   await page2.route('**/data/graph.json', (route) => route.fulfill({ json: scored }));
@@ -419,13 +419,15 @@ try {
     const labelClear = !(l.x1 < c.x2 && c.x1 < l.x2 && l.y1 < c.y2 && c.y1 < l.y2);
     return { outlined, labelClear, legend: document.getElementById('legend').textContent };
   }, { id: scoredNode.id, width: app.MEASURED_OUTLINE.width });
-  check(outline.outlined.length === 1 && outline.outlined[0].id === scoredNode.id, `outlined nodes ${JSON.stringify(outline.outlined)}, expected only ${scoredNode.id}`);
+  const expectedOutlined = scored.nodes.filter(measured).map((n) => n.id).sort();
+  check(JSON.stringify(outline.outlined.map((o) => o.id).sort()) === JSON.stringify(expectedOutlined), `outlined nodes ${JSON.stringify(outline.outlined)}, expected ${expectedOutlined.join(', ')}`);
+  const scoredOutline = outline.outlined.find((o) => o.id === scoredNode.id);
   check(
-    outline.outlined[0].width === app.MEASURED_OUTLINE.width && outline.outlined[0].color.replace(/\s/g, '') === rgb(app.MEASURED_OUTLINE.color),
-    `outline on ${scoredNode.id} is ${JSON.stringify(outline.outlined[0])}`,
+    scoredOutline.width === app.MEASURED_OUTLINE.width && scoredOutline.color.replace(/\s/g, '') === rgb(app.MEASURED_OUTLINE.color),
+    `outline on ${scoredNode.id} is ${JSON.stringify(scoredOutline)}`,
   );
   check(outline.labelClear, `the label of ${scoredNode.id} overlaps its outlined circle`);
-  check(outline.legend.includes('(1 node)'), 'legend does not count the scored node');
+  check(outline.legend.includes(`(${expectedOutlined.length} ${expectedOutlined.length === 1 ? 'node' : 'nodes'})`), 'legend does not count the scored node');
   await page2.close();
   result = { counts, target, outgoing, incoming, legibility, routing, packing, families: graph.families.length, kinds: kinds.length, scored: scoredNode.id, focusId };
 } finally {
