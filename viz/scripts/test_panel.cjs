@@ -63,7 +63,7 @@ function fakeCytoscape(state) {
         return { filter: () => ({ addClass() {}, removeClass() {} }) };
       },
       edges() {
-        return { filter: () => ({ addClass() {}, removeClass() {} }) };
+        return { forEach() {}, filter: () => ({ addClass() {}, removeClass() {} }) };
       },
       getElementById() {
         return { children: () => ({ layout: () => ({ run() {} }) }) };
@@ -150,6 +150,9 @@ const MUTANTS = [
   ['path row removed', "field(dl, 'Path', n.path);", ''],
   ['eval status under the wrong label', "field(dl, 'Eval status',", "field(dl, 'Lines',"],
   ["edge ends swapped", "edgeList('Outgoing', info.outgoing, graph, 'target')", "edgeList('Outgoing', info.outgoing, graph, 'source')"],
+  ['origin cites the wrong line', '`${n.path}:${n.origin.line}`', '`${n.path}:${n.origin.line + 1}`'],
+  ['body origin labelled as frontmatter', "n.origin.from === 'body' ?", "n.origin.from !== 'body' ?"],
+  ['extra hook coverage entry', ".join('; '));", ".join('; ') + '; PostToolUse Fake');"],
 ];
 
 for (const [name, from, to] of MUTANTS) {

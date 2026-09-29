@@ -303,6 +303,7 @@ def registered_hooks(root):
         raise GraphError(f'{where}: expected a non-empty "hooks" object')
     lines = text.split("\n")
     hooks = {}
+    search_from = {}  # filename -> line index after its previous registration
     for event, groups in events.items():
         if not isinstance(groups, list):
             raise GraphError(f"{where}: hooks.{event} must be a list")
@@ -317,9 +318,14 @@ def registered_hooks(root):
                 if not match:
                     raise GraphError(f"{where}: command names no script under hooks/: {command}")
                 filename = match.group(1)
+                # Registrations are read in file order, so each one's line is the
+                # next line naming the script after the previous registration's.
+                start = search_from.get(filename, 0)
                 line_no = next(
-                    (i + 1 for i, l in enumerate(lines) if f"hooks/{filename}" in l), None
+                    (i + 1 for i in range(start, len(lines)) if f"hooks/{filename}" in lines[i]), None
                 )
+                if line_no:
+                    search_from[filename] = line_no
                 entry = {"event": event, "file": HOOK_SETTINGS.as_posix()}
                 if group.get("matcher") is not None:
                     entry["matcher"] = group["matcher"]

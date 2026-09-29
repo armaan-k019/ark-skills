@@ -51,6 +51,12 @@ test('shape check rejects a missing endpoint and an unknown family', () => {
   badFamily.nodes[0].family = 'readme:nope';
   assert.throws(() => app.checkGraph(badFamily), /unknown family/);
   assert.throws(() => app.checkGraph({ nodes: [] }), /expected shape/);
+  const dupEdge = structuredClone(graph);
+  dupEdge.edges.push({ ...dupEdge.edges[0] });
+  assert.throws(() => app.checkGraph(dupEdge), /duplicate id/);
+  const badKind = structuredClone(graph);
+  badKind.nodes[0].kind = 'command';
+  assert.throws(() => app.checkGraph(badKind), /unknown kind/);
 });
 
 test('a node is measured only when its eval status states a score', () => {

@@ -32,8 +32,15 @@ function checkGraph(graph) {
   if (!ok) throw new Error('graph.json does not have families[], nodes[], and edges[] in the expected shape');
   const ids = new Set(graph.nodes.map((n) => n.id));
   const families = new Set(graph.families.map((f) => f.id));
+  const all = [...graph.nodes.map((n) => n.id), ...graph.edges.map((e) => e.id), ...graph.families.map((f) => FAMILY_PREFIX + f.id)];
+  const seen = new Set();
+  for (const id of all) {
+    if (seen.has(id)) throw new Error(`duplicate id ${id}`);
+    seen.add(id);
+  }
   for (const n of graph.nodes) {
     if (!families.has(n.family)) throw new Error(`node ${n.id} has unknown family ${n.family}`);
+    if (!(n.kind in KIND_COLORS)) throw new Error(`node ${n.id} has unknown kind ${n.kind}`);
   }
   for (const e of graph.edges) {
     if (!ids.has(e.source) || !ids.has(e.target)) throw new Error(`edge ${e.id} has a missing endpoint`);
@@ -136,6 +143,63 @@ function layoutFamilies(cy, graph) {
   }
 }
 
+// Edges are straight unless a straight line would pass over a node it does not
+// connect, which would read as a reference that does not exist. Such an edge is
+// bent: offsets of growing size are tried on alternate sides, and each try is
+// checked against the path Cytoscape actually computes for it.
+const ROUTE_BENDS = [40, -40, 80, -80, 120, -120, 170, -170, 230, -230, 300, -300];
+const ROUTE_CLEARANCE = 6;
+
+function edgePath(edge, steps = 40) {
+  const s = edge.sourceEndpoint();
+  const t = edge.targetEndpoint();
+  const cps = edge.controlPoints() || [];
+  const ctrl = [s, ...cps, t];
+  const points = [];
+  for (let i = 0; i <= steps; i++) {
+    let level = ctrl;
+    const u = i / steps;
+    while (level.length > 1) {
+      const next = [];
+      for (let j = 0; j < level.length - 1; j++) {
+        next.push({ x: level[j].x + u * (level[j + 1].x - level[j].x), y: level[j].y + u * (level[j + 1].y - level[j].y) });
+      }
+      level = next;
+    }
+    points.push(level[0]);
+  }
+  return points;
+}
+
+function edgeBlockers(edge, members, clearance = ROUTE_CLEARANCE) {
+  const ends = new Set([edge.source().id(), edge.target().id()]);
+  const points = edgePath(edge);
+  return members.filter((n) => {
+    if (ends.has(n.id())) return false;
+    const q = n.position();
+    const r = n.width() / 2 + clearance;
+    return points.some((p) => (p.x - q.x) ** 2 + (p.y - q.y) ** 2 < r * r);
+  });
+}
+
+function routeEdges(cy) {
+  const members = cy.nodes().filter((n) => !n.isParent());
+  const unrouted = [];
+  cy.edges().forEach((edge) => {
+    if (edgeBlockers(edge, members).length === 0) return;
+    for (const bend of ROUTE_BENDS) {
+      edge.style({ 'curve-style': 'unbundled-bezier', 'control-point-distances': bend, 'control-point-weights': 0.5 });
+      if (edgeBlockers(edge, members).length === 0) {
+        edge.data('bend', bend);
+        return;
+      }
+    }
+    edge.removeStyle('curve-style control-point-distances control-point-weights');
+    unrouted.push(edge.id());
+  });
+  return unrouted;
+}
+
 function nodeDetails(graph, id) {
   const node = graph.nodes.find((n) => n.id === id);
   if (!node) return null;
@@ -158,6 +222,9 @@ if (typeof module === 'object' && module.exports) {
     layoutFamilies,
     isMeasured,
     nodeLabel,
+    edgePath,
+    edgeBlockers,
+    routeEdges,
     FAMILY_PREFIX,
     KIND_COLORS,
     MEASURED_OUTLINE,
@@ -317,7 +384,11 @@ function main() {
         })),
         {
           selector: 'node[?measured]',
-          style: { 'border-width': MEASURED_OUTLINE.width, 'border-color': MEASURED_OUTLINE.color },
+          style: {
+            'border-width': MEASURED_OUTLINE.width,
+            'border-color': MEASURED_OUTLINE.color,
+            'text-margin-y': 4 + MEASURED_OUTLINE.width,
+          },
         },
         { selector: ':parent', style: { 'text-valign': 'top', 'text-margin-y': -4 } },
         { selector: 'edge', style: { 'curve-style': 'bezier', 'target-arrow-shape': 'triangle' } },
@@ -361,6 +432,7 @@ function main() {
     }
 
     layoutFamilies(cy, graph);
+    window.__unroutedEdges = routeEdges(cy);
     cy.fit(undefined, 20);
     window.__graphReady = true;
   }

@@ -1,6 +1,6 @@
 ---
 name: delta
-description: Not listed in the README, so its family falls back to its directory.
+description: Not listed in the README; its family comes from families.json like every other node.
 ---
 
 # Delta

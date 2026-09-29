@@ -7,6 +7,14 @@
           { "type": "command", "command": "node \"$HOME/dev/fixture/hooks/guard.js\"" }
         ]
       }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit",
+        "hooks": [
+          { "type": "command", "command": "node \"$HOME/dev/fixture/hooks/guard.js\"" }
+        ]
+      }
     ]
   }
 }

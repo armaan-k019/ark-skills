@@ -140,42 +140,89 @@ try {
   const { box, view } = legibility;
   check(box.x1 >= -1 && box.y1 >= -1 && box.x2 <= view.w + 1 && box.y2 <= view.h + 1, `graph does not fit the viewport: ${JSON.stringify({ box, view })}`);
 
-  // Filters: unchecking a family hides exactly its members; unchecking an edge
-  // kind hides exactly that kind's edges. Each is restored afterwards. Cytoscape
-  // applies class changes on its next frame, so wait (up to 5 s) for the counts.
-  async function expectVisible(nodes, edges, what) {
-    const count = () => ({
-      nodes: window.cy.nodes().filter((n) => !n.isParent() && n.visible()).length,
-      edges: window.cy.edges().filter((e) => e.visible()).length,
+  // Edges never pass over a node they do not connect, which would read as a
+  // reference that does not exist. Measured on the path Cytoscape draws, with an
+  // implementation separate from the page's router.
+  const unrouted = await page.evaluate(() => window.__unroutedEdges || null);
+  check(Array.isArray(unrouted) && unrouted.length === 0, `edges the page could not route around nodes: ${JSON.stringify(unrouted)}`);
+  const routing = await page.evaluate(() => {
+    const cy = window.cy;
+    const members = cy.nodes().filter((n) => !n.isParent());
+    const crossings = [];
+    cy.edges().forEach((edge) => {
+      const ctrl = [edge.sourceEndpoint(), ...(edge.controlPoints() || []), edge.targetEndpoint()];
+      const points = [];
+      for (let i = 0; i <= 60; i++) {
+        const u = i / 60;
+        let level = ctrl;
+        while (level.length > 1) {
+          const next = [];
+          for (let j = 0; j < level.length - 1; j++) {
+            next.push({ x: level[j].x + u * (level[j + 1].x - level[j].x), y: level[j].y + u * (level[j + 1].y - level[j].y) });
+          }
+          level = next;
+        }
+        points.push(level[0]);
+      }
+      members.forEach((n) => {
+        if (n.id() === edge.source().id() || n.id() === edge.target().id()) return;
+        const q = n.position();
+        const r = n.width() / 2;
+        if (points.some((p) => (p.x - q.x) ** 2 + (p.y - q.y) ** 2 < r * r)) crossings.push(`${edge.id()} over ${n.id()}`);
+      });
     });
+    return { crossings, bent: cy.edges().filter((e) => e.data('bend') !== undefined).length };
+  });
+  check(routing.crossings.length === 0, `edges drawn over nodes they do not connect: ${routing.crossings.join(', ')}`);
+
+  // Filters: every family and every edge kind, checked by the exact set of
+  // hidden nodes and edges, plus one combined case. Cytoscape applies class
+  // changes on its next frame, so wait (up to 5 s) for the expected sets.
+  const familyOf = Object.fromEntries(graph.nodes.map((n) => [n.id, n.family]));
+  const hiddenNow = () => ({
+    n: window.cy.nodes().filter((x) => !x.isParent() && !x.visible()).map((x) => x.id()).sort(),
+    e: window.cy.edges().filter((x) => !x.visible()).map((x) => x.id()).sort(),
+  });
+  async function expectHidden(nodeIds, edgeIds, what) {
+    const want = { n: [...new Set(nodeIds)].sort(), e: [...new Set(edgeIds)].sort() };
     const ok = await page
       .waitForFunction(
-        ({ n, e }) =>
-          window.cy.nodes().filter((x) => !x.isParent() && x.visible()).length === n &&
-          window.cy.edges().filter((x) => x.visible()).length === e,
-        { n: nodes, e: edges },
+        (w) => {
+          const n = window.cy.nodes().filter((x) => !x.isParent() && !x.visible()).map((x) => x.id()).sort();
+          const e = window.cy.edges().filter((x) => !x.visible()).map((x) => x.id()).sort();
+          return JSON.stringify(n) === JSON.stringify(w.n) && JSON.stringify(e) === JSON.stringify(w.e);
+        },
+        want,
         { timeout: 5000 },
       )
       .then(() => true, () => false);
-    const now = await page.evaluate(count);
-    check(ok, `${what}: ${now.nodes} nodes and ${now.edges} edges visible, expected ${nodes} and ${edges}`);
+    if (!ok) check(false, `${what}: hidden ${JSON.stringify(await page.evaluate(hiddenNow))}, expected ${JSON.stringify(want)}`);
   }
-  const family = graph.families[0].id;
-  const members = graph.nodes.filter((n) => n.family === family).length;
-  const familyEdges = graph.edges.filter((e) => {
-    const inFamily = (id) => graph.nodes.find((n) => n.id === id).family === family;
-    return inFamily(e.source) || inFamily(e.target);
-  }).length;
-  await page.uncheck(`#filters input[value="${family}"]`);
-  await expectVisible(graph.nodes.length - members, graph.edges.length - familyEdges, `family filter (${family})`);
-  await page.check(`#filters input[value="${family}"]`);
-  await expectVisible(graph.nodes.length, graph.edges.length, 'family filter restored');
-  const kind = graph.edges[0].kind;
-  const ofKind = graph.edges.filter((e) => e.kind === kind).length;
-  await page.uncheck(`#edge-filters input[value="${kind}"]`);
-  await expectVisible(graph.nodes.length, graph.edges.length - ofKind, `edge kind filter (${kind})`);
-  await page.check(`#edge-filters input[value="${kind}"]`);
-  await expectVisible(graph.nodes.length, graph.edges.length, 'edge kind filter restored');
+  const familyNodes = (f) => graph.nodes.filter((n) => n.family === f).map((n) => n.id);
+  const familyEdges = (f) => graph.edges.filter((e) => familyOf[e.source] === f || familyOf[e.target] === f).map((e) => e.id);
+  const kindEdges = (k) => graph.edges.filter((e) => e.kind === k).map((e) => e.id);
+  for (const f of graph.families) {
+    await page.uncheck(`#filters input[value="${f.id}"]`);
+    await expectHidden(familyNodes(f.id), familyEdges(f.id), `family filter ${f.id}`);
+    await page.check(`#filters input[value="${f.id}"]`);
+    await expectHidden([], [], `family filter ${f.id} restored`);
+  }
+  const kinds = [...new Set(graph.edges.map((e) => e.kind))].sort();
+  for (const k of kinds) {
+    await page.uncheck(`#edge-filters input[value="${k}"]`);
+    await expectHidden([], kindEdges(k), `edge kind filter ${k}`);
+    await page.check(`#edge-filters input[value="${k}"]`);
+    await expectHidden([], [], `edge kind filter ${k} restored`);
+  }
+  const k0 = kinds[0];
+  const f0 = graph.families[0].id;
+  await page.uncheck(`#edge-filters input[value="${k0}"]`);
+  await page.uncheck(`#filters input[value="${f0}"]`);
+  await expectHidden(familyNodes(f0), [...kindEdges(k0), ...familyEdges(f0)], `kind ${k0} and family ${f0} hidden`);
+  await page.check(`#filters input[value="${f0}"]`);
+  await expectHidden([], kindEdges(k0), `family ${f0} shown again, kind ${k0} still hidden`);
+  await page.check(`#edge-filters input[value="${k0}"]`);
+  await expectHidden([], [], 'all filters restored');
 
   // Click the node where it is drawn, as a user would.
   const point = await page.evaluate((id) => {
@@ -195,7 +242,39 @@ try {
 
   await page.screenshot({ path: screenshotPath });
   check(pageErrors.length === 0, `page errors: ${pageErrors.join(' | ')}`);
-  result = { counts, target, outgoing, incoming, legibility };
+
+  // The outline's positive case: serve a copy of graph.json in which one skill
+  // states a score, and check the drawn outline, its label clearance, and the legend.
+  const scored = structuredClone(graph);
+  const scoredNode = scored.nodes.find((n) => n.kind === 'skill');
+  scoredNode.eval_status = 'measured: 1/1';
+  const page2 = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  await page2.route('**/data/graph.json', (route) => route.fulfill({ json: scored }));
+  await page2.goto(base);
+  await page2.waitForFunction(() => window.__graphReady === true || Boolean(window.__graphError), null, { timeout: 20000 });
+  const error2 = await page2.evaluate(() => window.__graphError || null);
+  check(!error2, `page with a scored node reported: ${error2}`);
+  const outline = await page2.evaluate((id) => {
+    const cy = window.cy;
+    const outlined = cy
+      .nodes()
+      .filter((n) => !n.isParent() && parseFloat(n.style('border-width')) > 0)
+      .map((n) => ({ id: n.id(), width: parseFloat(n.style('border-width')), color: n.style('border-color') }));
+    const node = cy.getElementById(id);
+    const c = node.boundingBox({ includeLabels: false, includeOverlays: false });
+    const l = node.boundingBox({ includeNodes: false, includeEdges: false, includeLabels: true, includeOverlays: false });
+    const labelClear = !(l.x1 < c.x2 && c.x1 < l.x2 && l.y1 < c.y2 && c.y1 < l.y2);
+    return { outlined, labelClear, legend: document.getElementById('legend').textContent };
+  }, scoredNode.id);
+  check(outline.outlined.length === 1 && outline.outlined[0].id === scoredNode.id, `outlined nodes ${JSON.stringify(outline.outlined)}, expected only ${scoredNode.id}`);
+  check(
+    outline.outlined[0].width === app.MEASURED_OUTLINE.width && outline.outlined[0].color.replace(/\s/g, '') === rgb(app.MEASURED_OUTLINE.color),
+    `outline on ${scoredNode.id} is ${JSON.stringify(outline.outlined[0])}`,
+  );
+  check(outline.labelClear, `the label of ${scoredNode.id} overlaps its outlined circle`);
+  check(outline.legend.includes('(1 node)'), 'legend does not count the scored node');
+  await page2.close();
+  result = { counts, target, outgoing, incoming, legibility, routing, families: graph.families.length, kinds: kinds.length, scored: scoredNode.id };
 } finally {
   await browser.close();
 }
@@ -205,5 +284,8 @@ console.log(
     `(JSON ${graph.nodes.length} and ${graph.edges.length}), ${result.counts.parents} families; ` +
     `clicked ${result.target}, panel shows Outgoing (${result.outgoing}) and Incoming (${result.incoming}); ` +
     `smallest label ${result.legibility.minFontPx.toFixed(1)} px, 0 labels over circles, ` +
-    `${result.legibility.labelOnLabel} label pairs overlapping each other; wrote ${screenshotPath}`,
+    `${result.legibility.labelOnLabel} label pairs overlapping each other; ` +
+    `0 edges over unconnected nodes (${result.routing.bent} bent around them); ` +
+    `filters exact for ${result.families} families and ${result.kinds} edge kinds; ` +
+    `outline drawn on ${result.scored} in a scored copy; wrote ${screenshotPath}`,
 );

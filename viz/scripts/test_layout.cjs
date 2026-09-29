@@ -38,10 +38,10 @@ test('family cells do not overlap at any viewport shape', () => {
   }
 });
 
-test('a wider viewport never gets fewer cell columns than a taller one', () => {
+test('a wide viewport gets more cell columns than a tall one', () => {
   const counts = graph.families.map((f) => ({ id: f.id, count: graph.nodes.filter((n) => n.family === f.id).length }));
   const columns = (aspect) => new Set(app.familyCells(counts, aspect).map((c) => c.x1)).size;
-  assert.ok(columns(4) >= columns(0.25), `wide ${columns(4)} vs tall ${columns(0.25)}`);
+  assert.ok(columns(4) > columns(0.25), `wide ${columns(4)} vs tall ${columns(0.25)}`);
 });
 
 test('rendered family boxes do not overlap and hold only their own members', () => {

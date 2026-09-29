@@ -1,5 +1,7 @@
 # fixture repo
 
+Families come from families.json, not from this file.
+
 ## Core skills
 
 - **alpha**: first fixture skill.

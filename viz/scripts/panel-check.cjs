@@ -69,24 +69,29 @@ function comparePanel(panel, graph, id) {
   same('Description', f.Description, n.description);
   same('Path', f.Path, n.path);
   same('Lines', f.Lines, n.lines === undefined ? undefined : String(n.lines));
+  // Composite fields are compared as whole strings built from graph.json, so a
+  // wrong cited line, a wrong label, or an extra entry is a difference.
   if (n.origin) {
-    if (n.origin.text) has('License origin', f['License origin'], n.origin.text);
-    if (n.origin.license) has('License origin', f['License origin'], `license ${n.origin.license}`);
+    const where = n.origin.from === 'body' ? `${n.path}:${n.origin.line}` : 'frontmatter license field';
+    same('License origin', f['License origin'], [n.origin.text, n.origin.license && `license ${n.origin.license}`, `(${where})`].filter(Boolean).join(' '));
   } else {
     same('License origin', f['License origin'], 'not stated in the file');
   }
-  if (n.license_notice) {
-    has('License notice', f['License notice'], n.license_notice.text);
-    has('License notice', f['License notice'], `${n.license_notice.file}:${n.license_notice.line}`);
-  } else {
-    same('License notice', f['License notice'], undefined);
-  }
+  same(
+    'License notice',
+    f['License notice'],
+    n.license_notice ? `${n.license_notice.text} (${n.license_notice.file}:${n.license_notice.line})` : undefined,
+  );
   if (n.kind === 'skill') {
     same('Eval status', f['Eval status'], n.eval_line ? `${n.eval_status} (${n.path}:${n.eval_line})` : n.eval_status);
+  } else {
+    same('Eval status', f['Eval status'], undefined);
   }
-  if (Array.isArray(n.coverage)) {
-    for (const c of n.coverage) has('Hook coverage', f['Hook coverage'], `${c.event} ${c.matcher || '(all tools)'}`);
-  }
+  same(
+    'Hook coverage',
+    f['Hook coverage'],
+    Array.isArray(n.coverage) ? n.coverage.map((c) => `${c.event} ${c.matcher || '(all tools)'}`).join('; ') : undefined,
+  );
   for (const [title, items] of [['Outgoing', want.outgoing], ['Incoming', want.incoming]]) {
     const key = `${title} (${items.length})`;
     if (!(key in panel.lists)) {

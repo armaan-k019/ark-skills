@@ -141,8 +141,18 @@ class FixtureGraph(unittest.TestCase):
         self.assertNotIn("hook:_input", self.nodes)
         self.assertEqual(
             self.nodes["hook:guard"]["coverage"],
-            [{"event": "PreToolUse", "file": "hooks/settings.example.json", "matcher": "Bash", "line": 7}],
+            [
+                {"event": "PreToolUse", "file": "hooks/settings.example.json", "matcher": "Bash", "line": 7},
+                {"event": "PostToolUse", "file": "hooks/settings.example.json", "matcher": "Edit", "line": 15},
+            ],
         )
+
+    def test_each_hook_registration_cites_its_own_line(self):
+        text = (FIXTURE / "hooks" / "settings.example.json").read_text(encoding="utf-8").split("\n")
+        lines = [c["line"] for c in self.nodes["hook:guard"]["coverage"]]
+        self.assertEqual(len(set(lines)), len(lines))
+        for line in lines:
+            self.assertIn("hooks/guard.js", text[line - 1])
 
     # Eval status present and absent
 
