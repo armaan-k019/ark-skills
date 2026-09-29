@@ -429,7 +429,22 @@ try {
   check(outline.labelClear, `the label of ${scoredNode.id} overlaps its outlined circle`);
   check(outline.legend.includes(`(${expectedOutlined.length} ${expectedOutlined.length === 1 ? 'node' : 'nodes'})`), 'legend does not count the scored node');
   await page2.close();
-  result = { counts, target, outgoing, incoming, legibility, routing, packing, families: graph.families.length, kinds: kinds.length, scored: scoredNode.id, focusId };
+
+  // Routing on a denser graph: scripts/fixtures/graph-routing.json is this
+  // repo's graph with spec-writing and visual-loop added (32 nodes, 64 edges).
+  // Its visual-loop -> impeccable edge cannot be routed by bending at the
+  // midpoint alone, so this fails if the router stops trying other points.
+  const dense = JSON.parse(await readFile(new URL('./fixtures/graph-routing.json', import.meta.url), 'utf8'));
+  const page3 = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  await page3.route('**/data/graph.json', (route) => route.fulfill({ json: dense }));
+  await page3.goto(base);
+  await page3.waitForFunction(() => window.__graphReady === true || Boolean(window.__graphError), null, { timeout: 20000 });
+  const error3 = await page3.evaluate(() => window.__graphError || null);
+  check(!error3, `page with the routing fixture reported: ${error3}`);
+  const denseUnrouted = await page3.evaluate(() => window.__unroutedEdges || null);
+  check(Array.isArray(denseUnrouted) && denseUnrouted.length === 0, `routing fixture: edges the page could not route around nodes: ${JSON.stringify(denseUnrouted)}`);
+  await page3.close();
+  result = { counts, target, outgoing, incoming, legibility, routing, packing, families: graph.families.length, kinds: kinds.length, scored: scoredNode.id, focusId, denseEdges: dense.edges.length };
 } finally {
   await browser.close();
 }
@@ -444,5 +459,5 @@ console.log(
     `filters exact for ${result.families} families and ${result.kinds} edge kinds; ` +
     `focus checked for default, hover, selection, and clearing; ` +
     `boxes ordered by size, no lone last-row member, largest empty rectangle ${(result.packing.largestEmpty * 100).toFixed(1)}% of the canvas; ` +
-    `outline drawn on ${result.scored} in a scored copy; wrote ${screenshotPath} (no focus) and ${focusShotPath} (${result.focusId} selected)`,
+    `outline drawn on ${result.scored} in a scored copy; routing fixture: all ${result.denseEdges} edges routed; wrote ${screenshotPath} (no focus) and ${focusShotPath} (${result.focusId} selected)`,
 );

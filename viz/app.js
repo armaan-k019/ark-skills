@@ -225,11 +225,13 @@ function routeEdges(cy) {
   const unrouted = [];
   cy.edges().forEach((edge) => {
     if (edgeBlockers(edge, members).length === 0) return;
-    for (const bend of ROUTE_BENDS) {
-      edge.style({ 'curve-style': 'unbundled-bezier', 'control-point-distances': bend, 'control-point-weights': 0.5 });
-      if (edgeBlockers(edge, members).length === 0) {
-        edge.data('bend', bend);
-        return;
+    for (const weight of [0.5, 0.3, 0.7]) {
+      for (const bend of ROUTE_BENDS) {
+        edge.style({ 'curve-style': 'unbundled-bezier', 'control-point-distances': bend, 'control-point-weights': weight });
+        if (edgeBlockers(edge, members).length === 0) {
+          edge.data('bend', bend);
+          return;
+        }
       }
     }
     edge.removeStyle('curve-style control-point-distances control-point-weights');
