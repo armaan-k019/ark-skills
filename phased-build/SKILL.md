@@ -45,7 +45,7 @@ Write phase outputs to `.claude/work/<short-task-name>/` (add `.claude/work/` to
 Restate the request: goal, what done looks like, constraints the user stated (for example: no em dashes, anti-fabrication, tsc + build before commit, branch name). List anything ambiguous as a question. If a question blocks the plan, ask it now.
 
 **2. Research** -> `research.md`
-Read the code paths involved before proposing anything: entry points, callers, data shapes, existing tests, existing utilities that already do part of the job. Check whether a library or existing module solves it before writing new code. Record file paths and line numbers, not impressions. For current library behavior, read the docs or source; do not rely on memory for version-specific APIs. Before adopting a new third-party dependency, vet it with `vet-third-party`.
+Read the code paths involved before proposing anything: entry points, callers, data shapes, existing tests, existing utilities that already do part of the job. Check whether a library or existing module solves it before writing new code. Record file paths and line numbers, not impressions. For current library behavior, read the docs or source; do not rely on memory for version-specific APIs. If the plan would add a third-party skill, hook, plugin, or MCP server, vet it with `vet-third-party` before adopting it.
 
 **3. Plan** -> `plan.md`, then **GATE 1**
 Thin vertical slices, each independently testable and committable. For each slice: files touched, the test or reproduction that proves it, and the commit message. Name the one or two real design choices and the option you recommend, with the reason. Record significant choices with `decision-records`.
