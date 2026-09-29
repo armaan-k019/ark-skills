@@ -1,12 +1,12 @@
 # Progress: wiring and gap skills
-Updated: 2026-09-29 09:07 EDT (from `date`)   Branch: feat/gap-skills (from origin/main d6f266a, upstream unset)   Last commit: d211d16
+Updated: 2026-09-29 09:35 EDT (from `date`)   Branch: feat/gap-skills (from origin/main d6f266a, upstream unset)   Last commit: 7d911b6
 The previous run's log (skills-graph) is in the git history of this file. Track A's log is on chore/wire-skill-references (PR #6).
 
 ## SPEC summary
 Track A (chore/wire-skill-references): done, PR #6 open, not merged. Track B (feat/gap-skills, from main after Track A's PR is open): evidence-first skills, one at a time, stopping after each: B1 spec-writing, B2 visual-loop, B3 debugging (needs the author's Stage A session), B4 and B5 stop and ask. Per skill: list the evidence with paths, draft with skill-creator, eval against a no-skill baseline on a real task (both scores, tokens, time; tune once), add to families.json and rerun the extractor, commit, stop and show.
 
 ## Now
-Track B, B2 visual-loop, step: eval iteration 2 running (3 with-skill runs, tuned draft)
+Track B, B2 visual-loop: committed; STOPPED for the author (SKILL.md and eval numbers), per the run prompt
 
 ## Done and verified
 - Track A: PR #6 (https://github.com/armaan-k019/ark-skills/pull/6), acceptance and gate in that branch's PROGRESS.md.
@@ -48,11 +48,17 @@ Track B, B2 visual-loop, step: eval iteration 2 running (3 with-skill runs, tune
   - Finding used in the tune: the smoke assertions compare the drawing with constants read from viz/app.js, so they do not hold the author's decisions. Probe on a clone of be693b6: FAMILY_LABEL set to 8 px red in app.js alone, `node viz/scripts/smoke.mjs` exit 0.
 - B2 tune (one round), at 2026-09-29 09:07 EDT: Step 5 writes the decided value into the check (and drops the draft's claim that the existing checks already hold decisions); Step 3 keeps a round small (the author's rounds had 3, 3, and 2 items; the with-skill vague run asked 10 questions).
 
+- B2 eval iteration 2 (tuned draft, with-skill only, fresh clones of be693b6, compared with iteration 1's baseline): 15/15 (vague 5/5, feedback 6/6, reverse 4/4). Tokens 105,077 / 131,410 / 105,562 (mean 114,016; iteration 1 mean 113,941; baseline 139,322). Time 1,099 / 1,301 / 1,093 s (iteration 1 with skill 386 s mean, baseline 529 s); the eval does not show why the tuned runs were slower, and one reported a smoke timeout. The vague run asked 3 questions (10 in iteration 1); the feedback run wrote 12 px into its check and a mutation of app.js alone failed it. Viewers: draft-b2/visual-loop-workspace/iteration-1/review.html and iteration-2/review.html.
+- B2 committed: c9f0f22 (visual-loop/SKILL.md, 82 lines, quick_validate valid), e7ba2fa (families.json build-discipline, graph.json: 32 nodes, 50 edges, visual-loop measured: 100%), 7d911b6 (lessons). Checks at 2026-09-29 09:34 EDT: extractor exit 0; unittest OK; hooks 26/26; node --test 25/26 (test_app.cjs "3 !== 1", fixed by PR #7); smoke exit 1 (family order with build-discipline at 6, fixed by PR #7). No skill hands off to visual-loop yet (0 incoming edges).
+- Combined check in a scratch clone (PR #7's branch plus both new skills and this families.json; 32 nodes, 64 edges): unittest OK, node --test 27/27, smoke exit 1: "edges the page could not route around nodes: visual-loop -> impeccable". Larger bends (380, 470) did not route it. Trying the control point at 0.3 and 0.7 along the edge as well as 0.5 did: smoke exit 0, 20 edges bent, 0 over unconnected nodes, largest empty rectangle 8.6%, smallest label 13.2 px. Patch (not applied): scratchpad proposed-viz-routing.patch (viz/app.js routeEdges, 9 lines).
+
 ## In flight
 - none
 
 ## Open questions
-- Q6: viz/scripts/smoke.mjs checks labels, family labels, and colors against the constants in viz/app.js, so a change to a constant alone passes (probe: family labels 8 px red, exit 0). Holding the decided values (13 px floor, 11 px gray family labels, the three kind colors, the dashed border) would mean writing them into the checks, which is viz code, outside Track B's scope. Blocks: nothing. Raised: not yet.
+- Q7: after PR #7 and this branch merge, smoke will fail to route visual-loop -> impeccable. The tested fix (proposed-viz-routing.patch) is viz code: add it to PR #7, or its own branch? Blocks: the final regeneration commit on this branch. Raised: B2 stop.
+- Q8: nothing hands off to visual-loop. unattended-build Step 0 says taste work gets "short loops"; naming visual-loop there, or in spec-writing Step 5, would be a one-line cross-reference in another skill. Blocks: nothing. Raised: B2 stop.
+- Q6: viz/scripts/smoke.mjs checks labels, family labels, and colors against the constants in viz/app.js, so a change to a constant alone passes (probe: family labels 8 px red, exit 0). Holding the decided values (13 px floor, 11 px gray family labels, the three kind colors, the dashed border) would mean writing them into the checks, which is viz code, outside Track B's scope. Blocks: nothing. Raised: B2 stop.
 - Q5: the final graph.json and screenshot regeneration on this branch waits until PR #7 is in main (the author's merge order). Blocks: the last commit of feat/gap-skills. Raised: B1 stop.
 - Resolved by the author on 2026-09-29: Q1 (merge order), Q2 (npm logs: use node --test), Q3 and Q4 (PR #7).
 
@@ -63,4 +69,4 @@ Track B, B2 visual-loop, step: eval iteration 2 running (3 with-skill runs, tune
 - Evals run against a clean clone of origin/main in the scratchpad, so neither configuration can see the draft skill or Track A's changes.
 
 ## Next action
-When the six B2 runs finish: grade each (blind, on its own clone), aggregate, tune once, iteration 2 with the skill only, then add visual-loop to families.json, rerun the extractor, commit, and stop.
+Wait for the author: B2 review and answers to Q6, Q7, Q8. B3 (debugging) needs the author's Stage A session; B4 and B5 need the author first. The final commit on this branch (graph.json and both screenshots) waits for PR #7 in main.
