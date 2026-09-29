@@ -24,6 +24,18 @@ const screenshotPath = fileURLToPath(new URL('../screenshot.png', import.meta.ur
 const focusShotPath = fileURLToPath(new URL('../screenshot-focus.png', import.meta.url));
 const FOCUS_NODE = 'skill:phased-build';
 
+// The author's visual decisions, written here as literals so that changing a
+// constant in app.js alone fails this test (skills-graph run, rounds F4 and F6:
+// "13 px minimum", family labels "11 px, gray", "slate for skills, amber for
+// agents, green for hooks", a "dashed border" for vendored nodes). The exact
+// hex values and the 2 px border width were the session's picks for those words.
+const DECIDED = {
+  minLabelPx: 13,
+  familyLabel: { px: 11, color: '#6b7280' },
+  kindColors: { skill: '#64748b', agent: '#f59e0b', hook: '#16a34a' },
+  vendoredBorder: { width: 2, style: 'dashed' },
+};
+
 function check(condition, message) {
   if (!condition) throw new Error(message);
 }
@@ -137,7 +149,7 @@ try {
     const n = parseInt(hex.slice(1), 16);
     return `rgb(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255})`;
   };
-  const kindColors = Object.fromEntries(Object.entries(app.KIND_COLORS).map(([k, v]) => [k, rgb(v)]));
+  const kindColors = Object.fromEntries(Object.entries(DECIDED.kindColors).map(([k, v]) => [k, rgb(v)]));
   check(new Set(Object.values(kindColors)).size === Object.keys(kindColors).length, 'kind colors are not distinct');
   const measured = (n) => typeof n.eval_status === 'string' && n.eval_status.startsWith('measured:');
   const drawn = await page.evaluate(() =>
@@ -154,9 +166,9 @@ try {
   for (const d of drawn) {
     const json = graph.nodes.find((n) => n.id === d.id);
     check(d.bg.replace(/\s/g, '') === kindColors[json.kind], `${d.id} (${json.kind}) is drawn ${d.bg}, expected ${kindColors[json.kind]}`);
-    const width = measured(json) ? app.MEASURED_OUTLINE.width : json.vendored ? app.VENDORED_BORDER.width : 0;
+    const width = measured(json) ? app.MEASURED_OUTLINE.width : json.vendored ? DECIDED.vendoredBorder.width : 0;
     check(d.border === width, `${d.id}: border ${d.border}px, expected ${width} (measured ${measured(json)}, vendored ${json.vendored})`);
-    const style = json.vendored ? 'dashed' : 'solid';
+    const style = json.vendored ? DECIDED.vendoredBorder.style : 'solid';
     check(width === 0 || d.borderStyle === style, `${d.id}: border style ${d.borderStyle}, expected ${style}`);
   }
   const legend = await page.evaluate(() => ({
@@ -199,7 +211,7 @@ try {
     const all = cy.elements().renderedBoundingBox();
     return { zoom, minFontPx, labelOnCircle, labelOnLabel, labels: labels.length, box: { x1: all.x1, y1: all.y1, x2: all.x2, y2: all.y2 }, view: { w: cy.width(), h: cy.height() } };
   });
-  check(legibility.minFontPx >= app.MIN_LABEL_PX, `smallest node label is ${legibility.minFontPx.toFixed(1)} px as drawn, expected at least ${app.MIN_LABEL_PX}`);
+  check(legibility.minFontPx >= DECIDED.minLabelPx, `smallest node label is ${legibility.minFontPx.toFixed(1)} px as drawn, expected at least ${DECIDED.minLabelPx}`);
 
   // Family labels: uppercase, letterspaced, 11 px as drawn, gray.
   const thin = String.fromCharCode(0x2009);
@@ -214,8 +226,8 @@ try {
   for (const f of familyLabels) {
     const json = graph.families.find((x) => `${app.FAMILY_PREFIX}${x.id}` === f.id);
     check(f.label === [...json.label.toUpperCase()].join(thin), `family label of ${f.id} is not uppercase and letterspaced: ${JSON.stringify(f.label)}`);
-    check(Math.abs(f.px - app.FAMILY_LABEL.px) < 0.5, `family label of ${f.id} is ${f.px.toFixed(2)} px, expected ${app.FAMILY_LABEL.px}`);
-    check(f.color.replace(/\s/g, '') === rgb(app.FAMILY_LABEL.color), `family label of ${f.id} is ${f.color}, expected ${rgb(app.FAMILY_LABEL.color)}`);
+    check(Math.abs(f.px - DECIDED.familyLabel.px) < 0.5, `family label of ${f.id} is ${f.px.toFixed(2)} px, expected ${DECIDED.familyLabel.px}`);
+    check(f.color.replace(/\s/g, '') === rgb(DECIDED.familyLabel.color), `family label of ${f.id} is ${f.color}, expected ${rgb(DECIDED.familyLabel.color)}`);
   }
   check(legibility.labelOnCircle.length === 0, `labels over node circles: ${legibility.labelOnCircle.join(', ')}`);
   const { box, view } = legibility;
