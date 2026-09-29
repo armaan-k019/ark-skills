@@ -69,7 +69,7 @@ If nothing unblocked is left, stop and report. Working around a tripwire is the 
 
 ## Step 2: Keep PROGRESS.md, the only thing that survives
 
-The transcript does not survive compaction or a new session; PROGRESS.md does. Update it after every phase, every fix round, and every blocked question. The test is whether a cold session with no transcript can read it and resume.
+The transcript does not survive compaction or a new session; PROGRESS.md does. Update it after every phase, every fix round, and every blocked question. Every time in PROGRESS.md comes from `date` in the same step. The test is whether a cold session with no transcript can read it and resume.
 
 ```markdown
 # Progress: <build name>
