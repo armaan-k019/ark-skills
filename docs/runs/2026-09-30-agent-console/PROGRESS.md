@@ -1,11 +1,11 @@
 # Progress: ark-console
-Updated: 2026-09-30 01:00 EDT (from `date`)   Branch: ark-skills docs/agent-console-run; ark-console main   Last commit: ark-console 884707e
+Updated: 2026-09-30 01:30 EDT (from `date`)   Branch: ark-skills docs/agent-console-run; ark-console main   Last commit: ark-console 086aece
 
 ## SPEC summary
 A local, read-only console in a new repo ~/dev/ark-console: Phase 1 repo and format discovery (docs/FORMAT.md), Phase 2 indexer (sessions, runs, repos as one JSON snapshot), Phase 3 tests on anonymized fixtures, Phase 4 loopback-only server and API, Phase 5 plain page with a headless check, Phase 6 STOP for styling, Phase 7 review and docs/SECURITY.md. Nothing pushed.
 
 ## Now
-Phase 6 reached: STOPPED for styling (report below). Phase 7 (review and docs/SECURITY.md, no styling) continues after it, as the SPEC allows.
+Done through Phase 7. STOPPED for the author: styling (Phase 6) and questions Q1 to Q5.
 
 ## Done and verified
 - Premises, 2026-09-30 00:32 EDT: ~/dev/ark-console did not exist; ~/.claude/projects has 11 entries and 204 .jsonl files (385M); /Applications/Google Chrome.app and ~/Library/Caches/ms-playwright/chromium_headless_shell-1243 exist; node v25.9.0; curl, sandbox-exec, lsof present.
@@ -35,11 +35,17 @@ Phase 6 reached: STOPPED for styling (report below). Phase 7 (review and docs/SE
 - Refused or not done: no dependency installed (Playwright would have been a network install; the check uses Chrome already on disk); ~/.claude/sessions/*.key and ~/.claude/ide/*.lock (it holds an authToken) never opened; the messaging sockets never touched; the hung check process not killed (Q4); nothing deleted (tmp/ in ark-console holds the test and check scratch, for you to clear); no git fetch in any repo, so behind counts are as of your last fetch; no link inferred between sessions and runs; no styling; nothing pushed.
 - Seen on the live page, not changed: a run's status line is only the first line of its "Now" section, so kazi-lab's is cut mid-sentence; several sessions that are no longer running show 1 or 2 queued messages, and one running session shows 10, because queued is enqueues minus dequeues and removes, a reading of the operation names that FORMAT.md should mark as inferred; ark-skills' root PROGRESS.md still lists a question that has since been resolved, and the console shows what the file says.
 
+- Phase 7, ark-console 889485a (fix round), 448bf2d (docs/SECURITY.md), 086aece (LESSONS.md). Review: two independent reviewers read the whole diff (silent-failure-hunter; a security and SPEC reviewer), severity floor CRITICAL and HIGH. No CRITICAL; no security, read-only, or privacy finding (the second reviewer also tried %252e%252e, overlong %C0%AE, ..;, absolute-form URLs, and bad Host headers: all refused). HIGH findings, 8 and 3, overlapping, all about reading the data: project taken from the last cwd; HEAD shown as a branch; waiting detection (stop words in history paragraphs, question counts wrong both ways); sessions marked not running when unknown; counts showing 0 when unknown; unreadable files dropped silently and skips never shown; subagent tokens left out. One fix round fixed all of them, plus two nits that change behaviour (a server crash on an unreadable static file, FORMAT.md wrong about HEAD and desktop sessions). Nits below the floor are in the review reports and not fixed: queued counts on ended sessions (now documented as a reading of the operation names), status line wording, message count includes tool results, symlinked directories under ~/dev skipped, pmopt-wt run files are branch-time copies, execFile timeouts (documented in SECURITY.md).
+- After the fix round, 2026-09-30 01:27 EDT: `node --test test/indexer.test.js test/server.test.js` 33/33; `node scripts/mutants.js` 38 mutants, each caught, every test fails under at least one; `bash scripts/accept-phase2.sh` exit 0 (2.15 s, 26 files and 26 sessions, 0 lines different, the only ~/.claude file that changed during the run was another session's subagent transcript and 0 in the control interval, sandbox run as before); `ARK_CONSOLE_PORT=7778 node scripts/accept-phase4.js` exit 0; `node scripts/check-page.js` 15 checks passed. Tracked files and commit messages: 0 em dashes, 0 user paths.
+- Live after the fixes (01:27 to 01:29 EDT): 26 sessions (4 running, 0 unknown), 186 subagent transcripts, 8 runs (4 waiting on you), 14 repos (6 dirty; 0 behind, 7 with no upstream). Screenshot ~/dev/ark-console/tmp/live-screenshot-after-fixes.png (not committed).
+- capture-lessons: 7 entries in ark-console/LESSONS.md (a call to a server with no timeout can hang, count 2; a test that cannot fail on its data, count 2; a per-line log field is that line's state; a count from free text; sandbox-exec and setuid; git status writes; node --test needs files).
+
 ## In flight
 - none
 
 ## Open questions
-- Q4: a hung process of this run is still alive. The first version of scripts/accept-phase4.js ran curl with spawnSync, which blocked the Node process whose in-process server curl was waiting on, so neither can finish: node PID 57324 (listening on 127.0.0.1:7777) and its curl child PID 57699, started 2026-09-30 00:53 EDT. The SPEC says never kill a process, so they are left running; they are loopback-only and serve nothing. Blocks: port 7777 for this run's checks (they use 7778). Raised: not yet.
+- Q5: lessons that recur in ark-skills' LESSONS.md (outside this run's scope): the zsh entry gains two cases (unmatched globs printed errors in the repo survey; an unquoted variable was not split into words, which silently skipped an em dash check until it was rerun), and "a test that cannot fail on the data it is given" is the same root cause as ark-skills' "A regression test that passes on the old code proves nothing", now seen in a second project. Merge them there? Raised: final report.
+- Q4: hung processes of this run are still alive (two groups). The first version of scripts/accept-phase4.js ran curl with spawnSync, which blocked the Node process whose in-process server curl was waiting on, so neither can finish: node PID 57324 (listening on 127.0.0.1:7777) and its curl child PID 57699, started 2026-09-30 00:53 EDT. The SPEC says never kill a process, so they are left running; they are loopback-only and serve nothing. Second group: `node --test test/server.test.js` PIDs 45566 and 45567 (shell 45562), started 01:25 EDT, when a mutant server never answered a test request that had no timeout (fixed: requests now time out after 5 s). All are loopback-only and serve nothing; the first group holds 127.0.0.1:7777. Blocks: port 7777 for this run's checks (they use 7778). Raised: final report.
 - Q1 (from the SPEC): what Orca does not do that the author needs. Not guessed; the answer goes here at Phase 6 with what would need to be known.
 - Q2 (from the SPEC): whether control (sending input to a running session) is ever wanted.
 - Q3 (from the SPEC): whether the console should be reachable from a phone.
@@ -48,4 +54,4 @@ Phase 6 reached: STOPPED for styling (report below). Phase 7 (review and docs/SE
 - How five parts of the SPEC are read is in STANDING-DECISIONS.md (killing processes, the headless browser, the no-write proof, pre-fix tests, Phase 7 after Phase 6).
 
 ## Next action
-Phase 7: dual adversarial review of the whole ark-console diff (CRITICAL and HIGH only, one fix round), then docs/SECURITY.md.
+Wait for the author: styling (Phase 6), Q1 to Q3 from the SPEC, Q4 (the hung check processes), and Q5 (lesson merge). Both repos stay unpushed; ark-console has no remote.
