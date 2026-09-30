@@ -1,11 +1,11 @@
 # Progress: measure efficiency, then fix routing
-Updated: 2026-09-30 15:20 EDT (from `date`)   Branch: ark-skills feat/efficiency; ark-console feat/efficiency   Last commit: ark-console d6cb492
+Updated: 2026-09-30 15:25 EDT (from `date`)   Branch: ark-skills feat/efficiency; ark-console feat/efficiency   Last commit: ark-console d6cb492
 
 ## SPEC summary
 Phase 1 usage attribution in ark-console's indexer (tokens by project, session, subagent type, skill; share above 150k context; share in sessions over 8 hours; the skills and agents view), Phase 2 plain tables on the page, Phase 3 routing audit of ark-skills agents with a settings fragment proposed, Phase 4 a before and after experiment (six runs), Phase 5 a draft model-routing skill then STOP, Phase 6 report; separately, a read-only vet of weave-os/router. Nothing pushed.
 
 ## Now
-Phase 5 done (a draft skill); STOP per the SPEC. Phase 6: verify-before-done, then the report.
+Done through Phase 6. STOPPED per the SPEC (Phase 5: "Then STOP and report"). The report is REPORT.md in this directory.
 
 ## Done and verified
 - Premises, 2026-09-30 14:18 EDT: ark-console had no src/ (code in lib/, public/, scripts/); docs/UI.md is present and untracked (for the console-v2 run); both repos in sync with origin. ~/.claude/projects: 225 .jsonl files, 199 of them subagent transcripts, each subagent with a .meta.json naming agentType (175 general-purpose, 14 silent-failure-hunter, 10 Explore). Skill use is recorded as assistant tool_use blocks named "Skill" with input.skill; Agent calls are tool_use blocks named "Agent" (168; subagent_type general-purpose 130, missing 14, silent-failure-hunter 14, Explore 10). User-typed slash commands appear as <command-name> tags (only /model, 19 times). Dollars: 8 transcripts have a cost-state line with a cumulative totalCostUSD and no timestamp, so dollars cannot be placed in a time window. Eval scores: spec-writing/SKILL.md line 109 ("90% ... without it, 70%") and visual-loop/SKILL.md line 71 ("100% ... without it, 7 of 15"); viz/scripts/build_graph.py reads only the score, with its EVAL_SCORE pattern.
@@ -24,11 +24,14 @@ Phase 5 done (a draft skill); STOP per the SPEC. Phase 6: verify-before-done, th
 - Phase 4, ark-skills 35ec739 (card, before any run) and bb17388 (ledger): six runs of one grading task (8 assertions with known answers on an exported copy of ark-console d603781), interleaved: current default (no model, inherits claude-opus-5-5) and proposed (model sonnet, ran as claude-sonnet-5). Verdicts: 8 of 8 in all six. Reply format: opus 3 of 3 as asked (JSON only); sonnet 0 of 3 (all added notes after the JSON). Notice subagent_tokens: opus median 47,798 (43,093 to 52,990), sonnet median 87,404 (64,112 to 87,729); this figure matched each run's final context plus output within 300 tokens, so it measures final context size. Transcript tokens (each message once): opus median 413,398 (390,825 to 453,277), sonnet 329,044 (328,818 to 378,778). Wall: opus median 54.5 s (50.1 to 57.1), sonnet 39.0 s (37.0 to 41.4). Verdict by the rule written in advance: the proposal does not stand (primary token measure above the baseline's range; format guardrail failed 3 of 3); no percentage reported.
 - Phase 5: model-routing/SKILL.md, a draft from Phases 1 to 4 (how to decide a subagent's model, when to start a fresh session, what an eval costs and when not to run one, how to check with ark-console), every number with its window and source. Checked with viz/scripts/build_graph.py's own find_eval: "unmeasured" (the draft states no eval result), origin line present, 0 em dashes, ASCII only. Not evaluated, per the SPEC. viz/data/graph.json not regenerated (not in this SPEC's scope).
 
+- Phase 6: verify-before-done at 15:21 to 15:23 EDT (ark-console DONE; ark-skills NOT DONE, Q3); capture-lessons: LESSONS.md in this directory, 9 entries, 5 of them repeats with merge targets named, 4 promotions proposed; REPORT.md written.
+
 ## In flight
 - none
 
 ## Open questions
 - Q1: May the run fetch Claude Code's documentation to verify `CLAUDE_CODE_SUBAGENT_MODEL` and the settings `env` key? Triggered by: "any network call" (stop and ask) against Phase 3's "verified against Claude Code's current documentation". Blocks: nothing; the frontmatter route is proposed first and the variable is marked NOT VERIFIED. Raised: the Phase 6 report.
+- Q3: Which family should model-routing sit in (viz/scripts/families.json), and may that file and viz/data/graph.json change on this branch? Triggered by: ark-skills' own test test_committed_graph_is_current fails with the new skill; the fix is outside SCOPE and a taxonomy choice. Blocks: that test. Raised: REPORT.md.
 - Q2: Is Opus 5.5 the strongest model available for judgment work, or Fable 5.1? Triggered by: the rule "judgment work gets the strongest available" and no measurement comparing them. Blocks: nothing (both reviewer agents stay on opus). Raised: the Phase 6 report.
 
 ## Proposal for the author: subagent routing (Phase 3)
@@ -69,4 +72,4 @@ Not applied. Nothing here edits ~/.claude/settings.json.
 - No subagent ran at sonnet outside the experiment: every other subagent in this run was a review or a vet, which the rule gives the strongest model.
 
 ## Next action
-Phase 6: run verify-before-done on both branches, capture-lessons into this directory, then write the report section below Done and verified.
+None for this SPEC: wait for the author's answers to Q1 to Q3 and the lessons merge. The console-v2 run (docs/runs/2026-10-01-console-v2/SPEC.md) starts next in its own branches.
