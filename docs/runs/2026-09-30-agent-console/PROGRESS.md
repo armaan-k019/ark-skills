@@ -1,11 +1,11 @@
 # Progress: ark-console
-Updated: 2026-09-30 10:34 EDT (from `date`)   Branch: ark-skills docs/agent-console-run; ark-console main   Last commit: ark-console d37f42f
+Updated: 2026-09-30 11:22 EDT (from `date`)   Branch: ark-skills docs/agent-console-run; ark-console main   Last commit: ark-console 2b1efb5
 
 ## SPEC summary
 A local, read-only console in a new repo ~/dev/ark-console: Phase 1 repo and format discovery (docs/FORMAT.md), Phase 2 indexer (sessions, runs, repos as one JSON snapshot), Phase 3 tests on anonymized fixtures, Phase 4 loopback-only server and API, Phase 5 plain page with a headless check, Phase 6 STOP for styling, Phase 7 review and docs/SECURITY.md. Nothing pushed.
 
 ## Now
-Styling round 1 done (ark-console d37f42f). STOPPED for the author's look at the screenshots.
+Styling round 2 done (ark-console 2b1efb5). STOPPED for the author's look at the screenshots, with Q6 and Q7 below.
 
 ## Done and verified
 - Premises, 2026-09-30 00:32 EDT: ~/dev/ark-console did not exist; ~/.claude/projects has 11 entries and 204 .jsonl files (385M); /Applications/Google Chrome.app and ~/Library/Caches/ms-playwright/chromium_headless_shell-1243 exist; node v25.9.0; curl, sandbox-exec, lsof present.
@@ -51,14 +51,24 @@ Styling round 1 done (ark-console d37f42f). STOPPED for the author's look at the
   Noticed, not changed: in the monospace Ahead column the en dash draws as wide as a letter; with V3, "behind: no" and "no upstream" look the same unless hovered; old sessions still show 1 or 2 queued.
   Fixture additions for the checks: sessions 32 hours and 10 days old, a repo even with its upstream, a run with a 203-character open item.
 
+- Styling round 2 (visual-loop), ark-console 2b1efb5:
+  Round 2
+  Built:     W1 to W3 in public/app.js, public/style.css, public/index.html (one commit).
+  Checks:    scripts/check-page.js asserts, as literals: W1 a run whose repo and slug are the same shows "no-upstream" once, and different ones show "runs-repo / questions"; W2 the header reads "N running, M waiting on you, R repos (D dirty)" on one line at 20px, and the page's own header function renders the author's example as exactly "3 running, 3 waiting on you, 14 repos (6 dirty)"; the empty snapshot reads "0 running, 0 waiting on you, 0 repos (0 dirty)"; W3 up to date shows "0" in monospace in both columns, no upstream shows "no remote" at 12px, rgb(128, 128, 128), in the proportional font, no en dash in either column, and the Behind and Ahead headers are right-aligned. All values are the author's (chosen by: author). 93 checks passed at 11:20 EDT; each of 12 single-value changes made the check fail (name always joined, separator, repo totals dropped, "repositories", dirty count swapped, "no upstream", 13px, #666, monospace "no remote", 0 as an en dash, proportional counts, Behind header left). Node tests 33 of 33.
+  Artifacts: ~/dev/ark-console/docs/screenshot.png: fixture data (committed). ~/dev/ark-console/tmp/live-screenshot-round2.png: this machine's data at 11:21 EDT, header "3 running, 4 waiting on you, 14 repos (6 dirty)" (not committed).
+  Session choices where the items were silent: Behind is now a count column like Ahead, so "yes (1)" became "1", and its header is right-aligned; "no remote" also sits right-aligned in those columns; one repo reads "1 repo"; if repos_dirty has unknowns the dirty number keeps its title, as in round 1; the V3 check no longer expects an en dash titled "no, as of the last fetch", since W3 replaced it with 0; the fixture gained a root-level run in the no-upstream repo, so repo and slug match.
+  Noticed, not changed: see Q6 and Q7.
+
 ## In flight
 - none
 
 ## Open questions
+- Q6 (round 2, "no remote"): 7 live repos show "no remote", but 2 of them have a remote. ark-skills (origin; branch docs/agent-console-run has no upstream) and archipedia-caadria/Archipedia (origin; branch caadria-demo has no upstream). The other 5 have no remote at all (ark-console, pm-options-consistency, pmopt-wt/data, pmopt-wt/lit, pmopt-wt/math). Built as written. Keep "no remote" for both cases, or tell them apart?
+- Q7 (round 2, en dash): if git fails to answer for a repo (rev-list or rev-parse errors other than "no upstream"), Behind and Ahead still show an en dash titled with git's error, the V3 rule. W3 drops the en dash from these columns, but names only the two empty states. No live or fixture repo is in this state today. Keep the en dash for it, or show something else?
 - Resolved by the author on 2026-09-30: Q1 (no Orca; build no further than observation; the planning-chat relay is a need, not built), Q2 (no control), Q3 (no phone), Q4 (the remaining hung group killed at 10:22 EDT on the author's instruction: PIDs 57321 and 57324 exited, their curl child 57699 exited with them, port 7777 free), Q5 (lessons merged).
 
 ## Decisions
 - How five parts of the SPEC are read is in STANDING-DECISIONS.md (killing processes, the headless browser, the no-write proof, pre-fix tests, Phase 7 after Phase 6).
 
 ## Next action
-Wait for the author's judgment of round 1 (the two screenshots). Nothing is pushed; ark-console has no remote.
+Wait for the author's judgment of round 2 (the two screenshots) and answers to Q6 and Q7. Nothing is pushed; ark-console has no remote.
