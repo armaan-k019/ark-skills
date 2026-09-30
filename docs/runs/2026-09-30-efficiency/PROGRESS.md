@@ -1,5 +1,5 @@
 # Progress: measure efficiency, then fix routing
-Updated: 2026-09-30 14:52 EDT (from `date`)   Branch: ark-skills feat/efficiency; ark-console feat/efficiency   Last commit: ark-console 863d0d3
+Updated: 2026-09-30 15:01 EDT (from `date`)   Branch: ark-skills feat/efficiency; ark-console feat/efficiency   Last commit: ark-console 863d0d3 (Phase 2 uncommitted, in review)
 
 ## SPEC summary
 Phase 1 usage attribution in ark-console's indexer (tokens by project, session, subagent type, skill; share above 150k context; share in sessions over 8 hours; the skills and agents view), Phase 2 plain tables on the page, Phase 3 routing audit of ark-skills agents with a settings fragment proposed, Phase 4 a before and after experiment (six runs), Phase 5 a draft model-routing skill then STOP, Phase 6 report; separately, a read-only vet of weave-os/router. Nothing pushed.
@@ -17,11 +17,40 @@ Phase 2 (SPEC "Phase 2" and the addendum's Skills section), step: the page secti
 - Found while checking finding 1: subagent output tokens are a lower bound even on the last line: 106 subagent messages with 10,000 or more characters of text or tool input record under 100 output tokens (the largest, 49,819 characters, records 8). Recorded in FORMAT.md and in the report's definitions.
 - Router (SPEC "Separate, read-only"), ark-console 863d0d3, docs/ROUTER-EVAL.md: weave-os/router cloned (depth 1) to /tmp/weave-router-vet at 59093f9386b397486d38585f3e22a336e06a37e0, scanned (HIGH 377, MEDIUM 317, 165 domains), read by an opus subagent, main claims checked by the session against the clone (hosted default, settings.json rewrite deleting apiKeyHelper and ANTHROPIC_AUTH_TOKEN, refresh token upload, 7-day unpinned self-update, subscription token forwarding, plaintext keys by default), then the clone deleted (`ls` shows it gone). Verdict: reject. It can front Claude Code on a subscription for Claude-model turns only; every other turn is paid per token.
 
+- Phase 3 (routing audit), this commit: docs/runs/2026-09-30-efficiency/ROUTING.md holds the table (agent, where defined, who references it, current model, observed runs, recommended model, reason) and the settings source. Agent files: agents/silent-failure-hunter.md `model: opus`, agents/ts-reviewer.md `model: opus`; changed: none (both are reviewers). `git diff --stat main` in ark-skills shows only docs/runs/2026-09-30-efficiency/ (checked at the Phase 3 commit).
+
 ## In flight
 - none
 
 ## Open questions
-- none yet
+- Q1: May the run fetch Claude Code's documentation to verify `CLAUDE_CODE_SUBAGENT_MODEL` and the settings `env` key? Triggered by: "any network call" (stop and ask) against Phase 3's "verified against Claude Code's current documentation". Blocks: nothing; the frontmatter route is proposed first and the variable is marked NOT VERIFIED. Raised: the Phase 6 report.
+- Q2: Is Opus 5.5 the strongest model available for judgment work, or Fable 5.1? Triggered by: the rule "judgment work gets the strongest available" and no measurement comparing them. Blocks: nothing (both reviewer agents stay on opus). Raised: the Phase 6 report.
+
+## Proposal for the author: subagent routing (Phase 3)
+Not applied. Nothing here edits ~/.claude/settings.json.
+
+1. Per-agent route (the SPEC's fallback, because the variable name could not be checked against documentation without a network call):
+   - Keep `model: opus` in agents/silent-failure-hunter.md and agents/ts-reviewer.md.
+   - Pass `model: opus` on the Agent calls that spawn reviewers in adversarial-review, unattended-build, and phased-build, and on skill-creator's comparator and analyzer; pass `model: sonnet` on skill-creator's grader. These are edits to existing skills' bodies (stop-and-ask), so they are proposed, not made.
+   - Optionally, a named grader agent so the grader's model lives in one frontmatter line (proposed file, not created):
+     ```
+     ---
+     name: grader
+     description: Grades a list of assertions against given files or outputs and returns JSON with a verdict and one line of evidence per assertion. Use for mechanical checking, not for judging quality.
+     tools: Read, Grep, Glob, Bash
+     model: sonnet
+     ---
+     ```
+2. Settings route, NOT VERIFIED against documentation. Fragment for ~/.claude/settings.json:
+   ```json
+   {
+     "env": {
+       "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
+     }
+   }
+   ```
+   Source for the name: the installed Claude Code 2.1.282 binary (/opt/homebrew/lib/node_modules/@anthropic-ai/claude-code/bin/claude.exe) contains `function tre(){let e=a.CLAUDE_CODE_SUBAGENT_MODEL;return e&&e!=="inherit"?e:"inherit"}`, read locally with `strings`. The `env` key of settings.json is from memory. Before applying it: the reviewer calls in item 1 must pass `model: opus`, because 36 of 43 review runs asked no model and got opus only by inheriting it; whether the variable overrides a pinned frontmatter model is not shown by what was read.
+3. The Phase 4 experiment measures item 2's effect on one mechanical workload.
 
 ## Decisions
 - Readings of the SPEC (src/, branches, network, Phase 0 models, gate reviews, lessons, Phase 4 routing) are in STANDING-DECISIONS.md.
