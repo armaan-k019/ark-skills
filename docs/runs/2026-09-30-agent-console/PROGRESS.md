@@ -1,11 +1,11 @@
 # Progress: ark-console
-Updated: 2026-09-30 01:31 EDT (from `date`)   Branch: ark-skills docs/agent-console-run; ark-console main   Last commit: ark-console 81d02fb
+Updated: 2026-09-30 10:23 EDT (from `date`)   Branch: ark-skills docs/agent-console-run; ark-console main   Last commit: ark-console 81d02fb
 
 ## SPEC summary
 A local, read-only console in a new repo ~/dev/ark-console: Phase 1 repo and format discovery (docs/FORMAT.md), Phase 2 indexer (sessions, runs, repos as one JSON snapshot), Phase 3 tests on anonymized fixtures, Phase 4 loopback-only server and API, Phase 5 plain page with a headless check, Phase 6 STOP for styling, Phase 7 review and docs/SECURITY.md. Nothing pushed.
 
 ## Now
-Done through Phase 7. STOPPED for the author: styling (Phase 6) and questions Q1 to Q5.
+Styling round 1 (V1 to V5, visual-loop) in progress.
 
 ## Done and verified
 - Premises, 2026-09-30 00:32 EDT: ~/dev/ark-console did not exist; ~/.claude/projects has 11 entries and 204 .jsonl files (385M); /Applications/Google Chrome.app and ~/Library/Caches/ms-playwright/chromium_headless_shell-1243 exist; node v25.9.0; curl, sandbox-exec, lsof present.
@@ -40,18 +40,16 @@ Done through Phase 7. STOPPED for the author: styling (Phase 6) and questions Q1
 - Live after the fixes (01:27 to 01:29 EDT): 26 sessions (4 running, 0 unknown), 186 subagent transcripts, 8 runs (4 waiting on you), 14 repos (6 dirty; 0 behind, 7 with no upstream). Screenshot ~/dev/ark-console/tmp/live-screenshot-after-fixes.png (not committed).
 - capture-lessons: 7 entries in ark-console/LESSONS.md (a call to a server with no timeout can hang, count 2; a test that cannot fail on its data, count 2; a per-line log field is that line's state; a count from free text; sandbox-exec and setuid; git status writes; node --test needs files).
 
+- Answers after Phase 7, 2026-09-30 10:22 EDT: `kill 57321 57324` exit 0; `ps` then showed 57321, 57324, and 57699 gone, and `lsof` showed 127.0.0.1:7777 free. ark-skills LESSONS.md: the zsh entry now has 5 cases (unquoted variables are not split), and the regression-test entry is now "A test that cannot fail on the old code, or on its own data, proves nothing", count 3 across two projects, with a promotion proposed (not applied).
+
 ## In flight
 - none
 
 ## Open questions
-- Q5: lessons that recur in ark-skills' LESSONS.md (outside this run's scope): the zsh entry gains two cases (unmatched globs printed errors in the repo survey; an unquoted variable was not split into words, which silently skipped an em dash check until it was rerun), and "a test that cannot fail on the data it is given" is the same root cause as ark-skills' "A regression test that passes on the old code proves nothing", now seen in a second project. Merge them there? Raised: final report.
-- Q4: one hung process group of this run is still alive (a second one ended by itself at about 01:30 EDT, after about 330 seconds). The first version of scripts/accept-phase4.js ran curl with spawnSync, which blocked the Node process whose in-process server curl was waiting on, so neither can finish: node PID 57324 (listening on 127.0.0.1:7777) and its curl child PID 57699, started 2026-09-30 00:53 EDT. The SPEC says never kill a process, so they are left running; they are loopback-only and serve nothing. The second group, `node --test test/server.test.js` PIDs 45562, 45566, and 45567 from 01:25 EDT (a mutant server never answered a test request that had no timeout; requests now time out after 5 s), ended on its own: `ps` at 01:30 EDT no longer lists them, and its S9 failed after 329.8 s. The remaining group is loopback-only, serves nothing, and holds 127.0.0.1:7777. Blocks: port 7777 for this run's checks (they use 7778). Raised: final report.
-- Q1 (from the SPEC): what Orca does not do that the author needs. Not guessed; the answer goes here at Phase 6 with what would need to be known.
-- Q2 (from the SPEC): whether control (sending input to a running session) is ever wanted.
-- Q3 (from the SPEC): whether the console should be reachable from a phone.
+- Resolved by the author on 2026-09-30: Q1 (no Orca; build no further than observation; the planning-chat relay is a need, not built), Q2 (no control), Q3 (no phone), Q4 (the remaining hung group killed at 10:22 EDT on the author's instruction: PIDs 57321 and 57324 exited, their curl child 57699 exited with them, port 7777 free), Q5 (lessons merged).
 
 ## Decisions
 - How five parts of the SPEC are read is in STANDING-DECISIONS.md (killing processes, the headless browser, the no-write proof, pre-fix tests, Phase 7 after Phase 6).
 
 ## Next action
-Wait for the author: styling (Phase 6), Q1 to Q3 from the SPEC, Q4 (the hung check processes), and Q5 (lesson merge). Both repos stay unpushed; ark-console has no remote.
+Build V1 to V5 in ark-console (public/style.css, app.js, index.html), assert each value as a literal in scripts/check-page.js, regenerate both screenshots, and stop.

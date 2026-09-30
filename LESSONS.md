@@ -27,13 +27,14 @@ Root cause: a regex matched across an expression boundary and moved a parenthesi
 Next time I bulk-edit code with a regex, I will compile it and read the diff before running anything.
 Evidence: `for idx, read(line in enumerate(path).split(...))`, caught by py_compile before use.
 
-## A regression test that passes on the old code proves nothing
-Seen: 2026-09-28 (ark-skills)   Count: 1
+## A test that cannot fail on the old code, or on its own data, proves nothing
+Seen: 2026-09-28 (ark-skills), 2026-09-30 (ark-console, twice)   Count: 3
 
-Context: turning review findings into tests.
-Root cause: the first BOM test asserted a node id that the old fallback happened to produce, so it passed with or without the fix.
-Next time I add a test for a review finding, I will run it against the reviewed version and confirm it fails there first.
-Evidence: the BOM test passed on the staged extractor until it asserted the parsed name; after that, all 19 regression tests added in this run (14 for review gate 1, 4 for the new edge kinds, 1 for node_modules) failed on the code they guard.
+Context: turning review findings into tests; writing tests on fixtures and checking them against broken copies of the code.
+Root cause: the test's input could not tell right code from wrong: the first BOM test asserted a node id that the old fallback happened to produce, and in ark-console the fixture sessions were already in sorted order and the only resolved question started with "Resolved", so a missing sort and a broken marker rule both passed.
+Next time I add a test, I will run it against the code without the change (or a named broken copy) and confirm it fails there first; when it does not, I fix the input, not the expectation.
+Evidence: the BOM test passed on the staged extractor until it asserted the parsed name, and all 19 regression tests added after that failed on the code they guard; ark-console's T16 guard failed on the first fixtures, and scripts/mutants.js reported resolved-counts-as-open as surviving until a fixture line was added.
+Promotion proposed (not applied): seen in two projects, so a rule in verify-before-done's Step 2 or phased-build's Implement phase: "Run each new test against the code without the change and confirm it fails."
 
 ## Adding a dependency can change what a repo-wide scan sees
 Seen: 2026-09-28 (ark-skills)   Count: 1
@@ -107,13 +108,13 @@ Root cause: `viz/scripts/test_app.cjs` and the smoke test's outline check mark o
 Next time I test a case the data does not have yet, I will count the existing cases and add one, instead of asserting a fixed total.
 Evidence: `test_app.cjs:69` failed with "2 !== 1"; smoke reported "outlined nodes [adversarial-review, spec-writing], expected only skill:adversarial-review".
 
-## zsh is not bash: colon modifiers and unmatched globs
-Seen: 2026-09-28 (ark-skills, skills-graph run), 2026-09-29 (ark-skills, gap-skills run, twice)   Count: 3
+## zsh is not bash: colon modifiers, unmatched globs, and unsplit variables
+Seen: 2026-09-28 (ark-skills, skills-graph run), 2026-09-29 (ark-skills, gap-skills run, twice), 2026-09-30 (ark-console run, twice)   Count: 5
 
 Context: shell commands written as if for bash, run in this machine's zsh.
-Root cause: zsh reads `$name:x` as a history modifier (`:u` uppercases, `:P` resolves a real path), and by default stops the whole command when a glob such as `dir/*` matches nothing.
-Next time I write a shell command here, I will put braces around a variable followed by a colon (`${name}:`) and avoid globs that can match nothing, or check the directory first.
-Evidence: `git show $c:PROGRESS.md` asked for revision "/Users/armaank019/dev/ark-skills/5b6105fROGRESS.md"; `rm -rf $B/grade2/$e/C/*` on an empty folder failed with "no matches found" and skipped the copy after it.
+Root cause: zsh reads `$name:x` as a history modifier (`:u` uppercases, `:P` resolves a real path), by default stops the whole command when a glob such as `dir/*` matches nothing, and does not split an unquoted variable into words.
+Next time I write a shell command here, I will put braces around a variable followed by a colon (`${name}:`), avoid globs that can match nothing, and pass a list of files as separate arguments (a loop or `xargs`), never as one unquoted variable.
+Evidence: `git show $c:PROGRESS.md` asked for revision "/Users/armaank019/dev/ark-skills/5b6105fROGRESS.md"; `rm -rf $B/grade2/$e/C/*` on an empty folder failed with "no matches found" and skipped the copy after it; in the ark-console run, `cat $F` with a newline-separated file list read it as one file name, so an em dash check covered 3 files instead of 16 until it was rerun with `git grep`, and `docs/runs/*/` globs printed "no matches found" in the repo survey.
 
 ## A check that reads its expected value from the code follows the code
 Seen: 2026-09-29 (ark-skills, gap-skills run)   Count: 1

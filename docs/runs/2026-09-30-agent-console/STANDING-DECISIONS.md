@@ -35,3 +35,10 @@ Task class (Step 0): machine-checkable for Phases 1 to 5 and 7 (every acceptance
 - SPEC.md is committed on docs/agent-console-run with the two run files; it is in the one ark-skills directory this run may write.
 - "Never kill a process" and command timeouts: the indexer ends its own ps, lsof, or git child if it is still running after 4 seconds (execFile's timeout), so one hung command cannot stall every snapshot; the page check does the same for its own headless Chrome after 60 seconds. It never signals a process it did not start. Recorded in ark-console docs/SECURITY.md. The two check processes of this run that hung were not killed (PROGRESS.md Q4).
 - capture-lessons writes LESSONS.md at a repo root. In ark-skills this run may write only its run folder, so the lessons are in ark-console/LESSONS.md, and merging the recurring ones into ark-skills' LESSONS.md is a question (Q5).
+
+## Changes approved by the author on 2026-09-30 (answers after Phase 7)
+- Kill the remaining hung check processes (PIDs 57321 and 57324); the author's sandbox cannot see host PIDs, so this session runs it.
+- Q1: the author does not use Orca. The needs are too many windows to know what is running (the console covers this) and a copy-paste relay between the planning chat and the run. Do not build past the observation layer.
+- Q2 (control): no; read-only stays. Q3 (phone): no; revisit only if the author asks.
+- Merge the two recurring lessons into ark-skills LESSONS.md on docs/agent-console-run (scope extended for that one file).
+- Styling round 1 (visual-loop): items V1 to V5 only, each value the author's and asserted as a literal in the page check; regenerate both screenshots (test data committed, live not); no palette, no animation, nothing else; then stop.
