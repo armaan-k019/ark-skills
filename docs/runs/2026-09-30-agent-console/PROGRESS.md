@@ -1,11 +1,11 @@
 # Progress: ark-console
-Updated: 2026-09-30 11:22 EDT (from `date`)   Branch: ark-skills docs/agent-console-run; ark-console main   Last commit: ark-console 2b1efb5
+Updated: 2026-09-30 11:44 EDT (from `date`)   Branch: ark-skills docs/agent-console-run; ark-console main   Last commit: ark-console 86945f7
 
 ## SPEC summary
 A local, read-only console in a new repo ~/dev/ark-console: Phase 1 repo and format discovery (docs/FORMAT.md), Phase 2 indexer (sessions, runs, repos as one JSON snapshot), Phase 3 tests on anonymized fixtures, Phase 4 loopback-only server and API, Phase 5 plain page with a headless check, Phase 6 STOP for styling, Phase 7 review and docs/SECURITY.md. Nothing pushed.
 
 ## Now
-Styling round 2 done (ark-console 2b1efb5). STOPPED for the author's look at the screenshots, with Q6 and Q7 below.
+Styling round 3 done (ark-console 86945f7). The author said styling is done after this round. STOPPED.
 
 ## Done and verified
 - Premises, 2026-09-30 00:32 EDT: ~/dev/ark-console did not exist; ~/.claude/projects has 11 entries and 204 .jsonl files (385M); /Applications/Google Chrome.app and ~/Library/Caches/ms-playwright/chromium_headless_shell-1243 exist; node v25.9.0; curl, sandbox-exec, lsof present.
@@ -59,16 +59,21 @@ Styling round 2 done (ark-console 2b1efb5). STOPPED for the author's look at the
   Session choices where the items were silent: Behind is now a count column like Ahead, so "yes (1)" became "1", and its header is right-aligned; "no remote" also sits right-aligned in those columns; one repo reads "1 repo"; if repos_dirty has unknowns the dirty number keeps its title, as in round 1; the V3 check no longer expects an en dash titled "no, as of the last fetch", since W3 replaced it with 0; the fixture gained a root-level run in the no-upstream repo, so repo and slug match.
   Noticed, not changed: see Q6 and Q7.
 
+- Styling round 3 (visual-loop), ark-console 86945f7:
+  Round 3
+  Built:     X1 and X2 in public/app.js and public/style.css, plus what X1 needs from the data: lib/indexer.js now reads remote names with `git remote` (names only, no URLs; added to docs/SECURITY.md and docs/FORMAT.md), and a rev-list failure's reason now carries git's message.
+  Checks:    scripts/check-page.js asserts, as literals: X1 "no remote" for the fixture repos with no remote (no-upstream, runs-repo) and "no upstream" for the one with origin and no upstream (unpushed); X2 "error" for the repo whose configured upstream git cannot resolve (upstream-gone), titled "git rev-parse @{upstream} failed: fatal: ambiguous argument '@{upstream}': unknown revision or path not in the working tree."; all three at 12px, rgb(128, 128, 128), proportional, right-aligned; each state is on the page, and every repo without counts is in the literal table. 110 checks passed at 11:43 EDT. Each of 8 single-value changes made it fail (both cases as "no remote", "unpushed", "failed", an en dash for error, the title dropped, 13px, #666, left-aligned), and so did the round 2 page code on the round 3 fixture (13 checks failed, 10 of them X1 or X2). Node tests 35 of 35 (T25: a remote with no upstream is told apart from no remote; T26: git's message in the reason for a rev-parse, rev-list, and git remote failure); `node scripts/mutants.js`: 42 mutants, each caught, 4 of them new.
+  Artifacts: ~/dev/ark-console/docs/screenshot.png: fixture data (committed). ~/dev/ark-console/tmp/live-screenshot-round3.png: this machine's data at 11:43 EDT (not committed): ark-skills and archipedia-caadria/Archipedia show "no upstream", 5 repos show "no remote", none shows "error".
+  Session choices where the items were silent: "no upstream" uses the same 12px gray as "no remote"; the error title is the indexer's reason, which names the git command before git's message; if `git remote` itself fails for a repo with no upstream, the cells show "error" with that failure as the title; the fixture's forced failure is an upstream configured to a branch the remote does not have, the state git is in after a remote branch is deleted and pruned, so that common state reads "error" on the live page too.
+
 ## In flight
 - none
 
 ## Open questions
-- Q6 (round 2, "no remote"): 7 live repos show "no remote", but 2 of them have a remote. ark-skills (origin; branch docs/agent-console-run has no upstream) and archipedia-caadria/Archipedia (origin; branch caadria-demo has no upstream). The other 5 have no remote at all (ark-console, pm-options-consistency, pmopt-wt/data, pmopt-wt/lit, pmopt-wt/math). Built as written. Keep "no remote" for both cases, or tell them apart?
-- Q7 (round 2, en dash): if git fails to answer for a repo (rev-list or rev-parse errors other than "no upstream"), Behind and Ahead still show an en dash titled with git's error, the V3 rule. W3 drops the en dash from these columns, but names only the two empty states. No live or fixture repo is in this state today. Keep the en dash for it, or show something else?
-- Resolved by the author on 2026-09-30: Q1 (no Orca; build no further than observation; the planning-chat relay is a need, not built), Q2 (no control), Q3 (no phone), Q4 (the remaining hung group killed at 10:22 EDT on the author's instruction: PIDs 57321 and 57324 exited, their curl child 57699 exited with them, port 7777 free), Q5 (lessons merged).
+- Resolved by the author on 2026-09-30: Q6 (split into "no remote" and "no upstream", round 3 X1), Q7 (git failures show "error" with git's message as the title, round 3 X2), Q1 (no Orca; build no further than observation; the planning-chat relay is a need, not built), Q2 (no control), Q3 (no phone), Q4 (the remaining hung group killed at 10:22 EDT on the author's instruction: PIDs 57321 and 57324 exited, their curl child 57699 exited with them, port 7777 free), Q5 (lessons merged).
 
 ## Decisions
 - How five parts of the SPEC are read is in STANDING-DECISIONS.md (killing processes, the headless browser, the no-write proof, pre-fix tests, Phase 7 after Phase 6).
 
 ## Next action
-Wait for the author's judgment of round 2 (the two screenshots) and answers to Q6 and Q7. Nothing is pushed; ark-console has no remote.
+None. Styling is done after round 3, by the author's word. Nothing is pushed; ark-console has no remote.
