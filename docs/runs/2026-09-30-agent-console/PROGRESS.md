@@ -1,11 +1,11 @@
 # Progress: ark-console
-Updated: 2026-09-30 10:23 EDT (from `date`)   Branch: ark-skills docs/agent-console-run; ark-console main   Last commit: ark-console 81d02fb
+Updated: 2026-09-30 10:34 EDT (from `date`)   Branch: ark-skills docs/agent-console-run; ark-console main   Last commit: ark-console d37f42f
 
 ## SPEC summary
 A local, read-only console in a new repo ~/dev/ark-console: Phase 1 repo and format discovery (docs/FORMAT.md), Phase 2 indexer (sessions, runs, repos as one JSON snapshot), Phase 3 tests on anonymized fixtures, Phase 4 loopback-only server and API, Phase 5 plain page with a headless check, Phase 6 STOP for styling, Phase 7 review and docs/SECURITY.md. Nothing pushed.
 
 ## Now
-Styling round 1 (V1 to V5, visual-loop) in progress.
+Styling round 1 done (ark-console d37f42f). STOPPED for the author's look at the screenshots.
 
 ## Done and verified
 - Premises, 2026-09-30 00:32 EDT: ~/dev/ark-console did not exist; ~/.claude/projects has 11 entries and 204 .jsonl files (385M); /Applications/Google Chrome.app and ~/Library/Caches/ms-playwright/chromium_headless_shell-1243 exist; node v25.9.0; curl, sandbox-exec, lsof present.
@@ -42,6 +42,15 @@ Styling round 1 (V1 to V5, visual-loop) in progress.
 
 - Answers after Phase 7, 2026-09-30 10:22 EDT: `kill 57321 57324` exit 0; `ps` then showed 57321, 57324, and 57699 gone, and `lsof` showed 127.0.0.1:7777 free. ark-skills LESSONS.md: the zsh entry now has 5 cases (unquoted variables are not split), and the regression-test entry is now "A test that cannot fail on the old code, or on its own data, proves nothing", count 3 across two projects, with a promotion proposed (not applied).
 
+- Styling round 1 (visual-loop), ark-console d37f42f:
+  Round 1
+  Built:     V1 to V5 in public/style.css, public/app.js, public/index.html (one commit).
+  Checks:    scripts/check-page.js now drives the on-disk Chrome over the DevTools protocol and asserts, as literals: V1 line 1 bold (700), line 2 at most 140 characters, the status behind a closed expander, the section first; V2 dot U+25CF before running rows, opacity 0.6 after 24 hours, collapsed after 7 days with "show N older"; V3 en dash U+2013 titled "not recorded" or "no, as of the last fetch", neither wording visible; V4 rows 28 px, table text 13px, times and numbers monospace, counts right-aligned, the rest left; V5 header 20px on one line, status 12px rgb(128, 128, 128). All values are the author's (chosen by: author). 71 checks passed at 10:33 EDT; each of 12 single-value changes made the check fail.
+  Artifacts: ~/dev/ark-console/docs/screenshot.png: fixture data, older rows collapsed, expanders closed (committed). ~/dev/ark-console/tmp/live-screenshot-round1.png: this machine's data at 10:33 EDT, same state (not committed).
+  Session choices where the items were silent: the line 2 of a run with no open item is its waiting reason; the expander is line 2 itself (a details element whose summary is line 2); after the toggle opens it reads "hide N older"; ages are measured from the snapshot's time; a row with no last activity is neither dimmed nor collapsed; "gray" is the CSS keyword gray; the dot sits in its own narrow first column; the header is an h1 (bold by default); with V5 the old counts line is gone, so repo totals no longer show, and a count with unknowns keeps its number and says how many are unknown in its title; monospace applies to last activity, queued, and ahead (dirty and behind read "yes (N)" and stay proportional).
+  Noticed, not changed: in the monospace Ahead column the en dash draws as wide as a letter; with V3, "behind: no" and "no upstream" look the same unless hovered; old sessions still show 1 or 2 queued.
+  Fixture additions for the checks: sessions 32 hours and 10 days old, a repo even with its upstream, a run with a 203-character open item.
+
 ## In flight
 - none
 
@@ -52,4 +61,4 @@ Styling round 1 (V1 to V5, visual-loop) in progress.
 - How five parts of the SPEC are read is in STANDING-DECISIONS.md (killing processes, the headless browser, the no-write proof, pre-fix tests, Phase 7 after Phase 6).
 
 ## Next action
-Build V1 to V5 in ark-console (public/style.css, app.js, index.html), assert each value as a literal in scripts/check-page.js, regenerate both screenshots, and stop.
+Wait for the author's judgment of round 1 (the two screenshots). Nothing is pushed; ark-console has no remote.
