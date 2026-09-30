@@ -1,11 +1,11 @@
 # Progress: ark-console
-Updated: 2026-09-30 11:44 EDT (from `date`)   Branch: ark-skills docs/agent-console-run; ark-console main   Last commit: ark-console 86945f7
+Updated: 2026-09-30 13:07 EDT (from `date`)   Branch: ark-skills docs/agent-console-run; ark-console main   Last commit: ark-console 46b8735
 
 ## SPEC summary
 A local, read-only console in a new repo ~/dev/ark-console: Phase 1 repo and format discovery (docs/FORMAT.md), Phase 2 indexer (sessions, runs, repos as one JSON snapshot), Phase 3 tests on anonymized fixtures, Phase 4 loopback-only server and API, Phase 5 plain page with a headless check, Phase 6 STOP for styling, Phase 7 review and docs/SECURITY.md. Nothing pushed.
 
 ## Now
-Styling round 3 done (ark-console 86945f7). The author said styling is done after this round. STOPPED.
+X3, the last styling item, done (ark-console 46b8735). Styling is done. STOPPED.
 
 ## Done and verified
 - Premises, 2026-09-30 00:32 EDT: ~/dev/ark-console did not exist; ~/.claude/projects has 11 entries and 204 .jsonl files (385M); /Applications/Google Chrome.app and ~/Library/Caches/ms-playwright/chromium_headless_shell-1243 exist; node v25.9.0; curl, sandbox-exec, lsof present.
@@ -66,14 +66,22 @@ Styling round 3 done (ark-console 86945f7). The author said styling is done afte
   Artifacts: ~/dev/ark-console/docs/screenshot.png: fixture data (committed). ~/dev/ark-console/tmp/live-screenshot-round3.png: this machine's data at 11:43 EDT (not committed): ark-skills and archipedia-caadria/Archipedia show "no upstream", 5 repos show "no remote", none shows "error".
   Session choices where the items were silent: "no upstream" uses the same 12px gray as "no remote"; the error title is the indexer's reason, which names the git command before git's message; if `git remote` itself fails for a repo with no upstream, the cells show "error" with that failure as the title; the fixture's forced failure is an upstream configured to a branch the remote does not have, the state git is in after a remote branch is deleted and pruned, so that common state reads "error" on the live page too.
 
+- X3 (visual-loop, the last item), ark-console 46b8735:
+  Built:     "upstream gone" in public/app.js. In lib/indexer.js, when `git rev-parse @{upstream}` fails for a reason other than no upstream, `git for-each-ref --format=%(upstream)%09%(upstream:track) refs/heads/<branch>` (local refs only, no network) names the configured ref, and git's `[gone]` marker makes it "upstream gone"; every other failure stays "error" with the command and git's message as the title. docs/SECURITY.md and docs/FORMAT.md list the command.
+  Checks:    scripts/check-page.js asserts, as literals: "upstream gone" for upstream-gone, with no title; "error" for broken-upstream (its branch's upstream names a remote the repo does not have), titled "git rev-parse @{upstream} failed: fatal: upstream branch 'refs/heads/main' not stored as a remote-tracking branch"; both at 12px, rgb(128, 128, 128), proportional, right-aligned; all four words appear on the page. 115 checks passed at 13:06 EDT. Each of 5 single-value changes made it fail ("gone", gone shown as error, error shown as "upstream gone", gone shown as "no upstream", 13px), and so did the round 3 page code on the new fixture (5 checks failed, all X3). Node tests 36 of 36 (T26 now on broken-upstream; T27 new: upstream-gone reads "upstream gone"); `node scripts/mutants.js`: 44 mutants, each caught, 2 of them new (gone not detected; every git failure read as gone).
+  Artifacts: ~/dev/ark-console/docs/screenshot.png: fixture data (committed). ~/dev/ark-console/tmp/live-screenshot-round4.png: this machine's data at 13:06 EDT (not committed); no live repo is gone or in error today.
+  Fixture names: upstream-gone is exactly the first case and keeps its name; broken-upstream is new.
+  Probed before building (scratch repos, git with LC_ALL=C): a remote-tracking ref that points at a missing object is also marked [gone] by git, but there `rev-parse @{upstream}` succeeds and `rev-list` fails, so the check never runs and it shows "error"; detached HEAD fails with "HEAD does not point to a branch" and shows "error".
+
 ## In flight
 - none
 
 ## Open questions
+- (none open)
 - Resolved by the author on 2026-09-30: Q6 (split into "no remote" and "no upstream", round 3 X1), Q7 (git failures show "error" with git's message as the title, round 3 X2), Q1 (no Orca; build no further than observation; the planning-chat relay is a need, not built), Q2 (no control), Q3 (no phone), Q4 (the remaining hung group killed at 10:22 EDT on the author's instruction: PIDs 57321 and 57324 exited, their curl child 57699 exited with them, port 7777 free), Q5 (lessons merged).
 
 ## Decisions
 - How five parts of the SPEC are read is in STANDING-DECISIONS.md (killing processes, the headless browser, the no-write proof, pre-fix tests, Phase 7 after Phase 6).
 
 ## Next action
-None. Styling is done after round 3, by the author's word. Nothing is pushed; ark-console has no remote.
+None. Styling is done after X3, by the author's word. Nothing is pushed; ark-console has no remote.
