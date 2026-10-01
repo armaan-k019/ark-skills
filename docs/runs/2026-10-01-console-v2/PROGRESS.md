@@ -1,11 +1,11 @@
 # Progress: ark-console v2, metrics, skills graph, and control
-Updated: 2026-10-01 00:58 EDT (from `date`)   Branch: ark-console feat/console-v2; ark-skills docs/console-v2-run   Last commit: ark-console d231bd0
+Updated: 2026-10-01 02:07 EDT (from `date`)   Branch: ark-console feat/console-v2; ark-skills docs/console-v2-run   Last commit: ark-console aeac4d1
 
 ## SPEC summary
 Build docs/UI.md in ark-console: Phase 1 tokens, type scale, spacing, theme toggle; Phase 2 layout (header bar, attention and usage columns, tabs); Phase 3 the Usage tab's four charts and three tiles (inline SVG); Phase 4 the Skills tab (ark-skills' graph.json with a vendored Cytoscape); Phase 5 two control actions (kill a session with a token, loopback Origin and Host, audit log; dismiss with undo); Phase 6 STOP with screenshots; Phase 7 after the author's round: review, verify, lessons, push and open PRs.
 
 ## Now
-Phase 6: STOPPED for the author's round (SPEC: "Wait for me"). Phase 7 waits for it.
+Round V2-1 (the author's E1 to E6) done and committed (ark-console aeac4d1); STOPPED again as the round asked ("six items, then stop"). Phase 7 waits.
 
 ## Done and verified
 - Precondition, 2026-09-30 15:27 EDT: the efficiency run produced the usage numbers in the indexer (ark-console feat/efficiency d603781 and d6cb492: lib/usage.js and the snapshot's `usage` field; `bash scripts/accept-usage.sh` passed at 15:22 EDT). Phases 3 and 4 have data.
@@ -29,6 +29,25 @@ Phase 6: STOPPED for the author's round (SPEC: "Wait for me"). Phase 7 waits for
 - Commits on ark-console feat/console-v2 (stacked on feat/efficiency): 20ff9be UI.md, 9746a2c Phase 1, 9ab8df4 Phase 2, dab318a Phase 3, 62dcced Phase 4, 9dc8240 Phase 5, d231bd0 test fix. Nothing pushed.
 - Refused or not done: no process killed or signaled (the three leftover Chrome groups are Q1); no write under ~/.claude; no dependency added (Cytoscape copied from ark-skills unchanged, with its license); nothing bound beyond loopback; no control action beyond Kill and Dismiss; README.md and .gitignore not edited (outside the listed scope; Q4); ark-skills not written except docs/runs/2026-10-01-console-v2/; Phase 7 not started (it waits for the author).
 
+## Author's answers to the Phase 6 report (2026-10-01) and where each stands
+- 1 (Q1, stray Chromes): done. `kill 69643 70218 93355` exited 0; all 14 processes of those groups were gone within 2 s; /tmp/debug-profile-1790799005001 and /tmp/debug-profile-1790799011788 removed.
+- 2 (Q3, ~/.local/state/ark-console): done, removed. Its token had last been written at 01:33:52 by a short-lived process; no server held it.
+- 3 (Q2, data directory): decided, keep ~/.local/state/ark-console. Writing it into SECURITY.md is NOT DONE yet (the round came in first).
+- 4 (Q4, README): approved for Phase 7 (token link, how to start). NOT DONE.
+- 5 (docs fetch): one fetch of https://code.claude.com/docs/en/settings ("Settings files and precedence"). CLAUDE_CODE_SUBAGENT_MODEL does not appear on that page; it points to /docs/en/env-vars for variables and confirms the settings `env` key. The variable's name stays NOT VERIFIED (a second fetch, of env-vars, was not approved).
+- 6 (fable alias): ark-skills branch chore/fable-alias-trial (95edabe) set silent-failure-hunter to `model: fable`; one run (on Phase 5's lib/server.js). Its transcript shows claude-opus-5-5 on all 16 assistant lines and its meta.json has no model field, so fable was not applied: either the alias was refused and fell back, or the agent file was read before the change; the transcript cannot tell which. Reported as not accepted. The checkout is back on docs/console-v2-run, so the live agent file reads `model: opus` again; no other agent changed. The run's four findings (lib/server.js: an audit write failure after SIGTERM swallowed with ok returned, HIGH; appendAudit's false return ignored for refusals, MEDIUM; a ps failure reported as "ps says nothing", MEDIUM, fails safe; close and chmod in one try, LOW) are open for Phase 7's review.
+- 7 (model-routing family): NOT DONE (its own ark-skills branch).
+- 8 (lessons into both LESSONS.md): NOT DONE.
+
+## Round V2-1 (the author's E1 to E6), ark-console aeac4d1
+- E1: the tile is "tokens read (incl. cache)", context "<x> not cached" (tokens minus cache reads: input + output + cache creation); the 150k tile's context "of <x> tokens read (incl. cache), last 24h". Fixture literals "3.1M", "142.8k not cached", "of 3.1M tokens read (incl. cache), last 24h". The old context "last 24h, N sessions" is gone from that tile.
+- E2: one formatter (formatNumber) for every count and token figure: tiles, chart axes and labels, tooltips, chart tables, Usage tables, header counts, captions. Under 1,000 the number; k and M one decimal; B two decimals from 999.95M up; the unit is the one reached after rounding. Literals: 1129710268 "1.13B", 1146672154 "1.15B", 999950000 "1.00B", 999949999 "999.9M", 45234567 "45.2M", 999950 "1.0M", 999949 "999.9k", 1000 "1.0k", 999 "999", 0 "0". A scan finds no comma-grouped number and no four digits before a unit in any text the page writes numbers into (311 texts on the fixture, 518 live). Not counts, so not through it: shares (one decimal %), times, durations, PIDs, the dollar total.
+- E3: line 2 is cut at the last whitespace at or before index 139 and gets one U+2026, at most 140 in all; a single word longer than that is cut at 139. The rest is behind the expander, after an ellipsis. Literals: the fixture's long item, and the live Q20 item's first 160 characters, which now ends "...over the 200-page cap).…".
+- E4: runs with the same first open item share one card: line 1 lists each run's name (", "), the age is the longest wait, the expander has each run's Why and Status, and Dismiss dismisses all of them (one POST each; undo brings them back). Fixture: 4 cards for 5 waiting runs, "no-upstream, runs-repo / questions", "waiting 4h". Live: one card for pm-options-consistency and pmopt-wt/analysis.
+- E5: dark is the default on :root; light only under data-theme="light", set by the toggle. Browsers report "light" when the OS states no preference (the headless default too), so the page cannot tell that apart from an OS set to light: an OS set to light also opens dark until the toggle is used (Q6).
+- E6: checked against the table toggle with real data, before any change: ticks 286,668k, 573,336k, 860,004k, 1,146,672k, increasing, each inside the SVG (bbox x 22 to 31), the top equal to the largest day (1,146,672,154). The scale was right; the 00:45 live screenshot predates Phase 5's left-margin fix, which is why it showed "6,672k" and similar with leading digits cut. Asserted now on the fixture and with --live: four ticks, each on its gridline, increasing, max x i/4, inside the chart, the largest bar at the top gridline, the top tick equal to the table's largest day. Live after the change: 286.7M, 573.3M, 860.0M, 1.15B.
+- Verified at 02:03 to 02:07 EDT: `node scripts/check-page.js` 713 passed; `node scripts/check-page.js --live tmp/live-screenshot-v2-1.png` all live checks passed; tests 89 of 89; 12 single-value page mutants (E1 label, E1 not-cached sum, E2 no B, E2 one grouped cell, E3 mid-word cut, E3 no ellipsis, E4 no grouping, E4 newest wait, E4 dismiss first run only, E5 light default, E6 ticks over 5, E6 clipped labels) each fail the check, each file restored and its hash checked. Screenshots regenerated by the clean run: docs/screenshot.png, -light, -usage, -skills, -confirm; live: ark-console tmp/live-screenshot-v2-1.png (not committed).
+
 ## In flight
 - none
 
@@ -37,7 +56,11 @@ Phase 6: STOPPED for the author's round (SPEC: "Wait for me"). Phase 7 waits for
 - Q3: ~/.local/state/ark-console/ exists outside SCOPE, written by this run's own test suite under one mutant (see Done, after Phase 5); it holds one file, `token` (0600), that no running server uses. May it be removed? Blocks: nothing. Raised: this report.
 - Q4: README.md is outside this SPEC's scope and is now out of date (it says the console is read-only, and does not mention the token link, Kill, Dismiss, the data directory, or the Usage and Skills tabs). May Phase 7 update it? Blocks: nothing.
 - Q5: The gaps below are choices made where UI.md is silent; confirm or change any of them in your round.
-- Q2: The default data directory for Phase 5's token, audit log, and state file is `~/.local/state/ark-console` (outside every repo, so the token cannot be committed; the repo's .gitignore is out of scope). Keep it? Blocks: nothing. Raised: the Phase 6 report.
+- Q2: answered (keep ~/.local/state/ark-console); see the answers above.
+- Q1, Q3, Q4: answered; see the answers above.
+- Q6: E5 makes an OS set to light open dark too (browsers report "light" for no preference, so the two cannot be told apart). Keep that, or follow an explicit OS light and accept that "no preference" then shows light? Blocks: nothing. Raised: the round V2-1 report.
+- Q7: E2 applied to every number, so the Usage tables and tooltips no longer show exact counts (they are still in /api/snapshot). Keep, or give the exact count as a hover title on table cells? Blocks: nothing. Raised: the round V2-1 report.
+- Q8: E2 replaced UI.md section 5's chart 1 "values in k" with the one formatter (the axis now reads 782.1k, 1.6M, 2.3M, 3.1M on the fixture). UI.md section 1 also still describes the light-default CSS structure that E5 replaced. Update UI.md (the author's file) to match? Blocks: nothing. Raised: the round V2-1 report.
 
 ## Decisions
 - Readings of the SPEC (models, branches, UI.md, README and .gitignore, the data directory, reviews, chart windows, days) are in STANDING-DECISIONS.md.
@@ -53,7 +76,7 @@ Phase 6: STOPPED for the author's round (SPEC: "Wait for me"). Phase 7 waits for
 ## Gaps: what UI.md does not decide (kept as the page does today unless noted)
 - Section 6 has no phase in the SPEC; its focus ring, transitions, and reduced motion were built in Phase 1 (token-level), and its stale-snapshot rule goes with the header bar in Phase 2.
 - The theme toggle's text: "theme", UI.md's own word in its header diagram, with an aria-label naming the mode it switches to.
-- The stored theme applies when app.js runs (deferred; CSP allows no inline script), so a stored light choice on a dark OS can show the dark page for a moment on load.
+- The stored theme applies when app.js runs (deferred; CSP allows no inline script), so a stored light choice shows the dark page for a moment on load (since E5, dark is what the CSS gives before app.js runs).
 - The 12px gray status line (round 1, V5) and the 12px gray notes (rounds 2 and 3) keep the CSS keyword gray; UI.md does not map them to a token.
 - Phase 2 choices (UI.md silent, minimal, for the author to confirm): the running strip's empty sentence "Nothing is running."; its count link "Show all <n> running"; the attention card's "waiting" age is the time since the run's PROGRESS.md (else SPEC.md) was last modified; the "Not matched or not read" list at the bottom of the Sessions tab; the refresh button shows the diagram's glyph with aria-label "Refresh now"; the snapshot-time line sits in the header under the 48px bar; the section headings "Sessions", "Repos", "Usage" are replaced by the tab labels; the selected tab is marked by an underline in --text-1; the round 1 cut of line 2 at 140 characters is kept inside the two-line clamp; attention cards keep the runs' order; tabs have no arrow-key navigation (they are buttons, reachable with Tab).
 - Seen, not changed: with five attention cards and six running rows, the tab body is 127px tall at 1440x900 (the no-scroll rule squeezes the tabs); UI.md sets no cap on attention cards.
@@ -64,4 +87,4 @@ Phase 6: STOPPED for the author's round (SPEC: "Wait for me"). Phase 7 waits for
 - Possible flake: once, under load from the stuck run, "the page renders after reload" (a theme check) failed; the clean runs before and after passed it.
 
 ## Next action
-Wait for the author's round (Phase 6 STOP). Then Phase 7: adversarial-review the whole diff (CRITICAL and HIGH, one fix round), verify-before-done, capture-lessons, push both branches, and open both PRs without merging.
+Wait for the author (round V2-1 STOP; Q6 to Q8). Then answers 3, 7, 8 (SECURITY.md data directory; model-routing family on its own ark-skills branch from feat/efficiency; nine lessons into both LESSONS.md) and Phase 7: README (answer 4), adversarial-review of the whole diff including the fable run's four findings (CRITICAL and HIGH, one fix round), verify-before-done, capture-lessons, push ark-console feat/console-v2 and ark-skills docs/console-v2-run, open both PRs without merging.
