@@ -1,6 +1,6 @@
 ---
 name: strategic-compact
-description: Decide when to /compact, /clear, or start a fresh session, and write a handoff file first so nothing important is lost. Use at phase boundaries in long Claude Code sessions (research done, plan approved, milestone finished, debugging over, approach abandoned), when switching to unrelated work, when output quality starts slipping in a long session, or when asked to "hand off", "wrap up this session", or "start fresh".
+description: Decide when to /compact, /clear, or start a fresh session, and write a handoff file first so nothing important is lost. Use at phase boundaries in long Claude Code sessions (research done, plan approved, milestone finished, debugging over, approach abandoned), when switching to unrelated work, when output quality starts slipping in a long session, or when asked to "hand off", "wrap up this session", or "start fresh". Also use it when work moves between surfaces (a planning chat to a Cowork session, Cowork to a terminal run, one chat to a new chat) and the next session needs the state in its first message.
 ---
 
 # Strategic Compact
@@ -62,6 +62,59 @@ Rules for the handoff:
 
 - Compact with a focus line so the summary keeps the right things, for example `/compact Next: implement the parser in src/lib/parse.ts per progress.md`.
 - Or start a fresh session with: "Read progress.md and continue from Next, step 1."
+
+## Handing off to a different surface
+
+The sections above assume the next session is Claude Code in the same repo, where a
+handoff file on disk is the whole answer. When the work moves between surfaces (a
+planning chat to a Cowork session, Cowork to a terminal run, one chat to a new chat),
+the next session may not be able to read that file before its first reply, so the
+state has to travel in the first message as well.
+
+Write one block and paste it as the first message. Nothing else:
+
+```markdown
+# Context handoff
+Surfaces: <where this came from> to <where it is going>
+Repos: <path> (<branch>, <short sha>, public/private), one line each
+
+## What this is
+One or two sentences on the goal, not the history.
+
+## State
+- <repo>: <what is merged>, <what is open and where it sits>
+- Verify with: <command that passes today>
+
+## In flight
+1. <the next concrete step, with file paths>
+
+## Queued, not started
+- <item>: <what it needs before it can start>
+
+## Settled, do not relitigate
+- <decision>: <why>
+
+## Known broken, deliberately unfixed
+- <item> (<severity>)
+```
+
+Rules:
+
+- Point at files, do not restate them. "Design tokens in docs/UI.md section 3" beats
+  pasting the tokens.
+- Names and paths, not adjectives. The next session can read a file; it cannot guess
+  a path.
+- Merged or open is a fact to check, not to recall. Run the command, paste what it
+  printed.
+- Leave out the chat's narrative. How a conclusion was reached is only worth carrying
+  if it blocks a retry, which is what "Settled" and "Known broken" are for.
+- If a persistent memory or profile already carries the standing rules (no em dashes,
+  anti-fabrication, verification commands), do not repeat them in the block.
+- Secrets and tokens never go in a message that gets pasted around, including localhost
+  URLs that embed a session token.
+
+A block that runs past roughly one screen is carrying history. Cut until only state is
+left.
 
 ## What survives what
 
