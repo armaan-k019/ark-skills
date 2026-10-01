@@ -35,28 +35,28 @@
       "label": "Domain",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 46
+      "line": 47
     },
     {
       "id": "vendored",
       "label": "Vendored",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 54
+      "line": 55
     },
     {
       "id": "agents",
       "label": "Agents",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 67
+      "line": 68
     },
     {
       "id": "hooks",
       "label": "Hooks",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 75
+      "line": 76
     }
   ],
   "nodes": [
@@ -199,6 +199,22 @@
       },
       "eval_status": "unmeasured",
       "family": "research",
+      "vendored": false
+    },
+    {
+      "id": "skill:model-routing",
+      "kind": "skill",
+      "name": "model-routing",
+      "path": "model-routing/SKILL.md",
+      "lines": 62,
+      "description": "Decide which model a subagent runs on, when to end a long session and start a fresh one, and whether an eval is worth its cost, using the token counts ark-console reads from the transcripts. Use before spawning subagents for a run, when choosing a model for a named agent or a settings default, when a session has run for hours or its context is past 150k, before running a skill-creator eval, or when asked \"why is usage so high\" or \"which model should this agent use\".",
+      "origin": {
+        "from": "body",
+        "text": "Written for this repo from the efficiency run of 2026-09-30 (ark-skills `docs/runs/2026-09-30-efficiency/`: PROGRESS.md, ROUTING.md, experiments.md) and ark-console's usage report (`lib/usage.js`). Every number below comes from that run; each names its window and source. This draft has not been evaluated; that is a separate decision.",
+        "line": 10
+      },
+      "eval_status": "unmeasured",
+      "family": "skill-management",
       "vendored": false
     },
     {
@@ -754,6 +770,83 @@
       "line": 88,
       "lines": [
         88
+      ]
+    },
+    {
+      "id": "skill:model-routing->skill:experiment-discipline:skill-skill",
+      "source": "skill:model-routing",
+      "target": "skill:experiment-discipline",
+      "kind": "skill-skill",
+      "file": "model-routing/SKILL.md",
+      "line": 46,
+      "lines": [
+        46
+      ]
+    },
+    {
+      "id": "skill:model-routing->skill:skill-creator:skill-skill",
+      "source": "skill:model-routing",
+      "target": "skill:skill-creator",
+      "kind": "skill-skill",
+      "file": "model-routing/SKILL.md",
+      "line": 15,
+      "lines": [
+        15
+      ]
+    },
+    {
+      "id": "skill:model-routing->skill:strategic-compact:skill-skill",
+      "source": "skill:model-routing",
+      "target": "skill:strategic-compact",
+      "kind": "skill-skill",
+      "file": "model-routing/SKILL.md",
+      "line": 33,
+      "lines": [
+        33
+      ]
+    },
+    {
+      "id": "skill:model-routing->skill:unattended-build:skill-skill",
+      "source": "skill:model-routing",
+      "target": "skill:unattended-build",
+      "kind": "skill-skill",
+      "file": "model-routing/SKILL.md",
+      "line": 33,
+      "lines": [
+        33
+      ]
+    },
+    {
+      "id": "skill:model-routing->skill:visual-loop:skill-skill",
+      "source": "skill:model-routing",
+      "target": "skill:visual-loop",
+      "kind": "skill-skill",
+      "file": "model-routing/SKILL.md",
+      "line": 40,
+      "lines": [
+        40
+      ]
+    },
+    {
+      "id": "skill:model-routing->agent:silent-failure-hunter:skill-agent",
+      "source": "skill:model-routing",
+      "target": "agent:silent-failure-hunter",
+      "kind": "skill-agent",
+      "file": "model-routing/SKILL.md",
+      "line": 22,
+      "lines": [
+        22
+      ]
+    },
+    {
+      "id": "skill:model-routing->agent:ts-reviewer:skill-agent",
+      "source": "skill:model-routing",
+      "target": "agent:ts-reviewer",
+      "kind": "skill-agent",
+      "file": "model-routing/SKILL.md",
+      "line": 22,
+      "lines": [
+        22
       ]
     },
     {
