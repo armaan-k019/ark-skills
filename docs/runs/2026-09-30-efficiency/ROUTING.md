@@ -24,6 +24,14 @@ Not changed, on the stop-and-ask list: the skill-creator agent files and every S
 
 Open: whether opus is the strongest available. The session's model list includes Fable 5.1 (claude-fable-5-1) as well as Opus 5.5, and the Agent tool accepts `fable`. No measurement in this run compares them, so nothing here says which is stronger (NOT MEASURED).
 
+## The same counts in the 7 days to 2026-09-30 18:00 UTC (added 2026-10-01)
+
+The table above counts every subagent transcript up to 18:00Z. model-routing/SKILL.md quotes the 7-day window, so it is recorded here. Recounted read-only on 2026-10-01 from each transcript's .meta.json (`agentType`, `model`, `description`) and its first timestamped line, keeping transcripts whose first line is after 2026-09-23T18:00:00Z and at or before 2026-09-30T18:00:00Z:
+
+- general-purpose: 145 transcripts (the usage report's own 7-day count, REPORT.md), 94 of them asked no model.
+- review runs (description contains review, gate, re-review, full-diff, or fresh review, case-insensitive): 61, of which 39 asked none and ran on claude-opus-5-5, 16 asked opus and ran on claude-opus-5-5, 5 asked opus and ran on claude-opus-5, 1 asked sonnet and ran on claude-sonnet-5-5.
+- grading runs (description starts "Grade"): 16, all asked none and ran on claude-opus-5-5.
+
 ## Evidence against spending the effort only on subagent models
 
 From the Phase 1 report at 2026-09-30T18:00:00Z (ark-console d603781): in the last 7 days, 3,113,044,200 tokens, of which cache reads were 2,989,847,490 (96.0%); 86.8% of tokens were in messages above 150k context, and 99.7% in sessions longer than 8 hours (10 sessions). General-purpose subagents were 43.3% of tokens in the 7 days and 58.3% in the last 24 hours. Routing a subagent to a cheaper model changes the price of its tokens, not their number; the volume comes from long contexts read again on every turn. Both levers are real; the numbers say the second is larger. (Share figures are the Phase 1 report's; the 24-hour general-purpose share was 58.3% at 18:00Z.)
