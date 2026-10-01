@@ -4,6 +4,7 @@
       "id": "build-discipline",
       "label": "Build discipline",
       "members": [
+        "model-routing",
         "phased-build",
         "spec-writing",
         "strategic-compact",
