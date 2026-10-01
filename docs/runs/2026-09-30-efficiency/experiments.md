@@ -13,7 +13,7 @@ Hypothesis:        Sonnet grades all eight assertions correctly, as the current 
                    volume, not the model). Disproved if any sonnet run gets a verdict wrong, or if its token
                    median falls outside the current default's min-max.
 Baseline:          the current routing: an Agent call to general-purpose with no model, which inherits
-                   claude-opus-5-5 (observed: 101 of 175 general-purpose calls passed no model; all 16
+                   claude-opus-5-5 (observed, every subagent transcript up to 2026-09-30 18:00 UTC: 101 of 175 general-purpose calls passed no model; all 16
                    grading runs inherited opus).
 Primary measure:   verdicts correct out of 8 per run (higher is better); tokens per run (lower is better),
                    median and min-max over 3 runs.
@@ -128,9 +128,25 @@ What the notice's number is: in all six runs, subagent_tokens equals the last me
 Verdict, against the decision rule written before the runs:
 - Output quality: the same on the verdicts (24 of 24 in each arm), different on format: every sonnet run broke "Reply with only a JSON array ... No other text"; no opus run did. For a grader whose reply is parsed, that is a failure, not a style difference.
 - Tokens: the card's primary measure went against the proposal. Sonnet's median notice tokens, 87,404, is above the whole current range (43,093 to 52,990): sonnet finished with a larger context. On the transcript measure it went the other way: sonnet's median 329,044 is below the whole current range (390,825 to 453,277), because it took 5 to 7 messages instead of 10 or 11, so it read its cached context fewer times. Sonnet wrote more to cache (54,445 to 64,011 cache creation tokens against 19,084 to 25,651); the opus runs may have reused cache written by the parent session, which runs the same model. That is a possible explanation, not measured.
-- Wall time: sonnet median 39.0 s (37.0 to 41.4) against 54.5 s (50.1 to 57.1). The ranges do not overlap, but 3 runs are fewer than the 5 experiment-discipline asks for timing, so this is weak evidence.
+- Wall time: sonnet median 39.0 s (37.1 to 41.5) against 54.5 s (50.1 to 57.2). The ranges do not overlap, but 3 runs are fewer than the 5 experiment-discipline asks for timing, so this is weak evidence.
 - By the card's rule ("if every sonnet run grades 8 of 8 and its token median is not above the current default's range, the proposal stands"), the proposal does not stand: the token median is above the range, and the format guardrail failed 3 of 3. The change did not measurably help on the measure chosen in advance. No percentage is reported.
 - Dollars: NOT AVAILABLE. On a subscription the per-token price does not apply; how each model's tokens count against the plan's limits is not in the transcripts.
 
 Decision: do not apply the settings default on this evidence. Keep the per-agent route: reviewers on opus explicitly; a sonnet grader only with its reply validated (parse the JSON, reject extra text) or a stricter prompt, and re-measured.
 Next: if the grader route is taken, repeat this experiment with 5 runs per arm and a reply validator, and count tokens by the transcript measure.
+
+## Eval cost (added 2026-10-01, Phase 7 of console-v2, from the review of this run)
+
+model-routing/SKILL.md step 3 quoted two eval costs that no entry in this run recorded. They were measured again from the transcripts, read-only, and are logged here.
+
+```text
+Run:            2026-10-01 10:58:29 EDT (from `date`), read-only count; no eval was run
+Command:        a Node script over ~/.claude/projects/*/*/subagents/*.jsonl: for each transcript, each message.id once, its last line, tokens = input + output + cache creation + cache read; cross-checked with ark-console lib/usage.js's scanTranscript and usageAsOf on the same files
+Selection:      by each transcript's .meta.json description and first timestamp:
+                9 transcripts whose description starts "B2", first line 2026-09-29 12:50 to 13:30 UTC
+                ("B2 eval vague|feedback|reverse with skill|baseline", "B2 iter2 vague|feedback|reverse with skill");
+                16 transcripts whose description starts "Grade", first line 2026-09-26 to 2026-09-29
+Result:         B2 runs 29,286,170 tokens; grading runs 28,694,794 tokens; both methods equal
+Baseline:       none (a cost, not a comparison)
+Decision:       the numbers in model-routing/SKILL.md stand, now with this entry as their source
+```
