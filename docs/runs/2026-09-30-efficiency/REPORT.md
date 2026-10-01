@@ -140,7 +140,7 @@ Hand check (addendum): experiment-discipline's Skill calls read line by line fro
 |---|---|---|---|---|---|---|
 | silent-failure-hunter | agents/silent-failure-hunter.md | phased-build (review phase) | opus (frontmatter) | 14 of 14 on claude-opus-5-5 (13 asked opus, 1 asked none) | opus, unchanged | Review is judgment. |
 | ts-reviewer | agents/ts-reviewer.md | phased-build (review phase) | opus (frontmatter) | 0 runs recorded | opus, unchanged | Review is judgment. |
-| Reviewer subagents of adversarial-review and unattended-build gates | none (general-purpose, spawned per call) | adversarial-review, unattended-build, phased-build | not pinned: the caller's `model`, else the session default, which inherits the main model | 43 general-purpose runs described as review, gate, re-review, full-diff, or fresh review: 36 asked none and ran on claude-opus-5-5, 7 asked opus and ran on claude-opus-5 | opus, passed on the Agent call | Review is judgment. They get opus today only by inheriting it; a cheaper default would move them to it unless the call passes opus. |
+| Reviewer subagents of adversarial-review and unattended-build gates | none (general-purpose, spawned per call) | adversarial-review, unattended-build, phased-build | not pinned: the caller's `model`, else the session default, which inherits the main model | 65 general-purpose runs whose description contains review, gate, re-review, full-diff, or fresh review (case-insensitive): 41 asked none (39 ran on claude-opus-5-5, 2 on claude-sonnet-5), 23 asked opus (16 ran on claude-opus-5-5, 7 on claude-opus-5), 1 asked sonnet (ran on claude-sonnet-5-5). Recounted 2026-10-01 under that rule; the first count here, 43 (36 asked none, 7 asked opus), was wrong | opus, passed on the Agent call | Review is judgment. They get opus today only by inheriting it; a cheaper default would move them to it unless the call passes opus. |
 | skill-creator grader | skill-creator/agents/grader.md (instructions, no frontmatter; read by a general-purpose subagent) | skill-creator | not pinned | 16 runs described as Grade: all asked none, all ran on claude-opus-5-5 | sonnet; haiku NOT MEASURED | Grading assertions is mechanical under the rule. The grader's output is the eval number the author relies on, so the cheapest model that can do it is the one shown to grade the same; Phase 4 measures sonnet against the current default on a grading task. |
 | skill-creator comparator | skill-creator/agents/comparator.md | skill-creator | not pinned | 0 runs identified by description | opus, passed on the call | A blind quality comparison is judgment. |
 | skill-creator analyzer | skill-creator/agents/analyzer.md | skill-creator | not pinned | 0 runs identified by description | opus, passed on the call | Explaining why one version won is judgment. |
@@ -177,7 +177,7 @@ Second, NOT VERIFIED against documentation:
 }
 ```
 
-Source for the name: Claude Code 2.1.282's installed binary contains `function tre(){let e=a.CLAUDE_CODE_SUBAGENT_MODEL;return e&&e!=="inherit"?e:"inherit"}` (read locally with `strings`). The `env` settings key is from memory. Phase 4 does not support applying it yet: apply it, if at all, only after reviewer calls pass opus explicitly (36 of 43 review runs got opus only by inheriting it).
+Source for the name: Claude Code 2.1.282's installed binary contains `function tre(){let e=a.CLAUDE_CODE_SUBAGENT_MODEL;return e&&e!=="inherit"?e:"inherit"}` (read locally with `strings`). The `env` settings key is from memory. Phase 4 does not support applying it yet: apply it, if at all, only after reviewer calls pass opus explicitly (41 of 65 review runs asked no model, and 39 of those got opus only by inheriting it; recounted 2026-10-01, the first count, 36 of 43, was wrong).
 
 ## Refused or not done
 
@@ -201,7 +201,7 @@ Tests:     PASS 55/55   node --test test/indexer.test.js test/server.test.js tes
            PASS 262/262 node scripts/check-page.js (fixture, empty, and no-usage snapshots)
            PASS         node scripts/mutants.js: 75 mutants, each caught; every test fails under at least one (15:08 to 15:20)
            PASS         bash scripts/accept-usage.sh; bash scripts/accept-phase2.sh; ARK_CONSOLE_PORT=7778 node scripts/accept-phase4.js
-Diff:      19 files changed from main; unrequested changes: none (accept-phase2.sh and accept-phase4.js were adjusted for the clock-dependent usage report after the Phase 1 review); 0 em dashes in files and commit messages; no debug output; no secret values ("sk-ant-oat" appears in ROUTER-EVAL.md as the name of a token prefix)
+Diff:      19 files changed from main; unrequested changes: one, found by the console-v2 Phase 7 review: ark-console README.md was edited in d603781 (lines for the indexer's usage report, lib/usage.js, the tests, and the mutants), outside this run's SCOPE (STANDING-DECISIONS.md: "Nothing else in ark-console is written"), and this line first said none. The author later approved a README update (console-v2, answer 4), which rewrote it in bcdbae1. accept-phase2.sh and accept-phase4.js were adjusted for the clock-dependent usage report after the Phase 1 review; 0 em dashes in files and commit messages; no debug output; no secret values ("sk-ant-oat" appears in ROUTER-EVAL.md as the name of a token prefix)
 Verdict:   DONE
 
 VERIFICATION: ark-skills feat/efficiency

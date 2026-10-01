@@ -18,7 +18,7 @@ Written for this repo from the efficiency run of 2026-09-30 (ark-skills `docs/ru
 
 The rule: mechanical work (running commands, collecting output, grading assertions against a known answer, file search) goes to the cheapest model shown to do it; judgment work (review, planning, evaluating a paper, a design, or a quality comparison) goes to the strongest available.
 
-- **Pass the model on the Agent call.** A general-purpose subagent with no model inherits the main session's. In the 7 days to 2026-09-30 18:00 UTC, 101 of 175 general-purpose calls passed no model; all 16 grading runs and 36 of 43 review runs got opus only by inheriting it. Change the default without changing the calls, and reviews quietly move to the cheaper model.
+- **Pass the model on the Agent call.** A general-purpose subagent with no model inherits the main session's. In the 7 days to 2026-09-30 18:00 UTC, 94 of 145 general-purpose calls passed no model; all 16 grading runs, and 39 of the 61 review runs (descriptions containing review, gate, re-review, full-diff, or fresh review), got opus only by inheriting it (ROUTING.md, recounted 2026-10-01). Change the default without changing the calls, and reviews quietly move to the cheaper model.
 - **Named agents carry their model in frontmatter.** `agents/silent-failure-hunter.md` and `agents/ts-reviewer.md` pin `model: opus`, because both review.
 - **"Cheapest that can do it" is a measurement, not a guess.** In the run's experiment (experiments.md, 3 runs per arm, interleaved), a sonnet grader got all 24 verdicts right, as opus did, but broke "reply with only a JSON array" in 3 of 3 runs; opus kept it in 3 of 3. A cheaper grader needs a reply validator (parse it, reject extra text) before it replaces the default.
 - **Eval test runs use the model the skill is meant for,** on both arms. Running them cheaper changes what is measured.
@@ -28,7 +28,7 @@ The rule: mechanical work (running commands, collecting output, grading assertio
 
 Every turn re-reads the whole context from cache, so a turn costs about as much as the context is long.
 
-- In the 24 hours to 2026-09-30 18:00 UTC, main-session messages averaged 552,444 tokens each (312,131,243 tokens over 565 messages), and cache reads were 94.1% of all tokens. Peak contexts were 309,868 to 963,753.
+- In the 24 hours to 2026-09-30 18:00 UTC, main-session messages averaged 552,444 tokens each (312,131,243 tokens over 565 messages), and cache reads were 94.1% of all tokens. Peak contexts were 69,708 to 963,753 over five sessions, four of them above 300,000.
 - In the 7 days to the same time, 86.8% of tokens were in messages with more than 150,000 tokens of context, and 99.7% were in sessions longer than 8 hours (10 sessions).
 - So: when a session's context passes about 150k, or the work moves to a new phase, write the handoff (PROGRESS.md in `unattended-build`, the handoff in `strategic-compact`) and continue in a fresh session. A fresh session reads the handoff once instead of the whole history on every turn.
 - Delegating a large read to a subagent keeps it out of the main context; the subagent's own context is discarded when it returns. That is a reason to delegate reads, separate from which model the subagent uses.
@@ -37,8 +37,8 @@ Every turn re-reads the whole context from cache, so a turn costs about as much 
 
 Measured from the subagent transcripts (each message once, its last line):
 
-- The visual-loop eval's 9 runs (descriptions starting "B2", 2026-09-29 12:50 to 13:29 UTC): 29,286,170 tokens.
-- 16 grading runs across the evals of 2026-09-26 to 2026-09-29: 28,694,794 tokens.
+- The visual-loop eval's 9 runs (descriptions starting "B2", 2026-09-29 12:50 to 13:29 UTC): 29,286,170 tokens (experiments.md, "Eval cost").
+- 16 grading runs across the evals of 2026-09-26 to 2026-09-29: 28,694,794 tokens (same entry).
 
 Do not run an eval when:
 - the SKILL.md already records a number for this version (re-running it costs as much and answers nothing new; the efficiency run's SPEC put it on the stop-and-ask list);
