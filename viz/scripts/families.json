@@ -37,6 +37,7 @@
       "id": "skill-management",
       "label": "Skill management",
       "members": [
+        "model-routing",
         "skill-audit",
         "skill-creator",
         "vet-third-party"
