@@ -1,10 +1,10 @@
 # Progress: ark-console v3, readable by someone who did not build it
-Updated: 2026-10-04 22:56 EDT   Branches: ark-console feat/console-v3 (from docs/ui-v3-simple bc38b4e), ark-skills docs/console-v3-run   Last commit: ark-console 8adc739
+Updated: 2026-10-04 23:42 EDT   Branches: ark-console feat/console-v3 (from docs/ui-v3-simple bc38b4e), ark-skills docs/console-v3-run   Last commit: ark-console 9ac2977
 
 Class (unattended-build Step 0): machine-checkable. Every Phase 0 to 4 acceptance criterion is a command or a computed-style assertion that can fail; the taste in it (type scale, floors, explanation wording) goes to the author at the Phase 5 gate, as the SPEC says. The stop-and-ask and decide-yourself lists are the SPEC's own ("Stop and ask", "Decide yourself") plus STANDING-DECISIONS.md, which is left as the author wrote it.
 
 ## Now
-Phase 3 (SPEC "Phase 3: plain language"), step: a sonnet builder is working; a fresh-context reviewer reads the Phase 2 diff and fix round 1 (e3e3557..8adc739) in parallel.
+Phase 5 (SPEC "Phase 5: STOP"). Stopped for the author's round. Nothing past Phase 5 has been started. The type scale, the floors and the explanation sentences are proposals until this gate passes.
 
 ## Done and verified
 - Precondition: `git -C ~/dev/ark-console log --oneline -1 docs/UI.md` gives bc38b4e; `grep -c "## 9. Minimum sizes" docs/UI.md` gives 1. feat/console-v3 created from docs/ui-v3-simple at bc38b4e (not from main).
@@ -17,18 +17,32 @@ Phase 3 (SPEC "Phase 3: plain language"), step: a sonnet builder is working; a f
 - Phase 1 existing checks rewritten by the builder, each citing UI.md v3 in a comment: header bar 48 to 56px (section 3); the 2:1 columns replaced by four full-width stacked cards 16px apart, home capped at 1600 and centered (section 3); running rows lose branch, model, Kill (sections 4, 7); "Show all n running" opens the Sessions page; the Sessions page scrolls the document (decision, below); noScrollCheck strengthened; tabChecks replaced by view checks; chart 1's label bound read from its real viewBox (section 3, full card width); MEASURE reveals all views for one read.
 - Gate review of Phase 0-1 (opus, fresh context, read-only, 150,722 tokens): no CRITICAL; HIGH H1, the chart "table" toggle set `.hidden` on an `<svg>` (no such property), so the chart was never hidden, and its check read back the same property; MEDIUM M1 no hit-target check on the detail pages, M2 detail pages lost the snapshot time, stale marker and theme toggle (not recorded as a gap: now under Gaps), M3 the audit never verified a view was reached, M4 audit blind spots (closed rows and banners skipped for banned words; inline text skipped by the measure), M5 "Usage detail" overlapping chart 1 (gone in Phase 2: no longer absolutely positioned); LOW L1 to L6 (listed under Gaps and review leftovers).
 - Phase 2 (sonnet subagent: 130,220 tokens, 24 tool uses, 358 s), ark-console b77bca1: type scale 24/18/15/12/11 and big 34, the monospace stack and tabular-nums on big and numeric, rows 36, home card padding 24 radius 10, detail card padding 20 radius 8, every value asserted from computed style against literals in check-page.js (typeChecks, object T), on three fixtures, both modes, home and four pages. Existing literals moved to v3 values with "UI.md section 2 (v3)" comments: rows 28 to 36, table cells 13 to 15px, headline 20 to 24px and letter-spacing -0.2 to -0.24px, card padding 16 to 20 (detail), notes 12 to 15px, tile value 28 to 34px. Checked by the main session: 1,176 passed, 16 failed: 2 home no-scroll (Q3) and 14 "no prose line is longer than 76 characters", caused by my brief, which asked for max-width exactly 76ch AND lines of at most 76 characters; 76ch (76 widths of "0") holds up to 97 characters of this font.
-- Fix round 1 (main session, opus), ark-console 8adc739: H1 fixed (toggleAttribute on the svg; the toggle checks read what is drawn: 6 toggle FAILs and 2 round-trip FAILs on the old code, observed, then pass); round-trip checks assert the state changed first (L2); M1 hit targets on Sessions, Repos and Skills pages; M3 and M4 in the audit (removing the measure cap gives 43 measure violations, observed, then restored); measure: `--measure: 56ch` (60ch gave a longest line of 79), the check asserts a cap no wider than 76ch plus the line length in characters; `.row-question` (the one-line ellipsis cell, UI.md section 4) leaves the prose list. Verified: tests 95 of 95 (b77bca1); `node scripts/check-page.js` 1,198 passed, 2 failed (both Q3: home 1114px on the populated fixture, 1282px on many-running); `node scripts/audit-ui.js` exit 1, 58 distinct: contrast 23, horizontal scroll 2 (Usage page 1241 wide at 1100 and 820), page scroll on home 1, banned word 2, chart box 12, headline block 3, hit target 15, text measure 0.
+- Fix round 1 (main session, opus), ark-console 8adc739: H1 fixed (toggleAttribute on the svg; the toggle checks read what is drawn: 6 toggle FAILs and 2 round-trip FAILs on the old code, observed, then pass); round-trip checks assert the state changed first (L2); M1 hit targets on Sessions, Repos and Skills pages; M3 and M4 in the audit (removing the measure cap gives 43 measure violations, observed, then restored); measure: `--measure: 56ch` (60ch gave a longest line of 79), the check asserts a cap no wider than 76ch plus the line length in characters; `#home .row-question` leaves the prose list (the comment and this line first called it the one-line ellipsis cell; that is `.row-ask`; `.row-question` is the full question, still measured through `#home .row-more p`, as the Phase 2 review noted). Verified: tests 95 of 95 (b77bca1); `node scripts/check-page.js` 1,198 passed, 2 failed (both Q3: home 1114px on the populated fixture, 1282px on many-running); `node scripts/audit-ui.js` exit 1, 58 distinct: contrast 23, horizontal scroll 2 (Usage page 1241 wide at 1100 and 820), page scroll on home 1, banned word 2, chart box 12, headline block 3, hit target 15, text measure 0.
 - Home heights at 1440x900 after Phase 2 (builder's measurement): populated 1114 (waiting 255, working 115, usage 534, footer 74, header 56); empty 900; many-running 1282 (working 283).
+- Gate review of Phase 2 and fix round 1 (opus, read-only, 136,740 tokens): no CRITICAL or HIGH; MEDIUM M1 the "drawn at least once" guard covered roles, not selectors, and not bodySize, label or prose; LOW L1 the home measure opened only the first (short) row, L2 it closed that row instead of restoring it, L3 Sessions-page wait ages not numeric, L4 title-styled elements missing from the title role, L5 buttons switched to the body serif. All verified by every literal being asserted somewhere it can fail.
+- Fix round 2 (main session), ark-console c68d38b: per-selector presence on the populated fixture with TYPE_OPTIONAL naming the selectors that fixture has no data for (hiding `.running-row .since` gives the guard's FAIL, observed); L1 to L5 fixed. check-page 1,261 passed, 2 failed (Q3).
+- Phase 3 (sonnet subagent: 166,822 tokens, 33 tool uses, 426 s), ark-console 7eab49a: header sentence, an explanation sentence per home card, units in words, plain tool phrases, "Last checked <n> ago (stale)", headline numbers on the 7-day window, glosses on detail pages; banned-word, explanation, units and gloss checks added. Checked by the main session: 1,245 passed, 2 failed (Q3); audit no banned word; a mutant ("PID" in the refresh button's aria-label) gives 6 check FAILs and 1 audit banned-word row, observed, then restored.
+- Gate review of Phase 3 and fix round 2 (opus, read-only, 113,832 tokens): HIGH H1 a count that is 0 because its source could not be read was said as "No sessions are working." (e.g. when ps fails); MEDIUM: the Waiting explanation claimed every run had stopped; idle sessions were described in the present tense; the Usage explanation said 7 days beside a 14-day chart; "pid" could reach home through the Kill error banner; LOW: status matched by pattern, interval not tied to POLL_MS, optional selectors never checked on another fixture, gloss list narrow.
+- Fix round (gate after Phase 3), ark-console be280e6: H1 and the four MEDIUMs fixed; status compared exactly; the footer interval checked against POLL_MS; literal unknown-count header cases and an idle/busy wording check on the many-sessions fixture added. check-page 1,402 passed, 2 failed (Q3).
+- Phase 4 (opus subagent: 167,560 tokens, 44 tool uses, 595 s), ark-console 95843c1: light --text-3 #77766f to #6e6d67 (worst 4.51:1 on --surface-2; recomputed by the main session: 4.838, 5.056, 4.513 on surfaces 0, 1, 2) written into UI.md section 1 in the same commit; .note and #status from the CSS keyword gray to --text-3; hit targets 32x32 on every control; headline blocks min-height 96; charts 2 to 4 at least 220 tall; usage table text cells wrap (no horizontal scroll at 1100 or 820); floor and token-contrast checks at three widths. The builder reports the new checks fail on HEAD's CSS and app.js (67 FAILs, its observation). Checked by the main session: tests 95 of 95; check-page 1,399 passed, 2 failed (Q3, home now 1282 and 1458 tall); audit exit 1, 6 distinct, all open questions.
+- Gate review of Phase 4 (opus, read-only, 116,910 tokens): MEDIUM M1 chart 2's labels inside segments were --text-1 on series colors, 3.07 to 3.88:1 in dark mode, unseen because the audit read SVG text against the card; M2 --critical as text (Kill on hover) below 4.5 in both modes (Q6); M3 no mutant yet for the new assertions (Phase 6); LOW the chart floor is met by the SVG's box, not its drawing (chart 2 is a 28px bar in a 220px box); row height and the open kill dialog are not measured at every width or state (measured fine today).
+- Fix round (gate after Phase 4), ark-console 87ae336 and 9ac2977: chart 2 labels use --surface-0 ink in dark mode (4.83 to 6.10 on the four series) and keep --text-1 in light (6.15 to 9.09 on series 2 to 4; series 1 is Q7); the audit reads SVG text against the mark under it (the old white ink gives 3.41:1, observed); check-page writes the 820 and Sessions screenshots; a viewport screenshot now uses the width in effect.
+- Final state at 9ac2977: `node --test test/indexer.test.js test/server.test.js test/usage.test.js` 95 of 95; `node scripts/check-page.js` 1,404 passed, 2 failed (both Q3); `node scripts/audit-ui.js` exit 1, 6 distinct violations, every one an open question (Q1, Q3, Q4, Q5). scripts/mutants.js NOT RUN (Phase 6). Nothing pushed.
 
 ## In flight
 - Nothing.
 
-## Open questions
-- Q1: `--warning` as text. UI.md section 6 turns the stale snapshot line `--warning`; section 1 says status colors are "fixed, never themed". Measured: #fab219 on light --surface-0 #f7f7f5 is 1.71:1 (the audit's lowest). No single color reaches 4.5:1 on both #f7f7f5 and #121211 (it would need relative luminance at most 0.157 for light and at least 0.203 for dark), so section 9's rule cannot be met without theming a status token or not using --warning for that text. Triggered by: a design decision UI.md does not cover (two of its sections conflict). Blocks: Phase 4's "every ratio at or above 4.5" for the stale line in light mode only. Raised: not yet (Phase 5 report).
-- Q2: the third headline number. UI.md section 4 names "runs finished this week"; the snapshot has no record of a run finishing (runs carry status_line, updated, waiting_on_human; nothing marks done), so it needs the indexer to collect something new. Triggered by: SPEC stop-and-ask "Changing what the indexer collects". Blocks: the third headline number; until answered it stays today's "share from general-purpose" tile. Raised: not yet.
-- Q3: home height. UI.md's values (24px home card padding, 36px rows, 34px big numbers, a 220px chart, an explanation sentence per card) and "no page scroll at 1440x900" do not fit together once home has a few rows: estimated about 1,020px on the populated fixture after Phase 2, and the many-sessions fixture is already 1003px at Phase 1's smaller sizes. UI.md sets no cap on waiting rows. Triggered by: a design decision UI.md does not cover (sections 2, 3 and 9 conflict). Blocks: the no-scroll check on populated data after Phase 2 (measured then). Raised: not yet.
+## Open questions (for the author at this gate)
+- Q1: `--warning` as text. The stale line is --warning (UI.md 6), and status colors are "fixed, never themed" (UI.md 1). Measured: #fab219 on light --surface-1 1.79:1, on --surface-0 1.71:1; dark passes (9.49). No single color passes on both modes (it would need relative luminance at most 0.157 for light and at least 0.203 for dark). Triggered by: two UI.md sections conflict. Blocks: the audit's exit 0 (2 contrast rows, light only).
+- Q2: the third headline number. UI.md 4 names "runs finished this week"; the snapshot records nothing that marks a run finished. Triggered by: SPEC stop-and-ask "Changing what the indexer collects". Blocks: that number; until answered it is the share used by general-purpose helper agents, 7-day window.
+- Q3: home height. With UI.md's values home is 1282px tall at 1440x900 on the populated fixture (5 runs waiting, 1 session working) and 1458 on many-sessions; the empty fixture fits (900). Growth by phase on the populated fixture: 900 (Phase 1, with padding cut to 12), 1114 (Phase 2 sizes), 1258 (Phase 3 explanation sentences), 1282 (Phase 4 32px hit targets). UI.md sets no cap on waiting rows. Triggered by: sections 2, 3, 4 and 9 conflict. Blocks: 2 check-page FAILs and the audit's "page scroll on home".
+- Q4: the header sentence measures 86 characters on one line on the populated fixture (UI.md 2: at most 76); wrapping it makes the 56px header (UI.md 3) two lines (it already wraps at 820, seen in docs/screenshot-home-820.png). Triggered by: sections 2 and 3 conflict. Blocks: the audit's one text-measure row.
+- Q5: dimmed rows at 60% opacity (UI.md 4) put text below 4.5:1: measured Dismiss (--text-2) in a dimmed row 4.44 dark, 2.85 light; computed from the tokens (not drawn by any fixture: they need "show dismissed"): --text-3 in a dimmed row 2.70 dark, 2.32 light; --text-1 passes (7.18, 5.09). Triggered by: sections 4 and 9 conflict. Blocks: 2 audit contrast rows.
+- Q6 (new): --critical as text: Kill on hover sits on a hovered row (--surface-2): 3.27:1 dark, 4.18 light; the dialog's confirm button on --surface-1: 3.62 dark, 4.68 light. Status colors are fixed (UI.md 1). The audit and checks never hover, so no row shows it. Triggered by: sections 1, 7 and 9 conflict. Blocks: nothing measured today.
+- Q7 (new): chart 2's direct labels sit inside segments (UI.md 5). On light --series-1 #2a78d6 no token reaches 4.5:1 (--text-1 4.46, --surface-1 4.30; only pure black, 4.76, would). Not drawn by the fixtures (that segment is 9.6%, under the 12% label threshold). Triggered by: sections 1, 5 and 9 conflict.
+- Q8: decision records. The run made choices that meet decision-records' bar (two levels shown and hidden in place; run Dismiss moving to the Sessions page; --measure 56ch). That skill writes records only with the author's approval, and ark-console has no docs/decisions/. Drafts not written; asking whether to.
 
-## Gaps (UI.md silent; today's behavior kept unless noted) and review leftovers
+## Values the run chose where UI.md is silent, and gaps (Phase 5 list)
 - No body font family in UI.md or style.css: the page renders in the browser default serif (Times). Not changed.
 - Detail pages show no snapshot time, stale marker, theme toggle or refresh (they sit in home's header and footer). Review M2. Not changed; for the author.
 - "See all runs" opens the Sessions page at its top; the "Waiting on you" section is below the sessions table there (review L4), and the link is after the rows in tab order.
@@ -36,19 +50,154 @@ Phase 3 (SPEC "Phase 3: plain language"), step: a sonnet builder is working; a f
 - Detail views are outside the `<main>` landmark (review nit).
 - Chart 1's direct label ("3.1M") is clipped at the top of the chart (seen in docs/screenshot-light.png after Phase 2).
 - Phase 2 choices (UI.md section 2 does not say): #status and the dismissed label in label style; chart axis text 12px and direct labels 12px monospace; usage table captions as prose; the usage-window h3 and problems h2 in title style, titles in --text-1; the detail "Waiting on you" heading kept as a micro eyebrow; .run-line2 line-height 22px; home rows height 36, table rows min-height 36; the kill dialog as a detail card.
-- --measure 56ch: chosen by the session so lines hold at most 76 characters in this font.
+- --measure 56ch: chosen by the session so lines hold at most 76 characters in this font (76ch held up to 97; 60ch gave 79).
+- Home layout (Phase 1): card titles "Waiting on you", "Working right now", "Usage this week"; "See all runs" and "Usage detail" as plain block links at the end of their cards (UI.md's diagram draws them at the right); the footer is one card: four links, then the status line; errors banner above every page; the theme toggle and refresh only in home's header.
+- Waiting rows show every waiting run (no cap), one line with an ellipsis, expanding in place to the full question, "Why" and "Status"; dismissed runs never on home.
+- Explanation sentences (Phase 3, revised at the Phase 3 gate), all 15px --text-2: Waiting "Runs are long jobs Claude Code does for you. Each of these has a question that only you can answer." Working "Sessions are conversations with Claude Code. These are running now, with how long ago each last did something." Usage "Tokens are the usage meter your plan bills against. The three numbers cover the last 7 days; the chart, 14." Footer "Open a page for the full lists behind these cards. This page checks again every 10 seconds."
+- Header sentence forms, including "Nothing is known to be waiting on you; 2 runs could not be read." when a source could not be read.
+- Headline numbers on the 7-day window (UI.md says "this week"): "Tokens used this week" with "164.5k tokens were new text; the rest was text read again."; "Share above 150k conversation size"; "Share used by general-purpose helper agents" (Q2).
+- Tool phrases: busy "running a command", "reading a file", "editing a file", "searching files", "working with a helper agent", "reading the web", "updating its to-do list", else "using a tool"; idle "waiting, last ran a command" and so on.
+- Detail-page glosses: "Model (claude-... identifier)" (Sessions), "Dirty (uncommitted changes)" (Repos), a "Words used on this page" line on Usage for cache, context and subagent (their first use is in text lib/usage.js supplies). The kill dialog's "pid N" is not glossed.
+- The Kill error and undo lines moved into the Sessions page (the server's refusal text names the pid).
+- Phase 4: --text-3 light #6e6d67 (the first same-hue step reaching 4.5 on all three light surfaces); every button at least 32x32 by a base rule; headline blocks min-height 96; charts 2 to 4 at least 220 tall with marks unchanged, so chart 2 is a 28px bar centered in a 220px box (the floor is met by the box, review LOW); usage table text cells wrap; chart 2 label ink --surface-0 in dark.
+- Not changed, seen in the screenshots: the Sessions table is not full width and its headers crowd ("Branch Model (claude-... identifier)"); chart 4's labels overlap its bars and leave empty space below; chart 1's "3.1M" label is clipped at the top; the skills graph labels overlap (as in v2); text is the browser's default serif.
+- Review leftovers below HIGH, not fixed: optional type selectors are never confirmed on another fixture; the gloss check covers the banned list plus cache and model, not Behind/Ahead/upstream on Repos; a wait under a minute reads "waiting 0 minutes"; the explanation check accepts whitespace; row height and the open kill dialog are not measured at every width or state.
 
 ## Decisions
 - The two fixtures are test/fixtures/snapshot.json (populated) and snapshot-empty.json, made by scripts/make-snapshot-fixtures.js. The SPEC names scripts/make-fixtures.js, which makes transcript fixtures, not page fixtures; UI.md section 10's "the empty and the populated fixture" are these two.
 - Audit, banned words: "PID" matches any case (UI.md lists "PID" and "pid"); "SHA" and "HEAD" match uppercase only (the English "head" is not banned); the rest any case, plurals included; the model rule is `claude-[a-z0-9-]+`, any case. The check reads the home root's innerText plus every title, aria-label, alt and placeholder inside it.
-- Audit, measures: row height is a floor (>= 36); text measure counts a wrapping block holding more than 76 characters of its own text whose content width, divided by the average character width of that text in its own font, exceeds 76; contrast composites every ancestor's background over white and multiplies the text alpha by every ancestor's opacity, so dimmed rows are measured as drawn. Home before v3 is the whole page (there was no home root), so the round 2 tab panels count as home in the before state.
+- Audit, measures: row height is a floor (>= 36); text measure (since fix round 1) counts the characters drawn on each line of every leaf block longer than 76 characters, skipping one-line nowrap cells; SVG text is read against the mark drawn under it (since the Phase 4 gate); contrast composites every ancestor's background over white and multiplies the text alpha by every ancestor's opacity, so dimmed rows are measured as drawn. Home before v3 is the whole page (there was no home root), so the round 2 tab panels count as home in the before state.
 
 - Phase 1 views are shown and hidden in place (no re-render, no URL change), so state round-trips by construction; the URL fragment is left to the kill token.
 - Run Dismiss moves off home with the attention cards: the Sessions page holds a "Waiting on you" section with the full cards, their Dismiss buttons and "show dismissed"; home's "See all runs" opens it. (The SPEC moves kill and dismiss to the Sessions page; runs had no other place there.)
 - Gates: each phase boundary gets a fresh-context review of that phase's diff, run in parallel with the next phase's builder (the reviewer only reads), fixes in at most two rounds.
 
 ## Next action
-Wait for the Phase 3 builder and the Phase 2 reviewer; verify Phase 3 against the artifact (home innerText, screenshots, check counts).
+Wait for the author's round on this gate. Then: make every value the author changes a literal assertion (SPEC Phase 5), and start Phase 6 (scripts/mutants.js, one mutant per UI.md section 10 "Added in v3" bullet).
+
+## Phase 5 report
+
+Screenshots (ark-console 9ac2977, populated fixture, written by `node scripts/check-page.js`, each looked at by the main session):
+- home dark, 1440x900: docs/screenshot.png (home is cut below chart 1's top half: Q3)
+- home light, 1440x900: docs/screenshot-light.png
+- home at 820x900, dark: docs/screenshot-home-820.png (the headline numbers stack; the header sentence wraps to two lines: Q4)
+- Sessions detail, dark: docs/screenshot-sessions.png
+- Usage detail, dark: docs/screenshot-usage.png
+- Skills detail, dark: docs/screenshot-skills.png
+(also docs/screenshot-confirm.png, the kill dialog open)
+
+Audit before (ab9cb88, the round 2 page) and after (9ac2977), distinct violations by rule:
+
+| rule | before | after |
+|---|---|---|
+| contrast | 20 | 4 (Q1 x2, Q5 x2) |
+| s8 banned word | 6 | 0 |
+| s9 chart content box | 15 | 0 |
+| s9 headline number block | 2 | 0 |
+| s9 hit target | 9 | 0 |
+| s9 row height | 3 | 0 |
+| s9 text measure | 30 | 1 (Q4) |
+| s3 page scroll on home | 0 (the round 2 page scrolled inside its tab body) | 1 (Q3) |
+| s3 horizontal scroll | 0 | 0 |
+| total distinct | 85 | 6 |
+
+The before audit's "home" was the whole round 2 page (no home root), and it measured the tab panels as views; the after audit measures home and four detail pages, and since fix round 1 it reads home's closed rows, the banners and drawn characters per line, so the two columns are not the same instrument: some "before" counts are lower than the old page deserved.
+
+Contrast, every text token on every surface, before (ab9cb88) and after (9ac2977), as computed by the page:
+
+| token | dark before s0 / s1 / s2 | dark after | light before s0 / s1 / s2 | light after |
+|---|---|---|---|---|
+| --text-1 | 18.74 / 17.42 / 15.73 | same | 18.35 / 19.17 / 17.12 | same |
+| --text-2 | 10.46 / 9.72 / 8.78 | same | 7.40 / 7.73 / 6.90 | same |
+| --text-3 | 5.38 / 5.00 / 4.52 (#8a8a80) | same | 4.25 / 4.44 / 3.97 (#77766f) | 4.84 / 5.06 / 4.51 (#6e6d67) |
+| --good | 5.59 / 5.19 / 4.69 | same | 3.13 / 3.27 / 2.92 | same (never drawn as text) |
+| --warning | 10.22 / 9.49 / 8.57 | same | 1.71 / 1.79 / 1.60 | same (Q1) |
+| --serious | 7.11 / 6.60 / 5.96 | same | 2.46 / 2.57 / 2.29 | same (not used) |
+| --critical | 3.90 / 3.62 / 3.27 | same | 4.48 / 4.68 / 4.18 | same (Q6) |
+
+Drawn pairs below 4.5 after: light --warning on --surface-1 1.79 (Q1); dimmed Dismiss --text-2 at 0.6: 4.44 dark, 2.85 light (Q5). Drawn pairs before that are gone: the CSS keyword gray #808080 (3.68 light), light --text-3 (4.25, 4.44), chart 2 labels (3.41 dark, found at the Phase 4 gate).
+
+Check-page assertions: 769 at bc38b4e, 1,404 passed and 2 failed at 9ac2977.
+
+## Phase 4 audit, after (full output of `node scripts/audit-ui.js` at 87ae336; 9ac2977 changes only the check's screenshot code)
+
+```
+
+
+# UI audit (docs/UI.md sections 3, 8, 9 and the 4.5:1 rule)
+chrome: ~/Library/Caches/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-mac-arm64/chrome-headless-shell
+measured: 60 views (fixtures populated, empty; modes dark, light; widths 1440, 1100, 820 x 900)
+
+## Violations: 6 distinct (30 with every place counted)
+- contrast: 4
+- s3 page scroll on home: 1
+- s9 text measure: 1
+
+| rule | element | observed | limit | text (first of n) | seen in |
+|---|---|---|---|---|---|
+| contrast | button.dismiss-button | 4.44:1 (#c3c2b7 at 0.60 on #121211, 15px) | >= 4.5:1 | "Dismiss" | 3 views: populated dark 1440 sessions; populated dark 1100 sessions; populated dark 820 sessions |
+| contrast | button.dismiss-button | 2.85:1 (#52514e at 0.60 on #f7f7f5, 15px) | >= 4.5:1 | "Dismiss" | 3 views: populated light 1440 sessions; populated light 1100 sessions; populated light 820 sessions |
+| contrast | p#status.stale | 1.79:1 (#fab219 on #fcfcfb, 12px) | >= 4.5:1 | "Last checked 276 days ago (stale)." | 6 views: populated light 1440 home; populated light 1100 home; populated light 820 home; and 3 more |
+| contrast | span.stale-marker | 1.79:1 (#fab219 on #fcfcfb, 12px) | >= 4.5:1 | "(stale)" | 6 views: populated light 1440 home; populated light 1100 home; populated light 820 home; and 3 more |
+| s3 page scroll on home | document | scrollHeight 1282 > clientHeight 900 | no page scroll at 1440x900 |  | 2 views: populated dark 1440 home; populated light 1440 home |
+| s9 text measure | h1#headline | 86 chars on one line (859px) | <= 76 chars | "5 runs are waiting on you. 1 session is " | 4 views: populated dark 1440 home; populated dark 1100 home; populated light 1440 home; populated light 1100 home |
+
+## Contrast: every text token against every surface, as computed by the page
+
+dark:
+| text \ surface | --surface-0 #121211 | --surface-1 #1a1a19 | --surface-2 #232322 |
+|---|---|---|---|
+| --text-1 #ffffff | 18.74 | 17.42 | 15.73 |
+| --text-2 #c3c2b7 | 10.46 | 9.72 | 8.78 |
+| --text-3 #8a8a80 | 5.38 | 5.00 | 4.52 |
+| --good #0ca30c | 5.59 | 5.19 | 4.69 |
+| --warning #fab219 | 10.22 | 9.49 | 8.57 |
+| --serious #ec835a | 7.11 | 6.60 | 5.96 |
+| --critical #d03b3b | 3.90 | 3.62 | 3.27 |
+
+light:
+| text \ surface | --surface-0 #f7f7f5 | --surface-1 #fcfcfb | --surface-2 #f0efec |
+|---|---|---|---|
+| --text-1 #0b0b0b | 18.35 | 19.17 | 17.12 |
+| --text-2 #52514e | 7.40 | 7.73 | 6.90 |
+| --text-3 #6e6d67 | 4.84 | 5.06 | 4.51 |
+| --good #0ca30c | 3.13 | 3.27 | 2.92 |
+| --warning #fab219 | 1.71 | 1.79 | 1.60 |
+| --serious #ec835a | 2.46 | 2.57 | 2.29 |
+| --critical #d03b3b | 4.48 | 4.68 | 4.18 |
+
+## Contrast: every text colour on the surface it was drawn on (observed)
+
+dark:
+| text | surface | opacity | ratio | text nodes | example |
+|---|---|---|---|---|---|
+| #c3c2b7 (--text-2) | #121211 (--surface-0) | 0.6 | 4.44 | 3 | button.dismiss-button "Dismiss", 15px |
+| #8a8a80 (--text-3) | #1a1a19 (--surface-1) | 1 | 5.00 | 129 | span.row-age "waiting 4 hours", 15px |
+| #8a8a80 (--text-3) | #121211 (--surface-0) | 1 | 5.38 | 543 | th "Project", 12px |
+| #121211 (--surface-0) | #199e70 (--series-3) | 1 | 5.50 | 3 | text "2.5M", 12px |
+| #ffffff (--text-1) | #121211 (--surface-0) | 0.6 | 7.18 | 21 | td "proj-yesterday", 15px |
+| #fab219 (--warning) | #1a1a19 (--surface-1) | 1 | 9.49 | 18 | p#status.stale "Last checked 276 days ago (stale).", 12px |
+| #c3c2b7 (--text-2) | #1a1a19 (--surface-1) | 1 | 9.72 | 258 | p.card-explain "Runs are long jobs Claude Code does for ", 15px |
+| #c3c2b7 (--text-2) | #121211 (--surface-0) | 1 | 10.46 | 75 | button#theme-toggle "theme", 15px |
+| #ffffff (--text-1) | #1a1a19 (--surface-1) | 1 | 17.42 | 117 | h2#attention-eyebrow.card-title "Waiting on you", 18px |
+| #ffffff (--text-1) | #121211 (--surface-0) | 1 | 18.74 | 1350 | span "5", 24px |
+
+light:
+| text | surface | opacity | ratio | text nodes | example |
+|---|---|---|---|---|---|
+| #fab219 (--warning) | #fcfcfb (--surface-1) | 1 | 1.79 | 18 | p#status.stale "Last checked 276 days ago (stale).", 12px |
+| #52514e (--text-2) | #f7f7f5 (--surface-0) | 0.6 | 2.85 | 3 | button.dismiss-button "Dismiss", 15px |
+| #6e6d67 (--text-3) | #f7f7f5 (--surface-0) | 1 | 4.84 | 543 | th "Project", 12px |
+| #6e6d67 (--text-3) | #fcfcfb (--surface-1) | 1 | 5.06 | 129 | span.row-age "waiting 4 hours", 15px |
+| #0b0b0b (--text-1) | #f7f7f5 (--surface-0) | 0.6 | 5.09 | 21 | td "proj-yesterday", 15px |
+| #0b0b0b (--text-1) | #1baf7a (--series-3) | 1 | 6.99 | 3 | text "2.5M", 12px |
+| #52514e (--text-2) | #f7f7f5 (--surface-0) | 1 | 7.40 | 75 | button#theme-toggle "theme", 15px |
+| #52514e (--text-2) | #fcfcfb (--surface-1) | 1 | 7.73 | 258 | p.card-explain "Runs are long jobs Claude Code does for ", 15px |
+| #0b0b0b (--text-1) | #f7f7f5 (--surface-0) | 1 | 18.35 | 1350 | span "5", 24px |
+| #0b0b0b (--text-1) | #fcfcfb (--surface-1) | 1 | 19.17 | 117 | h2#attention-eyebrow.card-title "Waiting on you", 18px |
+
+RESULT: 6 distinct violation(s)
+```
 
 ## Phase 0 audit, before (full output of `node scripts/audit-ui.js` at ab9cb88)
 
