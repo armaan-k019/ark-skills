@@ -326,8 +326,8 @@
       "kind": "skill",
       "name": "recruiter-demo-writer",
       "path": "recruiter-demo-writer/SKILL.md",
-      "lines": 53,
-      "description": "Use when building, deepening, or reviewing a recruiter-facing demo page under src/app/demos/ in this portfolio (the pattern behind illoca, world-labs, rho, midjourney, whop). Triggers on requests like \"build the Warp demo,\" \"deepen the Whop page,\" \"add a demo for [company],\" \"write the case study copy for [demo],\" or any request to add sections, rewrite copy, or extend an existing page in src/app/demos/. Also use when asked to review a demo page for consistency, tone, voice, or fabricated claims. Not for the older terracotta-palette project pages under src/app/projects/ (urban-gpt, yield, fine-print), which follow a different template this skill does not cover.",
+      "lines": 95,
+      "description": "Use when choosing, building, deepening, or reviewing a recruiter-facing demo page under src/app/demos/ in this portfolio (the pattern behind illoca, world-labs, rho, midjourney, whop). Covers picking the demo idea for a target company and checking it for hiring signal, not only the page itself. Triggers on requests like \"what demo should I build for [company],\" \"is this a good demo idea for [company],\" \"build the Warp demo,\" \"deepen the Whop page,\" \"add a demo for [company],\" \"write the case study copy for [demo],\" or any request to add sections, rewrite copy, or extend an existing page in src/app/demos/. Also use when asked to review a demo page for consistency, tone, voice, hiring signal, or fabricated claims, and whenever a demo is being planned for a job application even if the page is not mentioned. Not for the older terracotta-palette project pages under src/app/projects/ (urban-gpt, yield, fine-print), which follow a different template this skill does not cover.",
       "eval_status": "unmeasured",
       "family": "domain",
       "vendored": false
@@ -1111,9 +1111,9 @@
       "target": "skill:impeccable",
       "kind": "skill-skill",
       "file": "recruiter-demo-writer/SKILL.md",
-      "line": 53,
+      "line": 95,
       "lines": [
-        53
+        95
       ]
     },
     {
@@ -1122,9 +1122,20 @@
       "target": "skill:verify-before-done",
       "kind": "skill-skill",
       "file": "recruiter-demo-writer/SKILL.md",
-      "line": 53,
+      "line": 95,
       "lines": [
-        53
+        95
+      ]
+    },
+    {
+      "id": "skill:recruiter-demo-writer->skill:visual-loop:skill-skill",
+      "source": "skill:recruiter-demo-writer",
+      "target": "skill:visual-loop",
+      "kind": "skill-skill",
+      "file": "recruiter-demo-writer/SKILL.md",
+      "line": 48,
+      "lines": [
+        48
       ]
     },
     {
