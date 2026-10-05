@@ -434,8 +434,8 @@
       "kind": "skill",
       "name": "strategic-compact",
       "path": "strategic-compact/SKILL.md",
-      "lines": 75,
-      "description": "Decide when to /compact, /clear, or start a fresh session, and write a handoff file first so nothing important is lost. Use at phase boundaries in long Claude Code sessions (research done, plan approved, milestone finished, debugging over, approach abandoned), when switching to unrelated work, when output quality starts slipping in a long session, or when asked to \"hand off\", \"wrap up this session\", or \"start fresh\".",
+      "lines": 128,
+      "description": "Decide when to /compact, /clear, or start a fresh session, and write a handoff file first so nothing important is lost. Use at phase boundaries in long Claude Code sessions (research done, plan approved, milestone finished, debugging over, approach abandoned), when switching to unrelated work, when output quality starts slipping in a long session, or when asked to \"hand off\", \"wrap up this session\", or \"start fresh\". Also use it when work moves between surfaces (a planning chat to a Cowork session, Cowork to a terminal run, one chat to a new chat) and the next session needs the state in its first message.",
       "origin": {
         "from": "body",
         "text": "Adapted from ECC's `strategic-compact` skill (MIT, see `licenses/ECC-LICENSE`). ECC's hook-driven suggestion script is not included; this version is the decision guide plus a handoff format.",
