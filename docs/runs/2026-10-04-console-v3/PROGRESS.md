@@ -1,10 +1,10 @@
 # Progress: ark-console v3, readable by someone who did not build it
-Updated: 2026-10-04 23:42 EDT   Branches: ark-console feat/console-v3 (from docs/ui-v3-simple bc38b4e), ark-skills docs/console-v3-run   Last commit: ark-console 9ac2977
+Updated: 2026-10-05 (cloud session)   Branches: ark-console claude/project-thread-05uini (feat/console-v3 9ac2977 plus the Phase 5 round, Phase 6 and Phase 7), ark-skills claude/project-thread-05uini (docs/console-v3-mac-run 0de533c merged in)   Last commit: ark-console 9bc4d19
 
 Class (unattended-build Step 0): machine-checkable. Every Phase 0 to 4 acceptance criterion is a command or a computed-style assertion that can fail; the taste in it (type scale, floors, explanation wording) goes to the author at the Phase 5 gate, as the SPEC says. The stop-and-ask and decide-yourself lists are the SPEC's own ("Stop and ask", "Decide yourself") plus STANDING-DECISIONS.md, which is left as the author wrote it.
 
 ## Now
-Phase 5 (SPEC "Phase 5: STOP"). Stopped for the author's round. Nothing past Phase 5 has been started. The type scale, the floors and the explanation sentences are proposals until this gate passes.
+Phases 5, 6 and 7 are done. The author answered the gate with "do whatever makes the most sense", so the session took its recommended answer to each of Q1 to Q8 and recorded each one in ark-console docs/decisions/ (see "Phase 5 round" below). Nothing is merged. ark-console feat/console-v3 can fast-forward to claude/project-thread-05uini (9ac2977 is an ancestor of 9bc4d19).
 
 ## Done and verified
 - Precondition: `git -C ~/dev/ark-console log --oneline -1 docs/UI.md` gives bc38b4e; `grep -c "## 9. Minimum sizes" docs/UI.md` gives 1. feat/console-v3 created from docs/ui-v3-simple at bc38b4e (not from main).
@@ -31,6 +31,7 @@ Phase 5 (SPEC "Phase 5: STOP"). Stopped for the author's round. Nothing past Pha
 
 ## In flight
 - Nothing.
+- The cloud session's own run of this SPEC (ark-console 6570241, ark-skills 64ba8e2) is not carried forward. 6570241 was the old tip of ark-console claude/project-thread-05uini and was replaced by a force-with-lease push; 64ba8e2 is still in this branch's history, under the merge of docs/console-v3-mac-run.
 
 ## Open questions (for the author at this gate)
 - Q1: `--warning` as text. The stale line is --warning (UI.md 6), and status colors are "fixed, never themed" (UI.md 1). Measured: #fab219 on light --surface-1 1.79:1, on --surface-0 1.71:1; dark passes (9.49). No single color passes on both modes (it would need relative luminance at most 0.157 for light and at least 0.203 for dark). Triggered by: two UI.md sections conflict. Blocks: the audit's exit 0 (2 contrast rows, light only).
@@ -73,7 +74,7 @@ Phase 5 (SPEC "Phase 5: STOP"). Stopped for the author's round. Nothing past Pha
 - Gates: each phase boundary gets a fresh-context review of that phase's diff, run in parallel with the next phase's builder (the reviewer only reads), fixes in at most two rounds.
 
 ## Next action
-Wait for the author's round on this gate. Then: make every value the author changes a literal assertion (SPEC Phase 5), and start Phase 6 (scripts/mutants.js, one mutant per UI.md section 10 "Added in v3" bullet).
+The author reviews the six decision records and the Phase 7 leftovers below. If they stand: fast-forward ark-console feat/console-v3 to claude/project-thread-05uini and open its PR to main. Any decision the author reverses is a literal to change in check-page.js, and its mutant shows which check moves.
 
 ## Phase 5 report
 
@@ -361,3 +362,56 @@ light:
 
 RESULT: 85 distinct violation(s)
 ```
+
+## Phase 5 round (cloud session, 2026-10-05, ark-console 259e73a)
+
+The author's answer: "Not sure on these questions. do whatever makes the most sense for the functionality of the skills repo". The session took its recommended answer to each question. Each one is a record in ark-console docs/decisions/ with Context, Decision, Why, Not chosen, and the check that fails if it is undone. UI.md sections 1 to 7 and 10 now point at them.
+
+- Q1 and Q6, decision 0001: new tokens --warning-text (#fab219 dark, #8c640e light) and --critical-text (#db6868 dark, #c43737 light) for words. The four status colors stay fixed for dots, borders and rules. The stale line, Kill on hover and the kill dialog's confirm word use them. Writing that check found a bug: `#kill-dialog button` (1,0,1) outranked `#kill-dialog-confirm` (1,0,0), so the confirm word stayed --text-2. Fixed with `#kill-dialog button#kill-dialog-confirm`.
+- Q2, decision 0002: the third tile is "Runs finished this week", shows "not recorded", and says "The console does not record when a run finishes yet." The indexer is not changed.
+- Q3, decision 0003: home keeps every floor and may scroll down, never sideways. The empty fixture is still held to one screen. noScrollCheck takes `mayScroll`; the audit's page-scroll rule applies to the empty fixture only.
+- Q4, decision 0004: headings (the header sentence among them) leave the text measure; the audit no longer measures h1 to h3.
+- Q5, decision 0005: inside a dimmed row, --text-2 and --text-3 resolve to --text-1; the row keeps opacity 0.6.
+- Q7, decision 0006: chart 2's labels sit above their segment in --text-1 on the card, not inside it.
+- Q8: the records above are the answer (docs/decisions/README.md).
+- Also ported from the cloud run: below a 480px card width, chart 1 shows its 14-day token total and "See the chart on the Usage page" instead of a smaller chart (UI.md section 9). Nothing reaches it at 1440, 1100 or 820; check-page drives it at 560.
+- Verified at 259e73a: `node scripts/check-page.js` exit 0, 1,420 passed, 0 failed; `node scripts/audit-ui.js` exit 0, no violation; unit tests 95 of 95 (run as an unprivileged user in the cloud container).
+
+## Phase 6 (ark-console 9bc4d19)
+
+scripts/mutants.js gains PAGE_MUTANTS. Each edits a copy of the repo under tmp/page-mutants/, runs check-page.js or audit-ui.js there with Chrome, and reports the target check's FAIL lines plus any other FAIL lines. The unmutated page must pass both scripts first. `node scripts/mutants.js --page-only` (with ARK_CHROME set): unmutated check-page exit 0 and audit exit 0, then every mutant caught.
+
+| Mutant | Covers | Target check failed | Other FAIL lines |
+|---|---|---|---|
+| chart-below-floor (CHART_MIN_HEIGHT 220 to 140) | every box meets its floor | yes, 6 | 0 |
+| pid-on-home ("PID" in the refresh aria-label) | no banned word on home | yes, 6 | 0 |
+| explanation-deleted (Working card's sentence removed) | every home card has a sentence | yes, 6 | 12 (the same sentence's style and position checks) |
+| text-token-below-4.5 (light --text-3 back to #77766f) | text at 4.5:1 | yes, 1 | 3 (the literal --text-3 value checks) |
+| home-scrolls-when-empty (600px added under home) | no page scroll, empty fixture | yes, 1 | 0 |
+| round-trip-loses-state (Back closes open rows) | state kept across the round trip | yes, 2 | 0 |
+| unit-word-dropped (hours shown without "hours") | units in words | yes, 4 | 4 (row and card age literals) |
+| stale-line-in-warning | decision 0001 | yes, 1 | 0 |
+| kill-hover-in-critical | decision 0001 | yes, 1 | 0 |
+| runs-finished-replaced ("0" in place of "not recorded") | decision 0002 | yes, 3 | 0 |
+| home-scrolls-sideways (home 1600px wide) | decision 0003 | yes, 1 | 7 (layout cap and fallback width, both correct) |
+| dimmed-row-text-2 (the 0005 rule removed) | decision 0005 | yes, 1 | 0 |
+| chart-2-labels-inside | decision 0006 | yes, 1 | 0 |
+| chart-1-shrinks (CHART_MIN_WIDTH 0) | chart 1 fallback | yes, 1 | 0 |
+| chart-1-summary-zero | Phase 7 fix below | yes, 1 | 0 |
+| audit-text-token-below-4.5 (audit-ui.js) | the audit's contrast rule | yes, 18 rows | 0 |
+
+Lib mutants (the existing list): in this container node printed TAP, so the runner's `✖ T2` parse found no failing test and every mutant read as "not caught". The runner now passes `--test-reporter=spec`. After that, run as an unprivileged user: 124 of 126 caught, and every one of the 95 tests fails under at least one mutant. The two not caught (data-dir-identity-not-compared, data-dir-walk-skips-resolved-path) target K12's case-insensitive branch, which runs only on a volume that ignores case; this container's does not. NOT MEASURED here; they should be caught on the Mac.
+
+## Phase 7 (fresh-context review of `git diff 9ac2977`)
+
+No CRITICAL or HIGH. One MEDIUM was fixed because it breaks the anti-fabrication rule: below 480px, chart 1's summary said "0 tokens used" when no day with sessions had a recorded count. It now says "Tokens used in the last 14 days: not recorded." A no-usage check and the chart-1-summary-zero mutant cover it. After the fix: check-page exit 0, 1,421 passed; audit exit 0; unit tests 95 of 95.
+
+Left for the author (not fixed, by the Phase 7 rule):
+- MEDIUM: horizontal scroll at 1440 is only checked on populated and many-sessions home. Empty home and the detail pages at 1440 are not, and no mutant covers sideways scroll at 1100 or 820.
+- MEDIUM: Kill on hover in a stale (dimmed) row is --critical-text at opacity 0.6, computed 2.50 to 2.73:1, which breaks decision 0005's "every word in --text-1". The audit never hovers.
+- LOW: the fallback's "See the chart on the Usage page" button is rebuilt every poll, so Back cannot return focus to it; it also repeats the Usage detail link below it.
+- LOW: decision 0006's check asserts the fill, which the base `.chart-direct-label` rule already sets; only the position assertion can fail.
+- LOW: comments still describing the old behavior (stale in --warning, Kill in --critical, chart 2 labels inside segments) in app.js, style.css and check-page.js; the many-sessions precondition's comment says the home check "can fail" on scroll.
+- LOW: numbers in decisions 0003 (1,282 and 1,458px) and 0005 (7.18 and 5.09) are measurements and are not marked as measured.
+- LOW: the mutants.js header says "the first seven" UI.md bullets; there are six testable ones, plus the units mutant. The audit mutant's pattern matches any contrast row.
+- LOW: the default screenshots are viewport-sized, so under decision 0003 docs/screenshot.png cuts home off below the fold.
