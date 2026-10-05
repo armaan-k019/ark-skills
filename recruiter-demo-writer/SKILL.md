@@ -1,6 +1,6 @@
 ---
 name: recruiter-demo-writer
-description: Use when choosing, building, deepening, or reviewing a recruiter-facing demo page under src/app/demos/ in this portfolio (the pattern behind illoca, world-labs, rho, midjourney, whop). Covers picking the demo idea for a target company and checking it for hiring signal, not only the page itself. Triggers on requests like "what demo should I build for [company]," "is this a good demo idea for [company]," "build the Warp demo," "deepen the Whop page," "add a demo for [company]," "write the case study copy for [demo]," or any request to add sections, rewrite copy, or extend an existing page in src/app/demos/. Also use when asked to review a demo page for consistency, tone, voice, hiring signal, or fabricated claims, and whenever a demo is being planned for a job application even if the page is not mentioned. Not for the older terracotta-palette project pages under src/app/projects/ (urban-gpt, yield, fine-print), which follow a different template this skill does not cover.
+description: Use when choosing, building, deepening, or reviewing a recruiter-facing demo page under src/app/demos/ in this portfolio (the pattern behind illoca, world-labs, rho, midjourney, whop). Covers picking the demo idea for a target company and checking it for hiring signal, not only the page itself. Triggers on requests like "what demo should I build for [company]," "is this a good demo idea for [company]," "build the Warp demo," "deepen the Whop page," "add a demo for [company]," "write the case study copy for [demo]," or any request to add sections, rewrite copy, or extend an existing page in src/app/demos/. Also use when asked to review a demo page for consistency, tone, voice, hiring signal, or fabricated claims, when a demo has too much text or looks AI-generated and needs trimming, and whenever a demo is being planned for a job application even if the page is not mentioned. Not for the older terracotta-palette project pages under src/app/projects/ (urban-gpt, yield, fine-print), which follow a different template this skill does not cover.
 ---
 
 Every page under `src/app/demos/` is a recruiter-facing pitch: "here is a tool I built for your product, and here is why it's good." They share one structural skeleton and one voice. This skill keeps a new or edited demo consistent with the ones already shipped, instead of drifting into generic AI-demo copy (marketing adjectives, invented stats, ad hoc section names).
@@ -61,9 +61,9 @@ This order is deliberate and every shipped demo follows it. Don't invent new sec
 2. **Back link**: `&#8592; Back to Demos` linking to `/demos`, placed just inside the body, above the first section.
 3. **"What [Company] does today"** *(required)*: ground the reader in the real product before pitching anything. A two-column comparison (today / with this demo) or a small before/after table works well; Rho's drift-detection page and Whop's page both do this with an actual UI mockup of the plain product view next to the augmented one. This section is also where anti-fabrication matters most: describe what the company's product actually does, not an invented feature set. If you don't know the product well enough to describe it accurately, say so and ask rather than guessing.
 4. **"What this demo adds"** *(required)*: one focused paragraph. State plainly what the tool does, not what it "revolutionizes" or "unlocks." Two clauses of "it does X, and it does Y" is the right length; don't pad it into three paragraphs.
-5. **"Why it's better"** *(required)*: a 3-card grid, each card a specific, falsifiable claim about why this approach beats the status quo, not a generic benefit. Optionally follow it with one callout box (colored border, accent background) making the single sharpest version of the pitch in one or two sentences. Illoca does this as an "Upstream of Tracing Paper" callout; Midjourney does it as an italic pull-quote.
-6. **"Try it"** *(required)*: the interactive tool itself, behind a short eyebrow label. This is the one component that's genuinely different per demo; build it to fit the specific product being demoed, keeping the same card/border/color tokens as the rest of the page.
-7. **"How this works"** *(required, this is the gap in Whop's current page)*: 3 to 4 step cards explaining the mechanism: what happens when the user submits input, in order. Every shipped demo that has this section uses the same card shape (small colored dot, bold title, one sentence of body); see Illoca's or World Labs' "How this works" grid.
+5. **"Why it's better"** *(required)*: three specific, falsifiable claims about why this approach beats the status quo, not generic benefits. Don't lay them out as three identical icon, heading and body cards: that grid is one of the clearest AI-generated tells (see "Make it look made by a person" below). A plain list, or a row where one claim carries more weight than the other two, reads as a choice. Optionally follow it with one callout (a full border or a tinted background, never a thick colored stripe down one side) making the single sharpest version of the pitch in one sentence. Illoca does this as an "Upstream of Tracing Paper" callout; Midjourney does it as an italic pull-quote.
+6. **"Try it"** *(required)*: the interactive tool itself, under a plain heading. No small uppercase eyebrow label above it. This is the one component that's genuinely different per demo; build it to fit the specific product being demoed, keeping the same card/border/color tokens as the rest of the page.
+7. **"How this works"** *(required, this is the gap in Whop's current page)*: 3 to 4 numbered steps explaining the mechanism: what happens when the user submits input, in order. Numbers are earned here because it really is a sequence. Shipped demos use a grid of identical dot cards (small colored dot, bold title, one sentence of body) for this; treat that as a pattern to replace when trimming a page, not one to copy.
 8. **Tie-in to other work** *(optional, only with a real, checkable connection)*: when a demo genuinely extends other work in the portfolio (Illoca cites the CAADRIA 2026 Archipedia paper and the manual precedent-study process it automates), say so specifically, naming the other project and what exactly transfers. Do not add this section just to fill space, and never invent a research paper, prior project, or methodology to cite. If there's no real tie-in, skip the section entirely rather than writing a vague one.
 9. **Footer** *(required)*: "Built by [Link: Armaan Kazi]. Not affiliated with [Company]." plus one line of honest disclaimer specific to the tool: what's real vs. illustrative (Whop: "This roast is AI-generated and for educational purposes only. Results are illustrative."), what's verified (World Labs: "Quoted passages are credited on the card"), or what's AI-generated content vs. real data (Illoca: "Precedents are real. Facts are checked against a curated library.").
 
@@ -75,6 +75,41 @@ Read a full section of Illoca or World Labs' prose before writing your own. The 
 - **No marketing adjectives.** "Revolutionary," "powerful," "seamless," "game-changing" don't appear anywhere in the shipped copy. Claims are specific and checkable instead ("three precedents" not "curated selection"; "5 to 10 minutes" not "quickly").
 - **State limitations plainly, in the copy itself, not just in a footnote.** World Labs' page says outright that draft worlds take 5 to 10 minutes and that a generation can be closed and resumed via a saved link. Whop's footer says the roast is illustrative, not real feedback from real buyers. If part of a demo is stubbed, mocked, or degraded, the page should say so in plain language near the feature, not bury it.
 - **Second person for the pitch sections, first person only for genuine personal context** (e.g. "This tool automates the precedent-driven design methodology I used on my own studio work").
+
+## Less text
+
+Every shipped demo has too much text. A reviewer on the second look reads the tool's output, the before/after, and maybe two sentences; everything else is skimmed or skipped, and a wall of prose is itself a sign of generated copy. When a picture, the tool's own output, or a table can say it, cut the sentence.
+
+Starting caps, to tune with the author as rounds go:
+
+| Part | Cap |
+|---|---|
+| Header subtitle | one line, 15 words |
+| "What [Company] does today" | 40 words; the before/after visual carries the rest |
+| "What this demo adds" | 2 sentences |
+| "Why it's better" | 3 claims of 20 words or fewer; callout 25 words |
+| "How this works" | 12 words per step |
+| Tie-in | 40 words |
+| Footer disclaimer | 1 sentence |
+| Whole page outside "Try it" | 250 words |
+| Above the fold | 40 words |
+
+The section caps add up to more than 250 on purpose: not every section gets its full cap. Count the rendered text, not the source (for example `innerText` of the page's main element in the browser, minus the tool's region), and report the counts with the page. When a cut would drop a limitation the page has to state (see Voice), keep the limitation and cut something else.
+
+## Make it look made by a person
+
+The demos should not look AI-generated. Hand this to `impeccable`; don't redesign from this skill. What to give it:
+
+- **Register:** the page is a portfolio piece, so `impeccable`'s brand register (`reference/brand.md`) applies to the page; the tool inside "Try it" is product UI, so its product register applies there.
+- **Detector:** run `impeccable`'s detector (`scripts/detect.mjs`) over the demo's files and fix what it reports before any taste round.
+- **Absolute bans** that the old version of this skeleton walked into: identical card grids, a small uppercase eyebrow above every section, thick colored side stripes on callouts, gradient text, and the hero-metric template. Its "AI slop test" is the bar: if someone could say "AI made that" without doubt, it fails.
+- **Company theme:** the page's job is to look like it belongs next to the company's product, so take cues from their real product (with screenshots as the source), not from a generic SaaS look.
+
+Then run the look as `visual-loop` rounds: screenshots to the author, numbered decisions back, each decision turned into a check. The author decides the look; the session does not.
+
+## Trimming the shipped demos
+
+To bring an existing page down to these rules, do it as two separate passes so each one can be reviewed on its own: first text (apply the caps, report before and after word counts), then look (detector, bans, `visual-loop` rounds). Keep the page's accent color and anything else the author has already decided, and don't change what the tool does while trimming.
 
 ## Anti-fabrication
 
