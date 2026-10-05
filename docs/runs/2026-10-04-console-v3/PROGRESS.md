@@ -1,10 +1,10 @@
 # Progress: ark-console v3, readable by someone who did not build it
-Updated: 2026-10-04 22:43 EDT   Branches: ark-console feat/console-v3 (from docs/ui-v3-simple bc38b4e), ark-skills docs/console-v3-run   Last commit: ark-console e3e3557
+Updated: 2026-10-04 22:56 EDT   Branches: ark-console feat/console-v3 (from docs/ui-v3-simple bc38b4e), ark-skills docs/console-v3-run   Last commit: ark-console 8adc739
 
 Class (unattended-build Step 0): machine-checkable. Every Phase 0 to 4 acceptance criterion is a command or a computed-style assertion that can fail; the taste in it (type scale, floors, explanation wording) goes to the author at the Phase 5 gate, as the SPEC says. The stop-and-ask and decide-yourself lists are the SPEC's own ("Stop and ask", "Decide yourself") plus STANDING-DECISIONS.md, which is left as the author wrote it.
 
 ## Now
-Phase 2 (SPEC "Phase 2: type and rhythm"), step: a sonnet builder is working; a fresh-context reviewer reads the Phase 0 and 1 diff (ab9cb88^..e3e3557) in parallel.
+Phase 3 (SPEC "Phase 3: plain language"), step: a sonnet builder is working; a fresh-context reviewer reads the Phase 2 diff and fix round 1 (e3e3557..8adc739) in parallel.
 
 ## Done and verified
 - Precondition: `git -C ~/dev/ark-console log --oneline -1 docs/UI.md` gives bc38b4e; `grep -c "## 9. Minimum sizes" docs/UI.md` gives 1. feat/console-v3 created from docs/ui-v3-simple at bc38b4e (not from main).
@@ -15,6 +15,10 @@ Phase 2 (SPEC "Phase 2: type and rhythm"), step: a sonnet builder is working; a 
   - "many-sessions snapshot: home has no page scroll at 1440x900": scrollHeight 1003 > 900, with 4 waiting rows and 5 working rows. UI.md section 10 names only the empty and populated fixtures, but section 3 says "no page scroll in the default state". See Q3.
   - "many-sessions snapshot: the Sessions page is taller than the viewport and scrolls the document (900 > 900)": a precondition check that the fixture can make the page scroll. It passed only because home was drawn above the Sessions page; alone, the Sessions page is 900 tall.
 - Phase 1 existing checks rewritten by the builder, each citing UI.md v3 in a comment: header bar 48 to 56px (section 3); the 2:1 columns replaced by four full-width stacked cards 16px apart, home capped at 1600 and centered (section 3); running rows lose branch, model, Kill (sections 4, 7); "Show all n running" opens the Sessions page; the Sessions page scrolls the document (decision, below); noScrollCheck strengthened; tabChecks replaced by view checks; chart 1's label bound read from its real viewBox (section 3, full card width); MEASURE reveals all views for one read.
+- Gate review of Phase 0-1 (opus, fresh context, read-only, 150,722 tokens): no CRITICAL; HIGH H1, the chart "table" toggle set `.hidden` on an `<svg>` (no such property), so the chart was never hidden, and its check read back the same property; MEDIUM M1 no hit-target check on the detail pages, M2 detail pages lost the snapshot time, stale marker and theme toggle (not recorded as a gap: now under Gaps), M3 the audit never verified a view was reached, M4 audit blind spots (closed rows and banners skipped for banned words; inline text skipped by the measure), M5 "Usage detail" overlapping chart 1 (gone in Phase 2: no longer absolutely positioned); LOW L1 to L6 (listed under Gaps and review leftovers).
+- Phase 2 (sonnet subagent: 130,220 tokens, 24 tool uses, 358 s), ark-console b77bca1: type scale 24/18/15/12/11 and big 34, the monospace stack and tabular-nums on big and numeric, rows 36, home card padding 24 radius 10, detail card padding 20 radius 8, every value asserted from computed style against literals in check-page.js (typeChecks, object T), on three fixtures, both modes, home and four pages. Existing literals moved to v3 values with "UI.md section 2 (v3)" comments: rows 28 to 36, table cells 13 to 15px, headline 20 to 24px and letter-spacing -0.2 to -0.24px, card padding 16 to 20 (detail), notes 12 to 15px, tile value 28 to 34px. Checked by the main session: 1,176 passed, 16 failed: 2 home no-scroll (Q3) and 14 "no prose line is longer than 76 characters", caused by my brief, which asked for max-width exactly 76ch AND lines of at most 76 characters; 76ch (76 widths of "0") holds up to 97 characters of this font.
+- Fix round 1 (main session, opus), ark-console 8adc739: H1 fixed (toggleAttribute on the svg; the toggle checks read what is drawn: 6 toggle FAILs and 2 round-trip FAILs on the old code, observed, then pass); round-trip checks assert the state changed first (L2); M1 hit targets on Sessions, Repos and Skills pages; M3 and M4 in the audit (removing the measure cap gives 43 measure violations, observed, then restored); measure: `--measure: 56ch` (60ch gave a longest line of 79), the check asserts a cap no wider than 76ch plus the line length in characters; `.row-question` (the one-line ellipsis cell, UI.md section 4) leaves the prose list. Verified: tests 95 of 95 (b77bca1); `node scripts/check-page.js` 1,198 passed, 2 failed (both Q3: home 1114px on the populated fixture, 1282px on many-running); `node scripts/audit-ui.js` exit 1, 58 distinct: contrast 23, horizontal scroll 2 (Usage page 1241 wide at 1100 and 820), page scroll on home 1, banned word 2, chart box 12, headline block 3, hit target 15, text measure 0.
+- Home heights at 1440x900 after Phase 2 (builder's measurement): populated 1114 (waiting 255, working 115, usage 534, footer 74, header 56); empty 900; many-running 1282 (working 283).
 
 ## In flight
 - Nothing.
@@ -23,6 +27,16 @@ Phase 2 (SPEC "Phase 2: type and rhythm"), step: a sonnet builder is working; a 
 - Q1: `--warning` as text. UI.md section 6 turns the stale snapshot line `--warning`; section 1 says status colors are "fixed, never themed". Measured: #fab219 on light --surface-0 #f7f7f5 is 1.71:1 (the audit's lowest). No single color reaches 4.5:1 on both #f7f7f5 and #121211 (it would need relative luminance at most 0.157 for light and at least 0.203 for dark), so section 9's rule cannot be met without theming a status token or not using --warning for that text. Triggered by: a design decision UI.md does not cover (two of its sections conflict). Blocks: Phase 4's "every ratio at or above 4.5" for the stale line in light mode only. Raised: not yet (Phase 5 report).
 - Q2: the third headline number. UI.md section 4 names "runs finished this week"; the snapshot has no record of a run finishing (runs carry status_line, updated, waiting_on_human; nothing marks done), so it needs the indexer to collect something new. Triggered by: SPEC stop-and-ask "Changing what the indexer collects". Blocks: the third headline number; until answered it stays today's "share from general-purpose" tile. Raised: not yet.
 - Q3: home height. UI.md's values (24px home card padding, 36px rows, 34px big numbers, a 220px chart, an explanation sentence per card) and "no page scroll at 1440x900" do not fit together once home has a few rows: estimated about 1,020px on the populated fixture after Phase 2, and the many-sessions fixture is already 1003px at Phase 1's smaller sizes. UI.md sets no cap on waiting rows. Triggered by: a design decision UI.md does not cover (sections 2, 3 and 9 conflict). Blocks: the no-scroll check on populated data after Phase 2 (measured then). Raised: not yet.
+
+## Gaps (UI.md silent; today's behavior kept unless noted) and review leftovers
+- No body font family in UI.md or style.css: the page renders in the browser default serif (Times). Not changed.
+- Detail pages show no snapshot time, stale marker, theme toggle or refresh (they sit in home's header and footer). Review M2. Not changed; for the author.
+- "See all runs" opens the Sessions page at its top; the "Waiting on you" section is below the sessions table there (review L4), and the link is after the rows in tab order.
+- Back to home focuses the opener only if it still exists; if a poll hid "Show all n running", focus falls to the body (review L1, LOW).
+- Detail views are outside the `<main>` landmark (review nit).
+- Chart 1's direct label ("3.1M") is clipped at the top of the chart (seen in docs/screenshot-light.png after Phase 2).
+- Phase 2 choices (UI.md section 2 does not say): #status and the dismissed label in label style; chart axis text 12px and direct labels 12px monospace; usage table captions as prose; the usage-window h3 and problems h2 in title style, titles in --text-1; the detail "Waiting on you" heading kept as a micro eyebrow; .run-line2 line-height 22px; home rows height 36, table rows min-height 36; the kill dialog as a detail card.
+- --measure 56ch: chosen by the session so lines hold at most 76 characters in this font.
 
 ## Decisions
 - The two fixtures are test/fixtures/snapshot.json (populated) and snapshot-empty.json, made by scripts/make-snapshot-fixtures.js. The SPEC names scripts/make-fixtures.js, which makes transcript fixtures, not page fixtures; UI.md section 10's "the empty and the populated fixture" are these two.
@@ -34,7 +48,7 @@ Phase 2 (SPEC "Phase 2: type and rhythm"), step: a sonnet builder is working; a 
 - Gates: each phase boundary gets a fresh-context review of that phase's diff, run in parallel with the next phase's builder (the reviewer only reads), fixes in at most two rounds.
 
 ## Next action
-Wait for the Phase 2 builder and the Phase 0-1 reviewer; verify Phase 2 against the artifact (screenshots, check counts).
+Wait for the Phase 3 builder and the Phase 2 reviewer; verify Phase 3 against the artifact (home innerText, screenshots, check counts).
 
 ## Phase 0 audit, before (full output of `node scripts/audit-ui.js` at ab9cb88)
 
