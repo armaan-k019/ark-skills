@@ -1,29 +1,40 @@
 # Progress: ark-console v3, readable by someone who did not build it
-Updated: 2026-10-04 22:25 EDT   Branches: ark-console feat/console-v3 (from docs/ui-v3-simple bc38b4e), ark-skills docs/console-v3-run   Last commit: ark-console ab9cb88
+Updated: 2026-10-04 22:43 EDT   Branches: ark-console feat/console-v3 (from docs/ui-v3-simple bc38b4e), ark-skills docs/console-v3-run   Last commit: ark-console e3e3557
 
 Class (unattended-build Step 0): machine-checkable. Every Phase 0 to 4 acceptance criterion is a command or a computed-style assertion that can fail; the taste in it (type scale, floors, explanation wording) goes to the author at the Phase 5 gate, as the SPEC says. The stop-and-ask and decide-yourself lists are the SPEC's own ("Stop and ask", "Decide yourself") plus STANDING-DECISIONS.md, which is left as the author wrote it.
 
 ## Now
-Phase 1 (SPEC "Phase 1: two levels"), step: briefing a sonnet builder.
+Phase 2 (SPEC "Phase 2: type and rhythm"), step: a sonnet builder is working; a fresh-context reviewer reads the Phase 0 and 1 diff (ab9cb88^..e3e3557) in parallel.
 
 ## Done and verified
 - Precondition: `git -C ~/dev/ark-console log --oneline -1 docs/UI.md` gives bc38b4e; `grep -c "## 9. Minimum sizes" docs/UI.md` gives 1. feat/console-v3 created from docs/ui-v3-simple at bc38b4e (not from main).
 - Baseline on bc38b4e: `node --test test/indexer.test.js test/server.test.js test/usage.test.js` 95 of 95; `node scripts/check-page.js` 769 passed, exit 0.
 - Phase 0 (opus, the main session), ark-console ab9cb88: scripts/audit-ui.js. It reuses check-page.js's Chrome driver (check-page.js now exports it and runs main() only when run directly; `node scripts/check-page.js` after the change: 769 passed, exit 0). `node scripts/audit-ui.js` (before 22:25 EDT): exit 1, 85 distinct violations (2,889 counting every place), 60 views measured. Full output below as the before state.
+- Phase 1 (sonnet subagent: 184,653 tokens, 51 tool uses, 657 s by its completion notice), ark-console 39a4a7c: home as stacked cards (Waiting on you, Working right now, Usage this week, footer), four detail pages with "Back to home", tab strip removed, Kill and Dismiss on the Sessions page only. Checked by the main session, and a bug found: `#home { display: flex }` beat the `hidden` attribute, so home stayed drawn above every detail page (seen in docs/screenshot-usage.png, which showed home's lower half; usage and skills screenshots were byte-identical), and the new view checks passed because they read the attribute. Fixed in e3e3557: `[hidden] { display: none !important; }`; the view checks now test what is drawn (8 FAILs on the old CSS, observed); the Usage and Skills screenshots assert they show their page from the top. After the fix: tests 95 of 95; `node scripts/check-page.js` 876 passed, 2 failed (below); `node scripts/audit-ui.js` exit 1, 100 distinct violations (contrast 26, horizontal scroll 1, banned word 2, chart box 12, headline block 6, hit target 18, row height 4, text measure 31). At 1440x900 home's scrollHeight is 900 = clientHeight on both fixtures.
+- Phase 1 checks left failing (findings, not deleted, not loosened):
+  - "many-sessions snapshot: home has no page scroll at 1440x900": scrollHeight 1003 > 900, with 4 waiting rows and 5 working rows. UI.md section 10 names only the empty and populated fixtures, but section 3 says "no page scroll in the default state". See Q3.
+  - "many-sessions snapshot: the Sessions page is taller than the viewport and scrolls the document (900 > 900)": a precondition check that the fixture can make the page scroll. It passed only because home was drawn above the Sessions page; alone, the Sessions page is 900 tall.
+- Phase 1 existing checks rewritten by the builder, each citing UI.md v3 in a comment: header bar 48 to 56px (section 3); the 2:1 columns replaced by four full-width stacked cards 16px apart, home capped at 1600 and centered (section 3); running rows lose branch, model, Kill (sections 4, 7); "Show all n running" opens the Sessions page; the Sessions page scrolls the document (decision, below); noScrollCheck strengthened; tabChecks replaced by view checks; chart 1's label bound read from its real viewBox (section 3, full card width); MEASURE reveals all views for one read.
 
 ## In flight
 - Nothing.
 
 ## Open questions
 - Q1: `--warning` as text. UI.md section 6 turns the stale snapshot line `--warning`; section 1 says status colors are "fixed, never themed". Measured: #fab219 on light --surface-0 #f7f7f5 is 1.71:1 (the audit's lowest). No single color reaches 4.5:1 on both #f7f7f5 and #121211 (it would need relative luminance at most 0.157 for light and at least 0.203 for dark), so section 9's rule cannot be met without theming a status token or not using --warning for that text. Triggered by: a design decision UI.md does not cover (two of its sections conflict). Blocks: Phase 4's "every ratio at or above 4.5" for the stale line in light mode only. Raised: not yet (Phase 5 report).
+- Q2: the third headline number. UI.md section 4 names "runs finished this week"; the snapshot has no record of a run finishing (runs carry status_line, updated, waiting_on_human; nothing marks done), so it needs the indexer to collect something new. Triggered by: SPEC stop-and-ask "Changing what the indexer collects". Blocks: the third headline number; until answered it stays today's "share from general-purpose" tile. Raised: not yet.
+- Q3: home height. UI.md's values (24px home card padding, 36px rows, 34px big numbers, a 220px chart, an explanation sentence per card) and "no page scroll at 1440x900" do not fit together once home has a few rows: estimated about 1,020px on the populated fixture after Phase 2, and the many-sessions fixture is already 1003px at Phase 1's smaller sizes. UI.md sets no cap on waiting rows. Triggered by: a design decision UI.md does not cover (sections 2, 3 and 9 conflict). Blocks: the no-scroll check on populated data after Phase 2 (measured then). Raised: not yet.
 
 ## Decisions
 - The two fixtures are test/fixtures/snapshot.json (populated) and snapshot-empty.json, made by scripts/make-snapshot-fixtures.js. The SPEC names scripts/make-fixtures.js, which makes transcript fixtures, not page fixtures; UI.md section 10's "the empty and the populated fixture" are these two.
 - Audit, banned words: "PID" matches any case (UI.md lists "PID" and "pid"); "SHA" and "HEAD" match uppercase only (the English "head" is not banned); the rest any case, plurals included; the model rule is `claude-[a-z0-9-]+`, any case. The check reads the home root's innerText plus every title, aria-label, alt and placeholder inside it.
 - Audit, measures: row height is a floor (>= 36); text measure counts a wrapping block holding more than 76 characters of its own text whose content width, divided by the average character width of that text in its own font, exceeds 76; contrast composites every ancestor's background over white and multiplies the text alpha by every ancestor's opacity, so dimmed rows are measured as drawn. Home before v3 is the whole page (there was no home root), so the round 2 tab panels count as home in the before state.
 
+- Phase 1 views are shown and hidden in place (no re-render, no URL change), so state round-trips by construction; the URL fragment is left to the kill token.
+- Run Dismiss moves off home with the attention cards: the Sessions page holds a "Waiting on you" section with the full cards, their Dismiss buttons and "show dismissed"; home's "See all runs" opens it. (The SPEC moves kill and dismiss to the Sessions page; runs had no other place there.)
+- Gates: each phase boundary gets a fresh-context review of that phase's diff, run in parallel with the next phase's builder (the reviewer only reads), fixes in at most two rounds.
+
 ## Next action
-Brief a sonnet subagent for Phase 1 (UI.md section 3) in ~/dev/ark-console on feat/console-v3.
+Wait for the Phase 2 builder and the Phase 0-1 reviewer; verify Phase 2 against the artifact (screenshots, check counts).
 
 ## Phase 0 audit, before (full output of `node scripts/audit-ui.js` at ab9cb88)
 
