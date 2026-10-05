@@ -326,9 +326,10 @@
       "kind": "skill",
       "name": "recruiter-demo-writer",
       "path": "recruiter-demo-writer/SKILL.md",
-      "lines": 130,
+      "lines": 134,
       "description": "Use when choosing, building, deepening, or reviewing a recruiter-facing demo page under src/app/demos/ in this portfolio (the pattern behind illoca, world-labs, rho, midjourney, whop). Covers picking the demo idea for a target company and checking it for hiring signal, not only the page itself. Triggers on requests like \"what demo should I build for [company],\" \"is this a good demo idea for [company],\" \"build the Warp demo,\" \"deepen the Whop page,\" \"add a demo for [company],\" \"write the case study copy for [demo],\" or any request to add sections, rewrite copy, or extend an existing page in src/app/demos/. Also use when asked to review a demo page for consistency, tone, voice, hiring signal, or fabricated claims, when a demo has too much text or looks AI-generated and needs trimming, and whenever a demo is being planned for a job application even if the page is not mentioned. Not for the older terracotta-palette project pages under src/app/projects/ (urban-gpt, yield, fine-print), which follow a different template this skill does not cover.",
-      "eval_status": "unmeasured",
+      "eval_status": "measured: 92%",
+      "eval_line": 134,
       "family": "domain",
       "vendored": false
     },
@@ -1117,6 +1118,17 @@
         103,
         104,
         130
+      ]
+    },
+    {
+      "id": "skill:recruiter-demo-writer->skill:skill-creator:skill-skill",
+      "source": "skill:recruiter-demo-writer",
+      "target": "skill:skill-creator",
+      "kind": "skill-skill",
+      "file": "recruiter-demo-writer/SKILL.md",
+      "line": 134,
+      "lines": [
+        134
       ]
     },
     {

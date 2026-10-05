@@ -24,7 +24,7 @@ What the team says is hard right now: (a quote, with its source)
 What a reviewer on this team would check on a second look:
 ```
 
-The last line is a judgment, so label it as one ("inferred from the posting's requirements") rather than presenting it as a fact.
+The last line is a judgment, so label it as one ("inferred from the posting's requirements") rather than presenting it as a fact. The sourcing rule covers every claim about the company anywhere in your answer, not only the brief. A feature named in passing while scoring an idea ("their API makes this easy") needs a source or an "unchecked" just the same.
 
 ### 2. Score three candidate ideas
 
@@ -128,3 +128,7 @@ When asked to "deepen" or "finish" a demo that's already partly built (Whop and 
 Start from the skeleton above, pick an accent color (most demos use the same green `#2d5a27` "company-theme" accent; a new demo can reuse it or choose a different one if the product's own brand color fits better), and write "What [Company] does today" only from the hiring-signal brief, never from memory. If the premise isn't decided yet, run "Pick the idea first" and bring the brief and the scored ideas to the user rather than guessing at what the company does or what problem the tool solves.
 
 Hand the visual pass (layout, type, color, polish) to `impeccable`, and run the portfolio's checks with `verify-before-done` before calling any demo page done. The five-second test in step 3 is part of done.
+
+## Known cost
+
+Measured with `skill-creator` on 2026-10-05 for the "Pick the idea first" section only (written before the "Less text" and "Make it look made by a person" sections, which are not measured). Three questions (a Clay role with a plan to rebrand an existing project, a flashy 3D idea for a Linear role, a Warp page plan), each answered by one session with this skill and one with the version before it, graded on 8 assertions by an agent that was not told which version wrote which and spot-checked company facts on the web. With this skill the pass rate was 92% (22 of 24); with the previous version, 62% (15 of 24). The previous version gave no explicit scoring and, in two of three answers, nothing on what loads first; once it proposed a single idea. This version's two misses were each one company fact named in passing with no source, which is why the sourcing rule above now names that case. That sentence was added after the eval and has not been re-measured.
