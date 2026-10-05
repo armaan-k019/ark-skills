@@ -83,4 +83,4 @@ Known limits:
 
 ### Em dashes
 
-`graph.json` is written with ASCII escapes. Two source descriptions (`recruiter-demo-writer`, `scroll-world`) contain em dashes; the file stores them as `\u2014` escapes, so it contains no literal em dash. The page shows the source text as written.
+`graph.json` is written with ASCII escapes. One source description (`scroll-world`) contains an em dash; the file stores it as a `\u2014` escape, so it contains no literal em dash. The page shows the source text as written.
