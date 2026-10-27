@@ -10,6 +10,7 @@ Personal Claude Code skills library. Reusable instructions that shape how Claude
 - **relevance-profile**, **honest-refusal**, **query-to-corpus**: Discipline skills for a cross-domain research discovery engine project: the multi-axis relevance profile that is never collapsed into one score, the no-fabrication and adversarial-honesty rules that are the engine's identity, and how a research question becomes a contamination-guarded corpus.
 - **ponytail**: Enforces a lazy-senior-dev discipline: climb a laziness ladder (YAGNI, reuse, stdlib, native, existing dependency, one-liner, minimum code) before writing anything new. The full six-skill suite (`ponytail`, `ponytail-review`, `ponytail-audit`, `ponytail-debt`, `ponytail-gain`, `ponytail-help`) is vendored in this repo, but only the core `ponytail` skill is installed below; the other five are available under `ponytail/skills/` if you want to symlink them yourself. Vendored from [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail), MIT, credit in `ponytail/LICENSE`.
 - **scroll-world**: Builds an immersive scroll-scrubbed landing page where a pre-rendered camera flies through a sequence of AI-generated scenes with no cuts, using Higgsfield for stills and Monid or Higgsfield for the video chain. Interviews the user for topic, story beats, and brand kit, then wires a portable, framework-agnostic scroll-scrub engine. Vendored from [oso95/scroll-world](https://github.com/oso95/scroll-world) at commit `71cc36d3`, MIT, credit in `scroll-world/LICENSE`. Vetted with `vet-third-party` on 2026-09-24: 0 HIGH findings, 9 MEDIUM (all expected network calls to its own documented services), verdict install. One line differs from upstream: the Step 8 QA bullet that hands off to `verify-before-done` and `impeccable` (added in PR #6); reapply it after re-syncing from upstream.
+- **research-eval** (`review-paper`, `review-proposal`): Two research review skills by [Akhil Nampally](https://github.com/AkhilNam). `review-paper` gives a simulated peer review of a paper draft for a named conference, workshop, or journal: a recommendation, reviewer comments, confidence, and prioritized revisions grounded in the venue's criteria. `review-proposal` researches related work for a research idea or proposal, checks novelty and overlap against the closest prior work, and recommends a defensible contribution and the smallest decisive study. Vendored from [AkhilNam/research-eval](https://github.com/AkhilNam/research-eval) at commit `bc74c235` with the author's permission (the upstream repo has no license file), credit and details in `research-eval/NOTICE.md`. Vetted with `vet-third-party` on 2026-10-27: 0 HIGH, 0 MEDIUM findings.
 - **verify-before-done**: Runs the project's own build, typecheck, lint, and tests, reviews the diff against the task, and reports each check as PASS, FAIL, or NOT RUN. Never reports a check it did not run. Adapted from ECC's `verification-loop`.
 - **strategic-compact**: When to `/compact`, `/clear`, or start a fresh session, plus a `progress.md` handoff format so state lives on disk, not in the conversation. Adapted from ECC's `strategic-compact`.
 - **unattended-build**: The autonomy contract for one coding session running many phases with no human check-in. Only work whose acceptance criteria are runnable commands runs unattended; taste-based work (visual design, copy, layout) gets short human-in-the-loop rounds instead. It writes decide-yourself and stop-and-ask lists to `STANDING-DECISIONS.md`, keeps a resumable `PROGRESS.md`, reports only observed values, and has its diff independently reviewed at each phase boundary. Written from one real build and one failed attempt, not adapted from a third party.
@@ -85,6 +86,8 @@ ln -s ~/dev/ark-skills/honest-refusal ~/.claude/skills/honest-refusal
 ln -s ~/dev/ark-skills/query-to-corpus ~/.claude/skills/query-to-corpus
 ln -s ~/dev/ark-skills/ponytail/skills/ponytail ~/.claude/skills/ponytail
 ln -s ~/dev/ark-skills/scroll-world ~/.claude/skills/scroll-world
+ln -s ~/dev/ark-skills/research-eval/skills/review-paper ~/.claude/skills/review-paper
+ln -s ~/dev/ark-skills/research-eval/skills/review-proposal ~/.claude/skills/review-proposal
 ln -s ~/dev/ark-skills/verify-before-done ~/.claude/skills/verify-before-done
 ln -s ~/dev/ark-skills/strategic-compact ~/.claude/skills/strategic-compact
 ln -s ~/dev/ark-skills/unattended-build ~/.claude/skills/unattended-build
@@ -146,6 +149,11 @@ ark-skills/
 │       └── ponytail-help/SKILL.md
 ├── scroll-world/
 │   └── LICENSE, SKILL.md, references/
+├── research-eval/
+│   ├── NOTICE.md, README.md, .claude-plugin/, evals/, scripts/
+│   └── skills/
+│       ├── review-paper/SKILL.md, references/
+│       └── review-proposal/SKILL.md, references/
 ├── verify-before-done/
 │   └── SKILL.md
 ├── strategic-compact/
@@ -184,4 +192,4 @@ Use skill-creator inside a Claude Code session:
 
 ## License
 
-Individual skills carry their own licenses (Apache 2.0 for skill-creator and impeccable, MIT for ponytail, MIT for scroll-world, MIT for the ECC-derived skills, agents, and hooks, see `licenses/ECC-LICENSE`). New skills authored in this repo default to MIT unless specified otherwise.
+Individual skills carry their own licenses (Apache 2.0 for skill-creator and impeccable, MIT for ponytail, MIT for scroll-world, used with the author's permission and no license file for research-eval (see `research-eval/NOTICE.md`), MIT for the ECC-derived skills, agents, and hooks, see `licenses/ECC-LICENSE`). New skills authored in this repo default to MIT unless specified otherwise.
