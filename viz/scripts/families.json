@@ -61,7 +61,9 @@
         "ponytail-debt",
         "ponytail-gain",
         "ponytail-help",
-        "ponytail-review"
+        "ponytail-review",
+        "review-paper",
+        "review-proposal"
       ]
     },
     {
@@ -90,6 +92,8 @@
     "ponytail-gain",
     "ponytail-help",
     "ponytail-review",
+    "review-paper",
+    "review-proposal",
     "scroll-world",
     "skill-creator"
   ]

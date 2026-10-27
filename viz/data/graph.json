@@ -49,14 +49,14 @@
       "label": "Agents",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 68
+      "line": 70
     },
     {
       "id": "hooks",
       "label": "Hooks",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 76
+      "line": 78
     }
   ],
   "nodes": [
@@ -343,6 +343,28 @@
       "eval_status": "unmeasured",
       "family": "research",
       "vendored": false
+    },
+    {
+      "id": "skill:review-paper",
+      "kind": "skill",
+      "name": "review-paper",
+      "path": "research-eval/skills/review-paper/SKILL.md",
+      "lines": 64,
+      "description": "Review a paper draft for a conference, workshop, or journal. Give an evidence-grounded accept/reject recommendation, reviewer comments, confidence, and prioritized revisions using venue criteria.",
+      "eval_status": "unmeasured",
+      "family": "vendored",
+      "vendored": true
+    },
+    {
+      "id": "skill:review-proposal",
+      "kind": "skill",
+      "name": "review-proposal",
+      "path": "research-eval/skills/review-proposal/SKILL.md",
+      "lines": 62,
+      "description": "Review research proposals and ideas. Research related work, check novelty and overlap, assess venue potential and feasibility, and recommend a defensible contribution and decisive study design.",
+      "eval_status": "unmeasured",
+      "family": "vendored",
+      "vendored": true
     },
     {
       "id": "skill:scholar-evaluation",
