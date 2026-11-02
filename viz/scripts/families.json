@@ -52,6 +52,16 @@
       ]
     },
     {
+      "id": "site-work",
+      "label": "Site work",
+      "members": [
+        "kazi-lab-snapshot",
+        "pr-sweep",
+        "screenshot-proof",
+        "site-cohesion"
+      ]
+    },
+    {
       "id": "vendored",
       "label": "Vendored",
       "members": [
