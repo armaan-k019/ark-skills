@@ -38,25 +38,32 @@
       "line": 47
     },
     {
+      "id": "site-work",
+      "label": "Site work",
+      "rule": "families.json",
+      "file": "viz/scripts/families.json",
+      "line": 55
+    },
+    {
       "id": "vendored",
       "label": "Vendored",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 55
+      "line": 65
     },
     {
       "id": "agents",
       "label": "Agents",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 70
+      "line": 80
     },
     {
       "id": "hooks",
       "label": "Hooks",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 78
+      "line": 88
     }
   ],
   "nodes": [
@@ -177,6 +184,17 @@
       "eval_status": "unmeasured",
       "family": "vendored",
       "vendored": true
+    },
+    {
+      "id": "skill:kazi-lab-snapshot",
+      "kind": "skill",
+      "name": "kazi-lab-snapshot",
+      "path": "kazi-lab-snapshot/SKILL.md",
+      "lines": 65,
+      "description": "Run the kazi_lab (corvid) web UI against real data when the Neon database cannot be reached, by exporting a read-only snapshot on Armaan's Mac and loading it into a throwaway local Postgres with one script. Use for any kazi_lab UI work, screenshot, or bug that needs real corpus data from a cloud session or any machine without Neon access, and when refreshing a stale snapshot.",
+      "eval_status": "unmeasured",
+      "family": "site-work",
+      "vendored": false
     },
     {
       "id": "skill:literature-review",
@@ -311,6 +329,17 @@
       "vendored": true
     },
     {
+      "id": "skill:pr-sweep",
+      "kind": "skill",
+      "name": "pr-sweep",
+      "path": "pr-sweep/SKILL.md",
+      "lines": 73,
+      "description": "Clear the open pull requests across Armaan's repos (my-portfolio, kazi_lab, ark-console, ark-skills, and any he names) in one pass, with a plan he approves first, a review where no bot reviewed, checks confirmed green, and merges in dependency order. Use when asked to \"resolve all open PRs\", \"clean up PRs\", \"merge everything that's ready\", or when a thread's work is done and its PRs need closing out.",
+      "eval_status": "unmeasured",
+      "family": "site-work",
+      "vendored": false
+    },
+    {
       "id": "skill:query-to-corpus",
       "kind": "skill",
       "name": "query-to-corpus",
@@ -326,10 +355,10 @@
       "kind": "skill",
       "name": "recruiter-demo-writer",
       "path": "recruiter-demo-writer/SKILL.md",
-      "lines": 129,
+      "lines": 142,
       "description": "Use when choosing, building, deepening, or reviewing a recruiter-facing demo page under src/app/demos/ in this portfolio (the pattern behind illoca, world-labs, rho, midjourney, whop). Covers picking the demo idea for a target company and checking it for hiring signal, not only the page itself. Triggers on requests like \"what demo should I build for [company],\" \"is this a good demo idea for [company],\" \"build the Warp demo,\" \"deepen the Whop page,\" \"add a demo for [company],\" \"write or cut the copy for [demo],\" or any request to add sections, rewrite copy, or extend an existing page in src/app/demos/. Also use when asked to review a demo page for consistency, tone, voice, hiring signal, or fabricated claims, when a demo has too much text (every demo page must render under 200 words) or looks AI-generated and needs trimming, and whenever a demo is being planned for a job application even if the page is not mentioned. Not for the older terracotta-palette project pages under src/app/projects/ (urban-gpt, yield, fine-print), which follow a different template this skill does not cover.",
       "eval_status": "measured: 92%",
-      "eval_line": 129,
+      "eval_line": 142,
       "family": "domain",
       "vendored": false
     },
@@ -390,6 +419,17 @@
       "vendored": false
     },
     {
+      "id": "skill:screenshot-proof",
+      "kind": "skill",
+      "name": "screenshot-proof",
+      "path": "screenshot-proof/SKILL.md",
+      "lines": 57,
+      "description": "Take desktop and phone screenshots of a running web page with one script, check them, and hand them to the person as proof that a UI change works, saved where they can open them. Use after any user-visible change to a site or demo, before opening a PR for one, when asked for screenshots or \"show me what it looks like\", and when another skill (visual-loop, recruiter-demo-writer, verify-before-done) asks for a screenshot of a state.",
+      "eval_status": "unmeasured",
+      "family": "site-work",
+      "vendored": false
+    },
+    {
       "id": "skill:scroll-world",
       "kind": "skill",
       "name": "scroll-world",
@@ -399,6 +439,17 @@
       "eval_status": "unmeasured",
       "family": "domain",
       "vendored": true
+    },
+    {
+      "id": "skill:site-cohesion",
+      "kind": "skill",
+      "name": "site-cohesion",
+      "path": "site-cohesion/SKILL.md",
+      "lines": 56,
+      "description": "Keep the four armaankazi.com sections (Website, Portfolio, Lab, Workflow) reading as one site when a route, page, demo, project, or section is added, renamed, moved, or removed. Lists every file that has to change together in my-portfolio, kazi_lab, and ark-skills, and how to check none was missed. Use for any change that adds or removes something a visitor can navigate to, touches the chooser, a section header, the home buttons, or the site guide birds, or when asked whether the sites are consistent.",
+      "eval_status": "unmeasured",
+      "family": "site-work",
+      "vendored": false
     },
     {
       "id": "skill:skill-audit",
@@ -785,6 +836,17 @@
       ]
     },
     {
+      "id": "skill:kazi-lab-snapshot->skill:screenshot-proof:skill-skill",
+      "source": "skill:kazi-lab-snapshot",
+      "target": "skill:screenshot-proof",
+      "kind": "skill-skill",
+      "file": "kazi-lab-snapshot/SKILL.md",
+      "line": 51,
+      "lines": [
+        51
+      ]
+    },
+    {
       "id": "skill:literature-review->skill:honest-refusal:skill-skill",
       "source": "skill:literature-review",
       "target": "skill:honest-refusal",
@@ -1096,6 +1158,17 @@
       ]
     },
     {
+      "id": "skill:pr-sweep->skill:verify-before-done:skill-skill",
+      "source": "skill:pr-sweep",
+      "target": "skill:verify-before-done",
+      "kind": "skill-skill",
+      "file": "pr-sweep/SKILL.md",
+      "line": 53,
+      "lines": [
+        53
+      ]
+    },
+    {
       "id": "skill:query-to-corpus->skill:honest-refusal:skill-skill",
       "source": "skill:query-to-corpus",
       "target": "skill:honest-refusal",
@@ -1142,14 +1215,36 @@
       ]
     },
     {
+      "id": "skill:recruiter-demo-writer->skill:screenshot-proof:skill-skill",
+      "source": "skill:recruiter-demo-writer",
+      "target": "skill:screenshot-proof",
+      "kind": "skill-skill",
+      "file": "recruiter-demo-writer/SKILL.md",
+      "line": 136,
+      "lines": [
+        136
+      ]
+    },
+    {
+      "id": "skill:recruiter-demo-writer->skill:site-cohesion:skill-skill",
+      "source": "skill:recruiter-demo-writer",
+      "target": "skill:site-cohesion",
+      "kind": "skill-skill",
+      "file": "recruiter-demo-writer/SKILL.md",
+      "line": 133,
+      "lines": [
+        133
+      ]
+    },
+    {
       "id": "skill:recruiter-demo-writer->skill:skill-creator:skill-skill",
       "source": "skill:recruiter-demo-writer",
       "target": "skill:skill-creator",
       "kind": "skill-skill",
       "file": "recruiter-demo-writer/SKILL.md",
-      "line": 129,
+      "line": 142,
       "lines": [
-        129
+        142
       ]
     },
     {
@@ -1209,6 +1304,39 @@
       ]
     },
     {
+      "id": "skill:screenshot-proof->skill:recruiter-demo-writer:skill-skill",
+      "source": "skill:screenshot-proof",
+      "target": "skill:recruiter-demo-writer",
+      "kind": "skill-skill",
+      "file": "screenshot-proof/SKILL.md",
+      "line": 23,
+      "lines": [
+        23
+      ]
+    },
+    {
+      "id": "skill:screenshot-proof->skill:verify-before-done:skill-skill",
+      "source": "skill:screenshot-proof",
+      "target": "skill:verify-before-done",
+      "kind": "skill-skill",
+      "file": "screenshot-proof/SKILL.md",
+      "line": 8,
+      "lines": [
+        8
+      ]
+    },
+    {
+      "id": "skill:screenshot-proof->skill:visual-loop:skill-skill",
+      "source": "skill:screenshot-proof",
+      "target": "skill:visual-loop",
+      "kind": "skill-skill",
+      "file": "screenshot-proof/SKILL.md",
+      "line": 8,
+      "lines": [
+        8
+      ]
+    },
+    {
       "id": "skill:scroll-world->skill:impeccable:skill-skill",
       "source": "skill:scroll-world",
       "target": "skill:impeccable",
@@ -1228,6 +1356,28 @@
       "line": 647,
       "lines": [
         647
+      ]
+    },
+    {
+      "id": "skill:site-cohesion->skill:recruiter-demo-writer:skill-skill",
+      "source": "skill:site-cohesion",
+      "target": "skill:recruiter-demo-writer",
+      "kind": "skill-skill",
+      "file": "site-cohesion/SKILL.md",
+      "line": 30,
+      "lines": [
+        30
+      ]
+    },
+    {
+      "id": "skill:site-cohesion->skill:screenshot-proof:skill-skill",
+      "source": "skill:site-cohesion",
+      "target": "skill:screenshot-proof",
+      "kind": "skill-skill",
+      "file": "site-cohesion/SKILL.md",
+      "line": 54,
+      "lines": [
+        54
       ]
     },
     {

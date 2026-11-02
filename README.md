@@ -15,6 +15,15 @@ Personal Claude Code skills library. Reusable instructions that shape how Claude
 - **strategic-compact**: When to `/compact`, `/clear`, or start a fresh session, plus a `progress.md` handoff format so state lives on disk, not in the conversation. Adapted from ECC's `strategic-compact`.
 - **unattended-build**: The autonomy contract for one coding session running many phases with no human check-in. Only work whose acceptance criteria are runnable commands runs unattended; taste-based work (visual design, copy, layout) gets short human-in-the-loop rounds instead. It writes decide-yourself and stop-and-ask lists to `STANDING-DECISIONS.md`, keeps a resumable `PROGRESS.md`, reports only observed values, and has its diff independently reviewed at each phase boundary. Written from one real build and one failed attempt, not adapted from a third party.
 
+### armaankazi.com workflow skills
+
+Written in November 2026 from the patterns that repeated across the armaankazi.com project threads, not adapted from a third party.
+
+- **screenshot-proof**: One script (`scripts/shoot.mjs`) that takes desktop (1280 by 800) and phone (390 by 844) screenshots of any running page and reports HTTP status, page and console errors, failed requests, horizontal overflow, and the word count of `<main>`, exiting 1 on a broken page. The skill adds the rules: look at every image, save it where the person can open it, and say what a screenshot cannot prove (live API calls, deployed behavior).
+- **site-cohesion**: The map of what has to change together when a route, demo, project, or section is added, renamed, or removed across the four armaankazi.com sections (chooser tiles, section headers, demo cards, the site guide's knowledge, the `/lab` and `/setup` data feeds), and how to check nothing was missed.
+- **kazi-lab-snapshot**: Runs the kazi_lab UI on real data when Neon is unreachable. `scripts/export-snapshot.mjs` makes a read-only export on the Mac; `scripts/load-snapshot.sh` loads it into a throwaway local Postgres without pgvector, checks every table's row count, and prints the `DATABASE_URL`.
+- **pr-sweep**: Clears open PRs across repos with an inventory, a merge plan Armaan approves first, `/code-review` where no bot reviewed, green checks on the merged commit, merges in dependency order, and memory cleanup after.
+
 ### Workflow and research skills (adapted from ECC)
 
 - **phased-build**: Runs a coding task as gated phases (intake, research, plan, implement, review, verify, commit). Each phase writes one file the next phase reads; the user approves the plan and the commit. Covers add, change, fix, and refactor operations, subagent delegation, and parallel worktrees.
@@ -100,6 +109,10 @@ ln -s ~/dev/ark-skills/capture-lessons ~/.claude/skills/capture-lessons
 ln -s ~/dev/ark-skills/decision-records ~/.claude/skills/decision-records
 ln -s ~/dev/ark-skills/skill-audit ~/.claude/skills/skill-audit
 ln -s ~/dev/ark-skills/vet-third-party ~/.claude/skills/vet-third-party
+ln -s ~/dev/ark-skills/screenshot-proof ~/.claude/skills/screenshot-proof
+ln -s ~/dev/ark-skills/site-cohesion ~/.claude/skills/site-cohesion
+ln -s ~/dev/ark-skills/kazi-lab-snapshot ~/.claude/skills/kazi-lab-snapshot
+ln -s ~/dev/ark-skills/pr-sweep ~/.claude/skills/pr-sweep
 ```
 
 Symlink the subagents:
@@ -168,6 +181,12 @@ ark-skills/
 │   └── SKILL.md, scripts/inventory.py
 ├── vet-third-party/
 │   └── SKILL.md, scripts/scan.py
+├── screenshot-proof/
+│   └── SKILL.md, scripts/shoot.mjs
+├── kazi-lab-snapshot/
+│   └── SKILL.md, scripts/export-snapshot.mjs, scripts/load-snapshot.sh
+├── site-cohesion/, pr-sweep/
+│   └── SKILL.md
 ├── contexts/
 │   └── dev.md, review.md, research.md
 ├── agents/

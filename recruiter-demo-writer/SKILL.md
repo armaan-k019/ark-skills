@@ -124,6 +124,19 @@ This repo's CLAUDE.md already has a hard rule against inventing code, features, 
 
 If the premise isn't decided yet, run "Pick the idea first" and bring the brief and the scored ideas to the user. Then build to the page structure above, pick an accent color (most demos use the green `#2d5a27` "company-theme" accent; a new demo can use the product's own brand color if it fits better), and follow the process. Run the portfolio's checks with `verify-before-done` before calling it done. Under 200 rendered words and the five-second test in step 3 are both part of done.
 
+## Build checklist
+
+From the Warp (my-portfolio #71, #72) and DLR (#73) builds of October 2026. A new demo is not done until each line is true or the report says why not:
+
+- **Page:** `src/app/demos/<slug>/page.tsx` to the page structure above, with the logic in its own module (Warp's `session.ts`, DLR's `runner.ts`) so it can be checked without the page.
+- **Claude route:** every public demo calls Claude (Armaan's rule, 2026-10-27). Put it at `src/app/api/demos/<slug>/<action>/route.ts`, server-side only, with `maxDuration` exported at the top and the model ID the other routes use (check the repo's CLAUDE.md and an existing route, do not type one from memory). Parse the model's JSON defensively and show a plain error state when it fails.
+- **Card:** an entry in `content/demos.ts`. Without it the demo is not listed and the site guide cannot see it. Update the demo list in my-portfolio's `CLAUDE.md` in the same PR. `site-cohesion` has the rest of what a new page touches.
+- **Sample data:** made-up inputs are labeled as sample on the page, in one short phrase.
+- **Five-second test and word count:** measured on a production build, numbers in the report.
+- **Screenshots:** desktop and phone with `screenshot-proof`, saved to the project folder under `<company>-demo/`.
+- **Live call:** run the route once with a real key. If the session has none (cloud sessions in this project did not), screenshot with a stand-in response, label it as a stand-in, say in the PR that the live call is untested, and give Armaan the Vercel preview link to load once before merging.
+- **Memory:** a project memory note naming the company, the idea chosen and the alternatives offered, the PR, and what was not verified.
+
 ## Known cost
 
 Measured with `skill-creator` on 2026-10-05 for the "Pick the idea first" section only (written before the 200-word page rules and the "Make it look made by a person" section, which are not measured). Three questions (a Clay role with a plan to rebrand an existing project, a flashy 3D idea for a Linear role, a Warp page plan), each answered by one session with this skill and one with the version before it, graded on 8 assertions by an agent that was not told which version wrote which and spot-checked company facts on the web. With this skill the pass rate was 92% (22 of 24); with the previous version, 62% (15 of 24). The previous version gave no explicit scoring and, in two of three answers, nothing on what loads first; once it proposed a single idea. This version's two misses were each one company fact named in passing with no source, which is why the sourcing rule above now names that case. That sentence was added after the eval and has not been re-measured.
