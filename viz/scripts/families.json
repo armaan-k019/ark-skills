@@ -4,6 +4,7 @@
       "id": "build-discipline",
       "label": "Build discipline",
       "members": [
+        "check-audit",
         "model-routing",
         "phased-build",
         "spec-writing",
@@ -28,6 +29,7 @@
       "label": "Research",
       "members": [
         "experiment-discipline",
+        "feature-teardown",
         "literature-review",
         "query-to-corpus",
         "relevance-profile",
