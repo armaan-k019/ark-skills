@@ -14,56 +14,56 @@
       "label": "Review and honesty",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 17
+      "line": 18
     },
     {
       "id": "research",
       "label": "Research",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 27
+      "line": 28
     },
     {
       "id": "skill-management",
       "label": "Skill management",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 38
+      "line": 40
     },
     {
       "id": "domain",
       "label": "Domain",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 47
+      "line": 49
     },
     {
       "id": "site-work",
       "label": "Site work",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 55
+      "line": 57
     },
     {
       "id": "vendored",
       "label": "Vendored",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 65
+      "line": 67
     },
     {
       "id": "agents",
       "label": "Agents",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 80
+      "line": 82
     },
     {
       "id": "hooks",
       "label": "Hooks",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 88
+      "line": 90
     }
   ],
   "nodes": [
@@ -114,6 +114,23 @@
       "vendored": false
     },
     {
+      "id": "skill:check-audit",
+      "kind": "skill",
+      "name": "check-audit",
+      "path": "check-audit/SKILL.md",
+      "lines": 87,
+      "description": "Audit a repository's existing tests, checks, and CI for checks that cannot fail, such as masked exit codes, skipped or never-run tests, stub scripts, and assertions that only repeat their mock, and prove each suspicion with a mutant before calling it a defect. Use when asked \"do these tests actually test anything\", before trusting a green suite you did not write, after a bug got past green checks, or before speeding up a suite.",
+      "origin": {
+        "from": "body",
+        "text": "Adapted from morluto/rea's `rea-ci-tests-audit` skill (MIT, credit and license text in `licenses/REA-LICENSES`). Changes: the REA-specific parts (Turbo, Vitest lanes, provider fixtures, release rules) are gone, `scripts/scan_checks.py` is new, and every suspicion has to be settled by a mutant, which is Armaan's standing rule for new checks applied to old ones.",
+        "line": 8,
+        "license": "MIT"
+      },
+      "eval_status": "unmeasured",
+      "family": "build-discipline",
+      "vendored": false
+    },
+    {
       "id": "skill:decision-records",
       "kind": "skill",
       "name": "decision-records",
@@ -153,6 +170,23 @@
         "file": "licenses/ECC-LICENSE",
         "line": 12,
         "text": "- experiment-discipline (from skills/mle-workflow, skills/pytorch-patterns,",
+        "license": "MIT"
+      },
+      "eval_status": "unmeasured",
+      "family": "research",
+      "vendored": false
+    },
+    {
+      "id": "skill:feature-teardown",
+      "kind": "skill",
+      "name": "feature-teardown",
+      "path": "feature-teardown/SKILL.md",
+      "lines": 90,
+      "description": "Work out how a feature in someone else's web app, Electron app, or repository actually works, from evidence, then rebuild it in your own project as original code with behavior tests. Use when asked \"how does X do this\", \"I want what Y has\", \"copy this interaction\", \"adapt this repo's idea\", or when pointed at a feature in a shipped app to recreate. Not for reading your own source, and not for native binary decompilation.",
+      "origin": {
+        "from": "body",
+        "text": "Adapted from ideas in three MIT projects: morluto/rea's `reverse-engineer-anything` skill (observation, inference, and unknown kept apart; a question checklist; bounded negative searches), hieunguyenak92/rea-pro-max (competing explanations split by one probe; a finite behavior contract verified against the original), and sickpyramid/ReaFuse (a behavior-only spec card, contract tests first, a copied-code scan). Credit and license text in `licenses/REA-LICENSES`. Ideas only: none of their tools, MCP servers, or packages are installed or needed. The steps use browser DevTools, the receiving repo's own test runner, and `scripts/overlap.py`, which is new.",
+        "line": 8,
         "license": "MIT"
       },
       "eval_status": "unmeasured",
@@ -803,6 +837,40 @@
       ]
     },
     {
+      "id": "skill:check-audit->skill:experiment-discipline:skill-skill",
+      "source": "skill:check-audit",
+      "target": "skill:experiment-discipline",
+      "kind": "skill-skill",
+      "file": "check-audit/SKILL.md",
+      "line": 76,
+      "lines": [
+        76
+      ]
+    },
+    {
+      "id": "skill:check-audit->skill:spec-writing:skill-skill",
+      "source": "skill:check-audit",
+      "target": "skill:spec-writing",
+      "kind": "skill-skill",
+      "file": "check-audit/SKILL.md",
+      "line": 10,
+      "lines": [
+        10
+      ]
+    },
+    {
+      "id": "skill:check-audit->skill:verify-before-done:skill-skill",
+      "source": "skill:check-audit",
+      "target": "skill:verify-before-done",
+      "kind": "skill-skill",
+      "file": "check-audit/SKILL.md",
+      "line": 10,
+      "lines": [
+        10,
+        80
+      ]
+    },
+    {
       "id": "skill:experiment-discipline->skill:decision-records:skill-skill",
       "source": "skill:experiment-discipline",
       "target": "skill:decision-records",
@@ -822,6 +890,51 @@
       "line": 93,
       "lines": [
         93
+      ]
+    },
+    {
+      "id": "skill:feature-teardown->skill:spec-writing:skill-skill",
+      "source": "skill:feature-teardown",
+      "target": "skill:spec-writing",
+      "kind": "skill-skill",
+      "file": "feature-teardown/SKILL.md",
+      "line": 62,
+      "lines": [
+        62
+      ]
+    },
+    {
+      "id": "skill:feature-teardown->skill:verify-before-done:skill-skill",
+      "source": "skill:feature-teardown",
+      "target": "skill:verify-before-done",
+      "kind": "skill-skill",
+      "file": "feature-teardown/SKILL.md",
+      "line": 78,
+      "lines": [
+        78
+      ]
+    },
+    {
+      "id": "skill:feature-teardown->skill:vet-third-party:skill-skill",
+      "source": "skill:feature-teardown",
+      "target": "skill:vet-third-party",
+      "kind": "skill-skill",
+      "file": "feature-teardown/SKILL.md",
+      "line": 15,
+      "lines": [
+        15,
+        74
+      ]
+    },
+    {
+      "id": "skill:feature-teardown->skill:visual-loop:skill-skill",
+      "source": "skill:feature-teardown",
+      "target": "skill:visual-loop",
+      "kind": "skill-skill",
+      "file": "feature-teardown/SKILL.md",
+      "line": 62,
+      "lines": [
+        62
       ]
     },
     {

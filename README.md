@@ -36,6 +36,13 @@ Written in November 2026 from the patterns that repeated across the armaankazi.c
 - **skill-audit**: Measures installed skills, agents, and CLAUDE.md with `scripts/inventory.py` and recommends keep, improve, merge, or retire.
 - **vet-third-party**: Static scan (`scripts/scan.py`) plus a reading checklist for any skill, hook, plugin, or MCP config before installing it.
 
+### Adapted from reverse-engineering projects
+
+Written in November 2026 from ideas in [morluto/rea](https://github.com/morluto/rea) and two projects under the GitHub topic `reverse-engineer-anything`, all MIT, credit in `licenses/REA-LICENSES`. Ideas only: REA itself is not installed, and neither skill needs it.
+
+- **feature-teardown**: Works out how a feature in someone else's web app, Electron app, or repo actually works, then rebuilds it as original code. A question checklist, a finding ledger that keeps observed, inferred, and unknown apart, one probe to split competing explanations, a behavior-only spec card, contract tests first, and `scripts/overlap.py`, which flags code the rebuild shares with the donor.
+- **check-audit**: Audits a repo's existing tests and CI for checks that cannot fail. `scripts/scan_checks.py` finds leads (exit codes masked by a pipe or `|| true`, `continue-on-error`, stub test scripts, `.only`, skips), then each suspicion is settled by a mutant in a scratch worktree before it is called a defect.
+
 ## Subagents (`agents/`)
 
 - **silent-failure-hunter**: Reviews changed code for swallowed errors, fallbacks that hide failure, lost error propagation, and unchecked network or API calls. Every finding cites a line; "no findings" is a valid result.
@@ -187,6 +194,10 @@ ark-skills/
 │   └── SKILL.md, scripts/export-snapshot.mjs, scripts/load-snapshot.sh
 ├── site-cohesion/, pr-sweep/
 │   └── SKILL.md
+├── feature-teardown/
+│   └── SKILL.md, scripts/overlap.py, scripts/test_overlap.py
+├── check-audit/
+│   └── SKILL.md, scripts/scan_checks.py, scripts/test_scan_checks.py
 ├── contexts/
 │   └── dev.md, review.md, research.md
 ├── agents/
@@ -197,7 +208,8 @@ ark-skills/
 │   ├── _input.js, test-hooks.js
 │   └── settings.example.json
 ├── licenses/
-│   └── ECC-LICENSE
+│   ├── ECC-LICENSE
+│   └── REA-LICENSES
 └── README.md
 ```
 
@@ -211,4 +223,4 @@ Use skill-creator inside a Claude Code session:
 
 ## License
 
-Individual skills carry their own licenses (Apache 2.0 for skill-creator and impeccable, MIT for ponytail, MIT for scroll-world, used with the author's permission and no license file for research-eval (see `research-eval/NOTICE.md`), MIT for the ECC-derived skills, agents, and hooks, see `licenses/ECC-LICENSE`). New skills authored in this repo default to MIT unless specified otherwise.
+Individual skills carry their own licenses (Apache 2.0 for skill-creator and impeccable, MIT for ponytail, MIT for scroll-world, used with the author's permission and no license file for research-eval (see `research-eval/NOTICE.md`), MIT for the ECC-derived skills, agents, and hooks, see `licenses/ECC-LICENSE`; feature-teardown and check-audit adapt ideas from MIT projects credited in `licenses/REA-LICENSES`). New skills authored in this repo default to MIT unless specified otherwise.
