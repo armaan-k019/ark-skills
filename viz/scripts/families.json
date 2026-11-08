@@ -64,6 +64,13 @@
       ]
     },
     {
+      "id": "learning",
+      "label": "Learning",
+      "members": [
+        "explain-ladder"
+      ]
+    },
+    {
       "id": "vendored",
       "label": "Vendored",
       "members": [

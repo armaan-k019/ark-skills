@@ -45,25 +45,32 @@
       "line": 57
     },
     {
+      "id": "learning",
+      "label": "Learning",
+      "rule": "families.json",
+      "file": "viz/scripts/families.json",
+      "line": 67
+    },
+    {
       "id": "vendored",
       "label": "Vendored",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 67
+      "line": 74
     },
     {
       "id": "agents",
       "label": "Agents",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 82
+      "line": 89
     },
     {
       "id": "hooks",
       "label": "Hooks",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 90
+      "line": 97
     }
   ],
   "nodes": [
@@ -174,6 +181,17 @@
       },
       "eval_status": "unmeasured",
       "family": "research",
+      "vendored": false
+    },
+    {
+      "id": "skill:explain-ladder",
+      "kind": "skill",
+      "name": "explain-ladder",
+      "path": "explain-ladder/SKILL.md",
+      "lines": 85,
+      "description": "Explain a concept by climbing a ladder of rungs, from an ELI5 version to analogies, then real terms, then the mechanism, then full depth, pausing after the analogy rung so the reader chooses how deep to go. Use this skill when asked to \"eli5\", \"explain X\", \"explain X simply\", \"help me understand X\", \"what is X\", \"how does X work\", \"I don't get X\", or \"teach me X\", and whenever a concept needs teaching rather than a one-line answer.",
+      "eval_status": "unmeasured",
+      "family": "learning",
       "vendored": false
     },
     {
