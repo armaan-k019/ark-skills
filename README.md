@@ -43,6 +43,10 @@ Written in November 2026 from ideas in [morluto/rea](https://github.com/morluto/
 - **feature-teardown**: Works out how a feature in someone else's web app, Electron app, or repo actually works, then rebuilds it as original code. A question checklist, a finding ledger that keeps observed, inferred, and unknown apart, one probe to split competing explanations, a behavior-only spec card, contract tests first, and `scripts/overlap.py`, which flags code the rebuild shares with the donor.
 - **check-audit**: Audits a repo's existing tests and CI for checks that cannot fail. `scripts/scan_checks.py` finds leads (exit codes masked by a pipe or `|| true`, `continue-on-error`, stub test scripts, `.only`, skips), then each suspicion is settled by a mutant in a scratch worktree before it is called a defect.
 
+### Learning skills
+
+- **explain-ladder**: Explains a concept in five rungs: ELI5, analogy (each with a "where it breaks" line), real names mapped onto the analogy, the mechanism with a worked example, and full depth with sources. Pauses after the analogy rung so the reader picks how deep to go. Rung names and order are stable so other skills can build on them. Written in November 2026, not adapted from a third party.
+
 ## Subagents (`agents/`)
 
 - **silent-failure-hunter**: Reviews changed code for swallowed errors, fallbacks that hide failure, lost error propagation, and unchecked network or API calls. Every finding cites a line; "no findings" is a valid result.
@@ -120,6 +124,7 @@ ln -s ~/dev/ark-skills/screenshot-proof ~/.claude/skills/screenshot-proof
 ln -s ~/dev/ark-skills/site-cohesion ~/.claude/skills/site-cohesion
 ln -s ~/dev/ark-skills/kazi-lab-snapshot ~/.claude/skills/kazi-lab-snapshot
 ln -s ~/dev/ark-skills/pr-sweep ~/.claude/skills/pr-sweep
+ln -s ~/dev/ark-skills/explain-ladder ~/.claude/skills/explain-ladder
 ```
 
 Symlink the subagents:
@@ -198,6 +203,8 @@ ark-skills/
 │   └── SKILL.md, scripts/overlap.py, scripts/test_overlap.py
 ├── check-audit/
 │   └── SKILL.md, scripts/scan_checks.py, scripts/test_scan_checks.py
+├── explain-ladder/
+│   └── SKILL.md
 ├── contexts/
 │   └── dev.md, review.md, research.md
 ├── agents/
