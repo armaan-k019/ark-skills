@@ -47,6 +47,13 @@ Written in November 2026 from ideas in [morluto/rea](https://github.com/morluto/
 
 - **explain-ladder**: Explains a concept in five rungs: ELI5, analogy (each with a "where it breaks" line), real names mapped onto the analogy, the mechanism with a worked example, and full depth with sources. Pauses after the analogy rung so the reader picks how deep to go. Rung names and order are stable so other skills can build on them. Written in November 2026, not adapted from a third party.
 
+### Hackathon ops skills
+
+Written in November 2026 from the TidePool hackathon build (HackPrinceton), not adapted from a third party.
+
+- **gpu-pod-rebuild**: Rebuilds an app on a rented GPU pod that came back empty: runs the rebuild and control scripts, opens an SSH tunnel from the Mac to the editor port, and ends with a plain working or not line backed by a check of every service. Never reads or copies API keys (the person enters the Hugging Face login and OpenAI key), and never stops the pod; it warns that stopping can wipe the disk first.
+- **themed-rename**: Renames everything a user can see (UI text, titles, buttons, README) to a product theme while leaving internal names (env vars, package names, file paths, storage keys) alone, then proves it with a search that found the old names before the change and finds none visible after, plus a check of the new name's exact capitalization.
+
 ## Subagents (`agents/`)
 
 - **silent-failure-hunter**: Reviews changed code for swallowed errors, fallbacks that hide failure, lost error propagation, and unchecked network or API calls. Every finding cites a line; "no findings" is a valid result.
@@ -125,6 +132,8 @@ ln -s ~/dev/ark-skills/site-cohesion ~/.claude/skills/site-cohesion
 ln -s ~/dev/ark-skills/kazi-lab-snapshot ~/.claude/skills/kazi-lab-snapshot
 ln -s ~/dev/ark-skills/pr-sweep ~/.claude/skills/pr-sweep
 ln -s ~/dev/ark-skills/explain-ladder ~/.claude/skills/explain-ladder
+ln -s ~/dev/ark-skills/gpu-pod-rebuild ~/.claude/skills/gpu-pod-rebuild
+ln -s ~/dev/ark-skills/themed-rename ~/.claude/skills/themed-rename
 ```
 
 Symlink the subagents:
@@ -204,6 +213,8 @@ ark-skills/
 ├── check-audit/
 │   └── SKILL.md, scripts/scan_checks.py, scripts/test_scan_checks.py
 ├── explain-ladder/
+│   └── SKILL.md
+├── gpu-pod-rebuild/, themed-rename/
 │   └── SKILL.md
 ├── contexts/
 │   └── dev.md, review.md, research.md

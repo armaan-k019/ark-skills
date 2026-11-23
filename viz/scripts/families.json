@@ -71,6 +71,14 @@
       ]
     },
     {
+      "id": "hackathon-ops",
+      "label": "Hackathon ops",
+      "members": [
+        "gpu-pod-rebuild",
+        "themed-rename"
+      ]
+    },
+    {
       "id": "vendored",
       "label": "Vendored",
       "members": [
