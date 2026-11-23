@@ -14,6 +14,7 @@ Written from the "Run kazi_lab on localhost" and "Rename and simplify the resear
 - **Read only against Neon.** `export-snapshot.mjs` sets `default_transaction_read_only` and runs only `SELECT`s inside read-only transactions. Never point `load-snapshot.sh` or any write at the Neon URL. The loader only ever talks to its own local cluster.
 - **The snapshot is real research data.** It stays out of git and out of public places. Stage it in the session, never commit it.
 - **Never present snapshot data as live.** Screenshots from it show the corpus as of the export date. Say the date.
+- **Not for writes or live jobs.** Running a migration on Neon, loading a research project, or a search or build job that calls Semantic Scholar, OpenAlex, or Crossref cannot run from a cloud session either. Those go through a Remote Control session on Armaan's Mac (`~/dev/kazi-lab`), with his go-ahead for anything that writes to Neon or spends API credit.
 
 ## Step 1: Export on the Mac (Armaan runs this)
 
@@ -21,7 +22,7 @@ Written from the "Run kazi_lab on localhost" and "Rename and simplify the resear
 node ~/dev/ark-skills/kazi-lab-snapshot/scripts/export-snapshot.mjs ~/dev/kazi-lab ~/dev/kazi-lab-snapshot/out
 ```
 
-It reads `DATABASE_URL` from the repo's `.env.local`, loads `pg` from `packages/db`, and writes one `<table>.jsonl.gz` per public table, printing each table's row count. The 2026-10-27 export was 55 tables and about 36 MB. Ask for a fresh export when the snapshot predates the migrations you are working with.
+It reads `DATABASE_URL` from the repo's `.env.local`, loads `pg` from `packages/db`, and writes one `<table>.jsonl.gz` per public table, printing each table's row count. The 2026-10-27 export was 55 tables and about 36 MB. Ask for a fresh export when the snapshot predates the migrations you are working with. As of 2026-11-23 kazi_lab's migrations run through 0033 (research projects, jobs, and edits for Current research), so a snapshot from before kazi_lab #10 has no rows for those pages.
 
 ## Step 2: Stage it in the session
 

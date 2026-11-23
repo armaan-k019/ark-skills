@@ -253,7 +253,7 @@
       "kind": "skill",
       "name": "kazi-lab-snapshot",
       "path": "kazi-lab-snapshot/SKILL.md",
-      "lines": 65,
+      "lines": 66,
       "description": "Run the kazi_lab (corvid) web UI against real data when the Neon database cannot be reached, by exporting a read-only snapshot on Armaan's Mac and loading it into a throwaway local Postgres with one script. Use for any kazi_lab UI work, screenshot, or bug that needs real corpus data from a cloud session or any machine without Neon access, and when refreshing a stale snapshot.",
       "eval_status": "unmeasured",
       "family": "site-work",
@@ -418,10 +418,10 @@
       "kind": "skill",
       "name": "recruiter-demo-writer",
       "path": "recruiter-demo-writer/SKILL.md",
-      "lines": 142,
-      "description": "Use when choosing, building, deepening, or reviewing a recruiter-facing demo page under src/app/demos/ in this portfolio (the pattern behind illoca, world-labs, rho, midjourney, whop). Covers picking the demo idea for a target company and checking it for hiring signal, not only the page itself. Triggers on requests like \"what demo should I build for [company],\" \"is this a good demo idea for [company],\" \"build the Warp demo,\" \"deepen the Whop page,\" \"add a demo for [company],\" \"write or cut the copy for [demo],\" or any request to add sections, rewrite copy, or extend an existing page in src/app/demos/. Also use when asked to review a demo page for consistency, tone, voice, hiring signal, or fabricated claims, when a demo has too much text (every demo page must render under 200 words) or looks AI-generated and needs trimming, and whenever a demo is being planned for a job application even if the page is not mentioned. Not for the older terracotta-palette project pages under src/app/projects/ (urban-gpt, yield, fine-print), which follow a different template this skill does not cover.",
+      "lines": 145,
+      "description": "Use when choosing, building, deepening, or reviewing a recruiter-facing demo page under src/app/demos/ in this portfolio (the pattern behind illoca, rho, midjourney, clay, warp, goodfire, fireworks, and the other cards in content/demos.ts). Covers picking the demo idea for a target company and checking it for hiring signal, not only the page itself. Triggers on requests like \"what demo should I build for [company],\" \"is this a good demo idea for [company],\" \"build the Warp demo,\" \"deepen the Whop page,\" \"add a demo for [company],\" \"write or cut the copy for [demo],\" or any request to add sections, rewrite copy, or extend an existing page in src/app/demos/. Also use when asked to review a demo page for consistency, tone, voice, hiring signal, or fabricated claims, when a demo has too much text (every demo page must render under 200 words) or looks AI-generated and needs trimming, and whenever a demo is being planned for a job application even if the page is not mentioned. Not for the older terracotta-palette project pages under src/app/projects/ (yield, fine-print), which follow a different template this skill does not cover.",
       "eval_status": "measured: 92%",
-      "eval_line": 142,
+      "eval_line": 145,
       "family": "domain",
       "vendored": false
     },
@@ -430,7 +430,7 @@
       "kind": "skill",
       "name": "relevance-profile",
       "path": "relevance-profile/SKILL.md",
-      "lines": 80,
+      "lines": 101,
       "description": "Defines the multi-axis relevance profile that this cross-domain research discovery engine reports for every candidate connection. Use this skill whenever building, reviewing, or modifying anything that scores, ranks, filters, or summarizes cross-domain connections, including the Critic's output, the Experimentalist's output, any dashboard or report surface, or any code that computes a \"relevance\" or \"quality\" value for a connection. Make sure to consult this skill before adding any new scoring field, before combining existing scores, and before designing how a researcher filters or sorts connections, even if the request just says \"add a score\" or \"rank these by relevance.\"",
       "eval_status": "unmeasured",
       "family": "research",
@@ -508,7 +508,7 @@
       "kind": "skill",
       "name": "site-cohesion",
       "path": "site-cohesion/SKILL.md",
-      "lines": 56,
+      "lines": 57,
       "description": "Keep the four armaankazi.com sections (Website, Portfolio, Lab, Workflow) reading as one site when a route, page, demo, project, or section is added, renamed, moved, or removed. Lists every file that has to change together in my-portfolio, kazi_lab, and ark-skills, and how to check none was missed. Use for any change that adds or removes something a visitor can navigate to, touches the chooser, a section header, the home buttons, or the site guide birds, or when asked whether the sites are consistent.",
       "eval_status": "unmeasured",
       "family": "site-work",
@@ -994,9 +994,9 @@
       "target": "skill:screenshot-proof",
       "kind": "skill-skill",
       "file": "kazi-lab-snapshot/SKILL.md",
-      "line": 51,
+      "line": 52,
       "lines": [
-        51
+        52
       ]
     },
     {
@@ -1373,9 +1373,9 @@
       "target": "skill:screenshot-proof",
       "kind": "skill-skill",
       "file": "recruiter-demo-writer/SKILL.md",
-      "line": 136,
+      "line": 139,
       "lines": [
-        136
+        139
       ]
     },
     {
@@ -1384,9 +1384,9 @@
       "target": "skill:site-cohesion",
       "kind": "skill-skill",
       "file": "recruiter-demo-writer/SKILL.md",
-      "line": 133,
+      "line": 135,
       "lines": [
-        133
+        135
       ]
     },
     {
@@ -1395,9 +1395,9 @@
       "target": "skill:skill-creator",
       "kind": "skill-skill",
       "file": "recruiter-demo-writer/SKILL.md",
-      "line": 142,
+      "line": 145,
       "lines": [
-        142
+        145
       ]
     },
     {
@@ -1429,9 +1429,9 @@
       "target": "skill:honest-refusal",
       "kind": "skill-skill",
       "file": "relevance-profile/SKILL.md",
-      "line": 26,
+      "line": 27,
       "lines": [
-        26
+        27
       ]
     },
     {
@@ -1517,9 +1517,9 @@
       "target": "skill:recruiter-demo-writer",
       "kind": "skill-skill",
       "file": "site-cohesion/SKILL.md",
-      "line": 30,
+      "line": 31,
       "lines": [
-        30
+        31
       ]
     },
     {
@@ -1528,9 +1528,9 @@
       "target": "skill:screenshot-proof",
       "kind": "skill-skill",
       "file": "site-cohesion/SKILL.md",
-      "line": 54,
+      "line": 55,
       "lines": [
-        54
+        55
       ]
     },
     {

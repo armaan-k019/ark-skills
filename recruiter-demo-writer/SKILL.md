@@ -1,6 +1,6 @@
 ---
 name: recruiter-demo-writer
-description: Use when choosing, building, deepening, or reviewing a recruiter-facing demo page under src/app/demos/ in this portfolio (the pattern behind illoca, world-labs, rho, midjourney, whop). Covers picking the demo idea for a target company and checking it for hiring signal, not only the page itself. Triggers on requests like "what demo should I build for [company]," "is this a good demo idea for [company]," "build the Warp demo," "deepen the Whop page," "add a demo for [company]," "write or cut the copy for [demo]," or any request to add sections, rewrite copy, or extend an existing page in src/app/demos/. Also use when asked to review a demo page for consistency, tone, voice, hiring signal, or fabricated claims, when a demo has too much text (every demo page must render under 200 words) or looks AI-generated and needs trimming, and whenever a demo is being planned for a job application even if the page is not mentioned. Not for the older terracotta-palette project pages under src/app/projects/ (urban-gpt, yield, fine-print), which follow a different template this skill does not cover.
+description: Use when choosing, building, deepening, or reviewing a recruiter-facing demo page under src/app/demos/ in this portfolio (the pattern behind illoca, rho, midjourney, clay, warp, goodfire, fireworks, and the other cards in content/demos.ts). Covers picking the demo idea for a target company and checking it for hiring signal, not only the page itself. Triggers on requests like "what demo should I build for [company]," "is this a good demo idea for [company]," "build the Warp demo," "deepen the Whop page," "add a demo for [company]," "write or cut the copy for [demo]," or any request to add sections, rewrite copy, or extend an existing page in src/app/demos/. Also use when asked to review a demo page for consistency, tone, voice, hiring signal, or fabricated claims, when a demo has too much text (every demo page must render under 200 words) or looks AI-generated and needs trimming, and whenever a demo is being planned for a job application even if the page is not mentioned. Not for the older terracotta-palette project pages under src/app/projects/ (yield, fine-print), which follow a different template this skill does not cover.
 ---
 
 Every page under `src/app/demos/` is a recruiter-facing pitch: "here is a tool I built for your product." They share one short page structure and one voice. This skill keeps a new or edited demo consistent with the ones already shipped, instead of drifting into generic AI-demo copy (marketing adjectives, invented stats, ad hoc section names).
@@ -13,7 +13,7 @@ So the goal is not flashy versus useful. It is a useful demo whose payoff is vis
 
 ### 1. Write a hiring-signal brief
 
-Ask the user which company and role this is for, and what they already know, before researching. Then fill in this brief. Every line cites a source (a job posting, engineering blog, docs, changelog, a public talk) or says NOT AVAILABLE. Never fill a line from memory: products change, and a stale claim about their product is the most damaging error this page can make, because the reader knows their own product.
+Ask the user which company and role this is for, and what they already know, before researching. When Armaan asks for target suggestions instead of naming a company, favor research labs and startups that publish their work over product SaaS (his stated preference of 2026-11-02, after he turned down a shortlist of product companies). Then fill in this brief. Every line cites a source (a job posting, engineering blog, docs, changelog, a public talk) or says NOT AVAILABLE. Never fill a line from memory: products change, and a stale claim about their product is the most damaging error this page can make, because the reader knows their own product.
 
 ```markdown
 Company:
@@ -35,7 +35,7 @@ Write down three ideas and score each one yes, partly, or no on four questions, 
 - **Buildable:** can the working core ship for real in the time available, on real data or clearly labeled sample data? A mocked core fails this.
 - **Honest:** can the page be written without inventing their features, their metrics, or their customers' data?
 
-Choose among the ideas that are native and honest first, and only then on hook. A weak hook is fixable with design (step 3); a non-native idea is not fixable at all. Don't drop a native idea because it looks boring. Show the user the brief and the scored table and let them pick before building.
+Choose among the ideas that are native and honest first, and only then on hook. A weak hook is fixable with design (step 3); a non-native idea is not fixable at all. Don't drop a native idea because it looks boring. Show the user the brief and the scored table and let them pick before building. In this project that worked best as a decision card with the three ideas and one recommended, building the recommended one while waiting (Fireworks, my-portfolio #80), since a premise change only costs the page, not the brief.
 
 ### 3. Design for the five-second test
 
@@ -117,20 +117,23 @@ This repo's CLAUDE.md already has a hard rule against inventing code, features, 
 
 - **The host company's product.** No claim about the company goes on the page unless it is checked against a source (the hiring-signal brief is where those sources live). If it can't be checked, cut it.
 - **The tool itself.** No sentence may claim the tool does something the code does not do.
-- **Any reference corpus the demo cites** (precedents, source texts, example data, a research paper). Illoca's precedent library and World Labs' preloaded texts are called out in CLAUDE.md as needing individual verification against a real source, never generated in bulk from memory. Verify each new entry individually and say so.
+- **Any reference corpus the demo cites** (precedents, source texts, example data, a research paper). Illoca's precedent library is called out in CLAUDE.md as needing individual verification against a real source, never generated in bulk from memory. Verify each new entry individually and say so.
 - **Metrics.** Never invent a statistic, win rate, or benchmark number. Numbers on the page come from the code or from a cited source.
 
-## New demos (e.g. a future Warp page)
+## New demos
 
 If the premise isn't decided yet, run "Pick the idea first" and bring the brief and the scored ideas to the user. Then build to the page structure above, pick an accent color (most demos use the green `#2d5a27` "company-theme" accent; a new demo can use the product's own brand color if it fits better), and follow the process. Run the portfolio's checks with `verify-before-done` before calling it done. Under 200 rendered words and the five-second test in step 3 are both part of done.
 
 ## Build checklist
 
-From the Warp (my-portfolio #71, #72) and DLR (#73) builds of October 2026. A new demo is not done until each line is true or the report says why not:
+From the Warp (my-portfolio #71, #72) and DLR (#73) builds of October 2026, extended with Harmonic (#76), Thinking Machines (#75), Edison (#74), Physical Intelligence (#77), Goodfire (#78), and Fireworks (#80) in November. A new demo is not done until each line is true or the report says why not:
 
 - **Page:** `src/app/demos/<slug>/page.tsx` to the page structure above, with the logic in its own module (Warp's `session.ts`, DLR's `runner.ts`) so it can be checked without the page.
+- **Real computation for Claude to reason over:** the strongest demos run a real, deterministic piece of the company's problem in the browser (a seeded SAE in Goodfire, speculative sampling in Fireworks, a split-K float32 sum in Thinking Machines) and give Claude its output, not a prompt alone. Long searches go in a Web Worker so the page stays responsive (Harmonic's `search.worker.ts`).
+- **Check Claude with plain code where you can:** score its answer against something it did not see (Goodfire scores Claude's feature labels on held-out sentences; Fireworks shows Claude's chosen k next to the measured best). Show the check on the page, including when Claude is wrong.
 - **Claude route:** every public demo calls Claude (Armaan's rule, 2026-10-27). Put it at `src/app/api/demos/<slug>/<action>/route.ts`, server-side only, with `maxDuration` exported at the top and the model ID the other routes use (check the repo's CLAUDE.md and an existing route, do not type one from memory). Parse the model's JSON defensively and show a plain error state when it fails.
 - **Card:** an entry in `content/demos.ts`. Without it the demo is not listed and the site guide cannot see it. Update the demo list in my-portfolio's `CLAUDE.md` in the same PR. `site-cohesion` has the rest of what a new page touches.
+- **Cached responses:** if the page shows Claude output on load, store it in the demo's `cached.ts` or `cache.json`, filled only from real responses: a script run where the key is (Goodfire's `scripts/goodfire-cache.mjs` on Armaan's Mac) or a pasted real response (the comment in Thinking Machines' `cached.ts`). Never write an entry by hand, since the page labels them as Claude's output. Leaving the cache empty is fine; say so in the PR.
 - **Sample data:** made-up inputs are labeled as sample on the page, in one short phrase.
 - **Five-second test and word count:** measured on a production build, numbers in the report.
 - **Screenshots:** desktop and phone with `screenshot-proof`, saved to the project folder under `<company>-demo/`.
