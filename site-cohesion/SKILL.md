@@ -7,7 +7,7 @@ description: Keep the four armaankazi.com sections (Website, Portfolio, Lab, Wor
 
 armaankazi.com is one Next.js app (my-portfolio) that hosts four sections behind a chooser at `/`, plus data fed in from two other repos. Each section has its own header, the site guide birds answer questions about all of it, and several lists repeat the same pages. In October 2026 most cross-site bugs were one of those lists not being updated: a demo the guide could not see, a section without its home button, a stale count in CLAUDE.md. This skill is the map of what moves together.
 
-Written from the threads "Add home buttons across all sites", "Build Huginn and Muninn site guides", "Unified armaankazi.com deployment", "Launch read-only visibility dashboard", "Rename and simplify the research lab", "Build Warp demo for portfolio", and "Build DLR demo for portfolio", checked against my-portfolio `main` at 583ce33. Paths can move: grep before trusting one.
+Written from the threads "Add home buttons across all sites", "Build Huginn and Muninn site guides", "Unified armaankazi.com deployment", "Launch read-only visibility dashboard", "Rename and simplify the research lab", "Build Warp demo for portfolio", and "Build DLR demo for portfolio", checked against my-portfolio `main` at 583ce33 and rechecked on 2026-11-23 at 4ed9800 (after the November demos, TidePool, and the last-updated quip). Paths can move: grep before trusting one.
 
 ## The map
 
@@ -23,11 +23,12 @@ Shared pieces that every section shows:
 
 - **Section headers:** `src/lib/sections.ts` maps route prefixes to a section (name and start page). `src/components/Navbar.tsx` opens with `AllSitesLink` (to `/`) and then the section name (to its start). Only Website pages show Experience, Projects, and Journal.
 - **Site guide (the two ravens):** mounted once in `src/app/layout.tsx`, so on every page. It answers only from `src/lib/guide/knowledge.ts`, which reads `content/projects.ts`, `content/work.ts`, `content/demos.ts`, `content/sites.ts`, and the MDX, plus two hand-kept lists in that file: `CONTACT_LINKS` and `PAGE_LINKS`. Its "take me to" only goes to an href in `guideLinks()`.
-- **kazi_lab's own app** draws its own pair of home buttons in `apps/web/components/shell/site-home-buttons.tsx`, with the chooser URL as a constant. It still has the older boxed style; the deployed lab is the snapshot at `/lab`, so that only matters if the lab app is deployed itself.
+- **Last updated:** Muni's "last time this site was updated" quip reads `SITE_LAST_UPDATED`, stamped at build time in `next.config.ts` (deploy time on Vercel). Nothing to update by hand; never write a date into the guide instead.
+- **kazi_lab's own app** draws its own pair of home buttons in `apps/web/components/shell/site-home-buttons.tsx`, with the chooser URL as a constant. It still has the older boxed style. On 2026-11-02 Armaan decided to host the full lab app at lab.armaankazi.com behind its access-code gate, with public Current research pages at `/research` (kazi_lab #10). Check whether that deployment is live before relying on it; once it is, the lab app is a fifth place a visitor can land, and its buttons and public pages need the same checks as the sections above.
 
 ## What to update, by change
 
-**A new demo.** `src/app/demos/<slug>/`, its route under `src/app/api/demos/<slug>/` (server-side Claude call, `maxDuration` exported), and a card in `content/demos.ts`. The card is what lists it publicly and what the guide sees; a demo without a card is reachable only by URL or access code (`src/lib/demos.ts`). Then update the demo list in my-portfolio's `CLAUDE.md`. Follow `recruiter-demo-writer` for the page itself.
+**A new demo.** `src/app/demos/<slug>/`, its route under `src/app/api/demos/<slug>/` (server-side Claude call, `maxDuration` exported), and a card in `content/demos.ts`. The card is what lists it publicly and what the guide sees; a demo without a card is reachable only by URL or access code (`src/lib/demos.ts`). Then update the demo list in my-portfolio's `CLAUDE.md` (as of 2026-11-23 it still lists four of the thirteen cards, so fix the whole list when you touch it). Follow `recruiter-demo-writer` for the page itself.
 
 **A new project.** An entry in `content/projects.ts` (that is what lists it and what the guide sees). A bespoke page in `src/app/projects/<slug>/` overrides the generic renderer; a bespoke page with no entry is routable but unlisted and invisible to the guide.
 
