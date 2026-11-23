@@ -42,35 +42,35 @@
       "label": "Site work",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 57
+      "line": 58
     },
     {
       "id": "learning",
       "label": "Learning",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 67
+      "line": 69
     },
     {
       "id": "vendored",
       "label": "Vendored",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 74
+      "line": 76
     },
     {
       "id": "agents",
       "label": "Agents",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 89
+      "line": 91
     },
     {
       "id": "hooks",
       "label": "Hooks",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 97
+      "line": 99
     }
   ],
   "nodes": [
@@ -209,6 +209,17 @@
       },
       "eval_status": "unmeasured",
       "family": "research",
+      "vendored": false
+    },
+    {
+      "id": "skill:gpu-pod-rebuild",
+      "kind": "skill",
+      "name": "gpu-pod-rebuild",
+      "path": "gpu-pod-rebuild/SKILL.md",
+      "lines": 78,
+      "description": "Use when a rented GPU pod (RunPod or similar) has lost its data or been replaced and the app on it must be rebuilt from scratch, reconnected from the Mac over an SSH tunnel, and checked as working or not, without ever reading the person's API keys.",
+      "eval_status": "unmeasured",
+      "family": "domain",
       "vendored": false
     },
     {
@@ -575,6 +586,17 @@
       },
       "eval_status": "unmeasured",
       "family": "build-discipline",
+      "vendored": false
+    },
+    {
+      "id": "skill:themed-rename",
+      "kind": "skill",
+      "name": "themed-rename",
+      "path": "themed-rename/SKILL.md",
+      "lines": 60,
+      "description": "Use when a product is being renamed to a new theme or brand and every name a user can see (UI text, page titles, buttons, README) must change while internal names (env vars, package names, file paths, storage keys) stay put, ending with a search that proves no visible old name is left.",
+      "eval_status": "unmeasured",
+      "family": "site-work",
       "vendored": false
     },
     {
@@ -1638,6 +1660,17 @@
       "line": 91,
       "lines": [
         91
+      ]
+    },
+    {
+      "id": "skill:themed-rename->skill:verify-before-done:skill-skill",
+      "source": "skill:themed-rename",
+      "target": "skill:verify-before-done",
+      "kind": "skill-skill",
+      "file": "themed-rename/SKILL.md",
+      "line": 46,
+      "lines": [
+        46
       ]
     },
     {

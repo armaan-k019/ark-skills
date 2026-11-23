@@ -185,7 +185,7 @@ function layoutFamilies(cy, graph) {
 // connect, which would read as a reference that does not exist. Such an edge is
 // bent: offsets of growing size are tried on alternate sides, and each try is
 // checked against the path Cytoscape actually computes for it.
-const ROUTE_BENDS = [40, -40, 80, -80, 120, -120, 170, -170, 230, -230, 300, -300];
+const ROUTE_BENDS = [40, -40, 80, -80, 120, -120, 170, -170, 230, -230, 300, -300, 380, -380];
 const ROUTE_CLEARANCE = 6;
 
 function edgePath(edge, steps = 40) {
@@ -225,7 +225,7 @@ function routeEdges(cy) {
   const unrouted = [];
   cy.edges().forEach((edge) => {
     if (edgeBlockers(edge, members).length === 0) return;
-    for (const weight of [0.5, 0.3, 0.7]) {
+    for (const weight of [0.5, 0.3, 0.7, 0.2, 0.8]) {
       for (const bend of ROUTE_BENDS) {
         edge.style({ 'curve-style': 'unbundled-bezier', 'control-point-distances': bend, 'control-point-weights': weight });
         if (edgeBlockers(edge, members).length === 0) {

@@ -49,6 +49,7 @@
       "id": "domain",
       "label": "Domain",
       "members": [
+        "gpu-pod-rebuild",
         "recruiter-demo-writer",
         "scroll-world"
       ]
@@ -60,7 +61,8 @@
         "kazi-lab-snapshot",
         "pr-sweep",
         "screenshot-proof",
-        "site-cohesion"
+        "site-cohesion",
+        "themed-rename"
       ]
     },
     {
