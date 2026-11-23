@@ -42,42 +42,35 @@
       "label": "Site work",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 57
+      "line": 58
     },
     {
       "id": "learning",
       "label": "Learning",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 67
-    },
-    {
-      "id": "hackathon-ops",
-      "label": "Hackathon ops",
-      "rule": "families.json",
-      "file": "viz/scripts/families.json",
-      "line": 74
+      "line": 69
     },
     {
       "id": "vendored",
       "label": "Vendored",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 82
+      "line": 76
     },
     {
       "id": "agents",
       "label": "Agents",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 97
+      "line": 91
     },
     {
       "id": "hooks",
       "label": "Hooks",
       "rule": "families.json",
       "file": "viz/scripts/families.json",
-      "line": 105
+      "line": 99
     }
   ],
   "nodes": [
@@ -226,7 +219,7 @@
       "lines": 78,
       "description": "Use when a rented GPU pod (RunPod or similar) has lost its data or been replaced and the app on it must be rebuilt from scratch, reconnected from the Mac over an SSH tunnel, and checked as working or not, without ever reading the person's API keys.",
       "eval_status": "unmeasured",
-      "family": "hackathon-ops",
+      "family": "domain",
       "vendored": false
     },
     {
@@ -603,7 +596,7 @@
       "lines": 60,
       "description": "Use when a product is being renamed to a new theme or brand and every name a user can see (UI text, page titles, buttons, README) must change while internal names (env vars, package names, file paths, storage keys) stay put, ending with a search that proves no visible old name is left.",
       "eval_status": "unmeasured",
-      "family": "hackathon-ops",
+      "family": "site-work",
       "vendored": false
     },
     {
